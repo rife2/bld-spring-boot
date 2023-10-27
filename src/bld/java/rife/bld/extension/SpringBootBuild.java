@@ -16,6 +16,7 @@
 
 package rife.bld.extension;
 
+import rife.bld.BuildCommand;
 import rife.bld.Project;
 import rife.bld.publish.PublishDeveloper;
 import rife.bld.publish.PublishLicense;
@@ -39,7 +40,6 @@ public class SpringBootBuild extends Project {
         repositories = List.of(MAVEN_CENTRAL, RIFE2_RELEASES);
 
         scope(compile)
-                .include(dependency("net.lingala.zip4j", "zip4j", version(2,11, 5)))
                 .include(dependency("com.uwyn.rife2", "bld", version(1, 7, 5)));
         scope(test)
                 .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 10, 0)))
@@ -66,5 +66,14 @@ public class SpringBootBuild extends Project {
 
     public static void main(String[] args) {
         new SpringBootBuild().start(args);
+    }
+
+    @BuildCommand(summary = "Runs PMD analysis")
+    public void pmd() {
+        new PmdOperation()
+                .fromProject(this)
+                .failOnViolation(true)
+                .ruleSets("config/pmd.xml")
+                .execute();
     }
 }

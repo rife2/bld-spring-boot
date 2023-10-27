@@ -1,4 +1,8 @@
 <project version="4">
+  <component name="EntryPointsManager">
+    <pattern value="rife.bld.extension.SpringBootBuild" method="pmd" />
+    <pattern value="rife.bld.extension.SpringBootBuild" />
+  </component>
   <component name="PDMPlugin">
     <option name="customRuleSets">
       <list>
