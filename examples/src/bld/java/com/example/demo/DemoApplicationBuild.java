@@ -3,6 +3,7 @@ package com.example.demo;
 import rife.bld.BuildCommand;
 import rife.bld.WebProject;
 import rife.bld.extension.BootJarOperation;
+import rife.bld.extension.BootWarOperation;
 
 import java.util.List;
 import java.util.logging.ConsoleHandler;
@@ -49,8 +50,20 @@ public class DemoApplicationBuild extends WebProject {
     }
 
     @BuildCommand(summary = "Creates an executable JAR for the project")
-    public void jar() throws Exception {
+    public void bootjar() throws Exception {
         new BootJarOperation()
+                .fromProject(this)
+                .execute();
+    }
+
+    @BuildCommand(summary = "Creates an executable JAR for the project")
+    public void uberjar() throws Exception {
+        bootjar();
+    }
+
+    @BuildCommand(summary = "Creates WAR for the project")
+    public void war() throws Exception {
+        new BootWarOperation()
                 .fromProject(this)
                 .execute();
     }

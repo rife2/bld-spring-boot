@@ -16,5 +16,11 @@
 
 package rife.bld.extension;
 
-class BootJarOperationTest {
+/**
+ * Constructs a new manifest attribute.
+ *
+ * @param name  The attribute name
+ * @param value The attribute value
+ */
+public record BootManifestAttribute(String name, String value) {
 }
