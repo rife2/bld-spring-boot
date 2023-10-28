@@ -56,15 +56,20 @@ public class DemoApplicationBuild extends WebProject {
                 .execute();
     }
 
+    @BuildCommand(summary = "Create an executable WAR for the project")
+    public void bootwar() throws Exception {
+        new BootWarOperation()
+                .fromProject(this)
+                .execute();
+    }
+
     @BuildCommand(summary = "Creates an executable JAR for the project")
     public void uberjar() throws Exception {
         bootjar();
     }
 
-    @BuildCommand(summary = "Creates WAR for the project")
+    @BuildCommand(summary = "Create an executable WAR for the project")
     public void war() throws Exception {
-        new BootWarOperation()
-                .fromProject(this)
-                .execute();
+        bootwar();
     }
 }
