@@ -37,9 +37,9 @@ public class BootJarOperation extends AbstractBootOperation {
     private static final Logger LOGGER = Logger.getLogger(BootJarOperation.class.getName());
 
     /**
-     * Provides the destination file name that will be used for the archive creation.
+     * Provides the destination file name that will be used for the JAR creation.
      *
-     * @param name the war archive destination file name
+     * @param name the JAR destination file name
      * @return this operation instance
      */
     @Override
@@ -48,9 +48,9 @@ public class BootJarOperation extends AbstractBootOperation {
     }
 
     /**
-     * Provides the destination directory in which the archive will be created.
+     * Provides the destination directory in which the JAR will be created.
      *
-     * @param directory the war destination directory
+     * @param directory the JAR destination directory
      * @return this operation instance
      */
     @Override
@@ -59,7 +59,7 @@ public class BootJarOperation extends AbstractBootOperation {
     }
 
     /**
-     * Provides library JARs that will be used for the JAR creation.
+     * Provides JAR libraries that will be used for the JAR creation.
      *
      * @param jars Java archive files
      * @return this operation instance
@@ -70,7 +70,7 @@ public class BootJarOperation extends AbstractBootOperation {
     }
 
     /**
-     * Provides library JARs that will be used for the JAR creation.
+     * Provides JAR libraries that will be used for the JAR creation.
      *
      * @param jar Java archive file
      * @return this operation instance

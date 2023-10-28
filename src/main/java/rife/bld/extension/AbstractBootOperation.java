@@ -61,9 +61,9 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     }
 
     /**
-     * Provides the destination file name that will be used for the archive creation.
+     * Provides the file name that will be used for the archive creation.
      *
-     * @param name the war archive destination file name
+     * @param name the archive file name
      * @return this operation instance
      */
     public AbstractBootOperation destinationArchiveFileName(String name) {
@@ -72,9 +72,9 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     }
 
     /**
-     * Retrieves the destination file name that will be used for the JAR creation.
+     * Retrieves the file name that will be used for the archive creation.
      *
-     * @return the war Jar's destination file name
+     * @return the archive file name
      */
     public String destinationArchiveFileName() {
         return destinationArchiveFileName;
@@ -83,7 +83,7 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     /**
      * Retrieves the destination directory in which the JAR will be created.
      *
-     * @return the JAR's destination directory
+     * @return the destination directory
      */
     public File destinationDirectory() {
         return destinationDirectory_;
@@ -92,7 +92,7 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     /**
      * Provides the destination directory in which the archive will be created.
      *
-     * @param directory the war destination directory
+     * @param directory the destination directory
      * @return this operation instance
      */
     public AbstractBootOperation destinationDirectory(File directory) throws IOException {
@@ -102,7 +102,8 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     }
 
     /**
-     * Part of the {@link #execute} operation, copy the {@code spring-boot-loader} archive content to the staging directory.
+     * Part of the {@link #execute} operation, copy the {@code spring-boot-loader} archive content to the staging
+     * directory.
      */
     protected void executeCopyBootLoader(File stagingDirectory) throws FileUtilsErrorException {
         if (launcherJars_.isEmpty()) {
@@ -119,7 +120,7 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     }
 
     /**
-     * Part of the {@link #execute} operation, copy the {@code BOOT-INF}  or {@code WEB-INF} classes.
+     * Part of the {@link #execute} operation, copy the {@code BOOT-INF} or {@code WEB-INF} classes.
      */
     protected void executeCopyInfClassesFiles(File stagingInfDirectory) throws IOException {
         var inf_classes_dir = new File(stagingInfDirectory, "classes");
@@ -155,7 +156,7 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
                     stagingDirectory.exists()));
             logger.fine(MessageFormat.format("Destination Directory: {0} (exists:{1})", destinationDirectory(),
                     destinationDirectory().exists()));
-            logger.fine(MessageFormat.format("Destination WAR:       {0}", destinationArchiveFileName()));
+            logger.fine(MessageFormat.format("Destination Archive:   {0}", destinationArchiveFileName()));
         }
 
         var out = new StringWriter();
@@ -203,7 +204,7 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     }
 
     /**
-     * Provides library JARs that will be used for the archive creation.
+     * Provides JAR libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
      *
      * @param jars Java archive files
      * @return this operation instance
@@ -214,7 +215,7 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     }
 
     /**
-     * Provides library JARs that will be used for the archive creation.
+     * Provides JAR libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
      *
      * @param jar Java archive file
      * @return this operation instance
@@ -225,7 +226,7 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     }
 
     /**
-     * Retrieves the library JARs in {@code BOOT-INF}  or {@code WEB-INF}.
+     * Retrieves the JAR libraries in {@code BOOT-INF} or {@code WEB-INF}.
      */
     public List<File> infLibs() {
         return infLibs_;

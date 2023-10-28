@@ -29,7 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Builds and creates a Spring Boot web archive (WAR).
+ * Builds and creates a Spring Boot executable web archive (WAR).
  *
  * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a>
  * @since 1.0
@@ -39,9 +39,9 @@ public class BootWarOperation extends AbstractBootOperation {
     private final List<File> webInfProvidedLibs_ = new ArrayList<>();
 
     /**
-     * Provides the destination file name that will be used for the archive creation.
+     * Provides the destination file name that will be used for the WAR creation.
      *
-     * @param name the war archive destination file name
+     * @param name the wAR archive destination file name
      * @return this operation instance
      */
     @Override
@@ -50,9 +50,9 @@ public class BootWarOperation extends AbstractBootOperation {
     }
 
     /**
-     * Provides the destination directory in which the archive will be created.
+     * Provides the destination directory in which the WAR will be created.
      *
-     * @param directory the war destination directory
+     * @param directory the WAR destination directory
      * @return this operation instance
      */
     @Override
@@ -61,7 +61,7 @@ public class BootWarOperation extends AbstractBootOperation {
     }
 
     /**
-     * Provides library JARs that will be used for the WAR creation.
+     * Provides JAR libraries that will be used for the WAR creation.
      *
      * @param jars Java archive files
      * @return this operation instance
@@ -72,7 +72,7 @@ public class BootWarOperation extends AbstractBootOperation {
     }
 
     /**
-     * Provides library JARs that will be used for the WAR creation.
+     * Provides JAR libraries that will be used for the WAR creation.
      *
      * @param jar Java archive file
      * @return this operation instance
@@ -224,7 +224,7 @@ public class BootWarOperation extends AbstractBootOperation {
 
 
     /**
-     * Provides library JARs that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
+     * Provides JAR libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
      *
      * @param jars Java archive files
      * @return this operation instance
@@ -235,7 +235,7 @@ public class BootWarOperation extends AbstractBootOperation {
     }
 
     /**
-     * Provides the library JARs that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
+     * Provides the JAR libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
      *
      * @param jar Java archive file
      * @return this operation instance
