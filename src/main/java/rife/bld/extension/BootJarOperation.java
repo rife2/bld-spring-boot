@@ -22,81 +22,40 @@ import rife.tools.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Builds and creates a Sprint Boot executable java archive (JAR).
+ * Builds and creates a Spring Boot executable Java archive (JAR).
  *
  * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a>
  * @since 1.0
  */
 public class BootJarOperation extends AbstractBootOperation {
     private static final Logger LOGGER = Logger.getLogger(BootJarOperation.class.getName());
-    private final List<File> libJars_ = new ArrayList<>();
 
     /**
-     * Performs the BootJar operation.
+     * Provides the destination file name that will be used for the archive creation.
+     *
+     * @param name the war archive destination file name
+     * @return this operation instance
      */
     @Override
-    public void execute() throws Exception {
-        if (project_ == null) {
-            throw new IllegalArgumentException("ERROR: project required.");
-        } else if (project_.mainClass() == null) {
-            throw new IllegalArgumentException("ERROR: project mainClass required.");
-        }
-
-        var staging_dir = Files.createTempDirectory("bootjar").toFile();
-
-        try {
-            var boot_inf_dir = executeCreateWebInfDirectory(staging_dir);
-            executeCopyBootInfClassesFiles(boot_inf_dir);
-            executeCopyBootInfLibs(boot_inf_dir);
-            executeCopyBootLoader(staging_dir);
-
-            executeCreateArchive(staging_dir, LOGGER);
-
-            if (!silent()) {
-                System.out.printf("The executable JAR (%s) was created in: %s%n", destinationArchiveFileName(),
-                        destinationDirectory());
-            }
-
-        } finally {
-            FileUtils.deleteDirectory(staging_dir);
-        }
+    public BootJarOperation destinationArchiveFileName(String name) {
+        return (BootJarOperation) super.destinationArchiveFileName(name);
     }
 
     /**
-     * Part of the {@link #execute} operation, copy the {@code BOOT-INF} libs.
+     * Provides the destination directory in which the archive will be created.
+     *
+     * @param directory the war destination directory
+     * @return this operation instance
      */
-    protected void executeCopyBootInfLibs(File stagingBootInfDirectory) throws IOException {
-        var boot_inf_lib_dir = new File(stagingBootInfDirectory, "lib");
-        mkDirs(boot_inf_lib_dir);
-
-        for (var jar : libJars_) {
-            Files.copy(jar.toPath(), boot_inf_lib_dir.toPath().resolve(jar.getName()));
-        }
-    }
-
-    /**
-     * Configures the operation from a {@link Project}.
-     */
-    public AbstractBootOperation fromProject(Project project) throws IOException {
-        project_ = project;
-        return bootInfLibs(project_.compileClasspathJars())
-                .bootInfLibs(project_.runtimeClasspathJars())
-                .launcherClass("org.springframework.boot.loader.JarLauncher")
-                .manifestAttributes(
-                        List.of(
-                                new BootManifestAttribute("Manifest-Version", "1.0"),
-                                new BootManifestAttribute("Main-Class", launcherClass()),
-                                new BootManifestAttribute("Start-Class", project_.mainClass()))
-                )
-                .destinationDirectory(project.buildDistDirectory())
-                .destinationArchiveFileName(project_.archiveBaseName() + "-" + project_.version() + "-boot.jar")
-                .sourceDirectories(project_.buildMainDirectory(), project_.srcMainResourcesDirectory());
+    @Override
+    public BootJarOperation destinationDirectory(File directory) throws IOException {
+        return (BootJarOperation) super.destinationDirectory(directory);
     }
 
     /**
@@ -105,9 +64,9 @@ public class BootJarOperation extends AbstractBootOperation {
      * @param jars Java archive files
      * @return this operation instance
      */
-    public BootJarOperation bootInfLibs(Collection<File> jars) {
-        libJars_.addAll(jars);
-        return this;
+    @Override
+    public BootJarOperation infLibs(List<File> jars) {
+        return (BootJarOperation) super.infLibs(jars);
     }
 
     /**
@@ -116,8 +75,132 @@ public class BootJarOperation extends AbstractBootOperation {
      * @param jar Java archive file
      * @return this operation instance
      */
-    public BootJarOperation bootInfLibs(File... jar) {
-        libJars_.addAll(List.of(jar));
-        return this;
+    @Override
+    public AbstractBootOperation infLibs(File... jar) {
+        return super.infLibs(jar);
+    }
+
+    /**
+     * Part of the {@link #execute} operation, configure the JAR launcher ({@code spring-boot-loader}) class.
+     */
+    @Override
+    public BootJarOperation launcherClass(String className) {
+        return (BootJarOperation) super.launcherClass(className);
+    }
+
+    /**
+     * Part of the {@link #execute} operation, configure the launcher ({@code spring-boot-loader}) JAR(s).
+     */
+    public BootJarOperation launcherJars(List<File> jars) throws IOException {
+        return (BootJarOperation) super.launcherJars(jars);
+    }
+
+    /**
+     * Provides the fully-qualified main class name.
+     */
+    public BootJarOperation mainClass(String className) {
+        return (BootJarOperation) super.mainClass(className);
+    }
+
+    /**
+     * Provides an attribute to put in the JAR manifest.
+     *
+     * @param name  the attribute name to put in the manifest
+     * @param value the attribute value to put in the manifest
+     * @return this operation instance
+     */
+    @Override
+    public BootJarOperation manifestAttribute(String name, String value) {
+        return (BootJarOperation) super.manifestAttribute(name, value);
+    }
+
+    /**
+     * Provides a map of attributes to put in the jar manifest.
+     * <p>
+     * A copy will be created to allow this map to be independently modifiable.
+     *
+     * @param attributes the attributes to put in the manifest
+     * @return this operation instance
+     */
+    @Override
+    public BootJarOperation manifestAttributes(Collection<BootManifestAttribute> attributes) {
+        return (BootJarOperation) super.manifestAttributes(attributes);
+    }
+
+    /**
+     * Provides the bld project.
+     */
+    @Override
+    public BootJarOperation project(Project project) {
+        return (BootJarOperation) super.project(project);
+    }
+
+    /**
+     * Provides source directories that will be used for the jar archive creation.
+     *
+     * @param directories source directories
+     * @return this operation instance
+     */
+    @Override
+    public BootJarOperation sourceDirectories(File... directories) {
+        return (BootJarOperation) super.sourceDirectories(directories);
+    }
+
+    /**
+     * Performs the BootJar operation.
+     */
+    @Override
+    public void execute() throws Exception {
+        verifyExecute();
+
+        var staging_dir = Files.createTempDirectory("bootjar").toFile();
+
+        try {
+            var boot_inf_dir = executeCreateBootInfDirectory(staging_dir);
+            executeCopyInfClassesFiles(boot_inf_dir);
+            executeCopyInfLibs(boot_inf_dir);
+            executeCopyBootLoader(staging_dir);
+
+            executeCreateArchive(staging_dir, LOGGER);
+
+            if (!silent() && LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.info(String.format("The executable JAR (%s) was created in: %s%n", destinationArchiveFileName(),
+                        destinationDirectory()));
+            }
+        } finally {
+            FileUtils.deleteDirectory(staging_dir);
+        }
+    }
+
+
+    /**
+     * Part of the {@link #execute} operation, creates the {@code BOOT-INF} staging directory.
+     */
+    protected File executeCreateBootInfDirectory(File stagingDirectory) throws IOException {
+        var boot_inf = new File(stagingDirectory, "BOOT-INF");
+        mkDirs(boot_inf);
+        return boot_inf;
+    }
+
+    /**
+     * Configures the operation from a {@link Project}.
+     */
+    public BootJarOperation fromProject(Project project) throws IOException {
+        project(project);
+        mainClass(project.mainClass());
+
+        return destinationDirectory(project.buildDistDirectory())
+                .destinationArchiveFileName(project.archiveBaseName() + "-" + project.version() + "-boot.jar")
+                .infLibs(project.compileClasspathJars())
+                .infLibs(project.runtimeClasspathJars())
+                .launcherClass("org.springframework.boot.loader.JarLauncher")
+                .launcherJars(project.standaloneClasspathJars())
+                .manifestAttributes(
+                        List.of(
+                                new BootManifestAttribute("Manifest-Version", "1.0"),
+                                new BootManifestAttribute("Main-Class", launcherClass()),
+                                new BootManifestAttribute("Start-Class", mainClass()))
+                )
+                .sourceDirectories(project.buildMainDirectory(), project.srcMainResourcesDirectory());
     }
 }

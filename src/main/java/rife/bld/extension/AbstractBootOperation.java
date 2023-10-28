@@ -42,13 +42,15 @@ import java.util.spi.ToolProvider;
  * @since 1.0
  */
 public abstract class AbstractBootOperation extends AbstractOperation<AbstractBootOperation> {
+    private final List<File> infLibs_ = new ArrayList<>();
+    private final List<File> launcherJars_ = new ArrayList<>();
     private final List<BootManifestAttribute> manifestAttributes_ = new ArrayList<>();
     private final List<File> sourceDirectories_ = new ArrayList<>();
-    protected
-    Project project_;
     private String destinationArchiveFileName;
     private File destinationDirectory_;
     private String launcherClass_;
+    private String mainClass_;
+    private Project project_;
 
     public void deleteDirectories(File... directory) throws FileUtilsErrorException {
         for (var d : directory) {
@@ -92,7 +94,6 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
      *
      * @param directory the war destination directory
      * @return this operation instance
-     * @since 1.5
      */
     public AbstractBootOperation destinationDirectory(File directory) throws IOException {
         destinationDirectory_ = directory;
@@ -101,33 +102,45 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     }
 
     /**
-     * Part of the {@link #execute} operation, copy the {@code BOOT-INF} classes.
-     */
-    protected void executeCopyBootInfClassesFiles(File stagingBootInfDirectory) throws IOException {
-        var boot_inf_classes_dir = new File(stagingBootInfDirectory, "classes");
-        mkDirs(boot_inf_classes_dir);
-
-        for (var dir : sourceDirectories_) {
-            FileUtils.copyDirectory(dir, boot_inf_classes_dir);
-        }
-
-        deleteDirectories(new File(boot_inf_classes_dir, "resources"), new File(boot_inf_classes_dir, "templates"));
-    }
-
-    /**
      * Part of the {@link #execute} operation, copy the {@code spring-boot-loader} archive content to the staging directory.
      */
     protected void executeCopyBootLoader(File stagingDirectory) throws FileUtilsErrorException {
-        if (project_.standaloneClasspathJars().isEmpty()) {
+        if (launcherJars_.isEmpty()) {
             throw new IllegalArgumentException("ERROR: Spring Boot Loader required.");
         } else {
             var meta_inf_dir = new File(stagingDirectory, "META-INF");
-            for (var jar : project_.standaloneClasspathJars()) {
+            for (var jar : launcherJars()) {
                 FileUtils.unzipFile(jar, stagingDirectory);
                 if (meta_inf_dir.exists()) {
                     FileUtils.deleteDirectory(meta_inf_dir);
                 }
             }
+        }
+    }
+
+    /**
+     * Part of the {@link #execute} operation, copy the {@code BOOT-INF}  or {@code WEB-INF} classes.
+     */
+    protected void executeCopyInfClassesFiles(File stagingInfDirectory) throws IOException {
+        var inf_classes_dir = new File(stagingInfDirectory, "classes");
+        mkDirs(inf_classes_dir);
+
+        for (var dir : sourceDirectories()) {
+            FileUtils.copyDirectory(dir, inf_classes_dir);
+        }
+
+        deleteDirectories(new File(inf_classes_dir, "resources"), new File(inf_classes_dir, "templates"));
+    }
+
+    /**
+     * Part of the {@link #execute} operation, copy the {@code BOOT-INF} or (@code WEB-INF) libs.
+     */
+    protected void executeCopyInfLibs(File stagingInfDirectory) throws IOException {
+        var inf_lib_dir = new File(stagingInfDirectory, "lib");
+        mkDirs(inf_lib_dir);
+
+        for (var jar : infLibs_) {
+            Files.copy(jar.toPath(), inf_lib_dir.toPath().resolve(jar.getName()));
         }
     }
 
@@ -190,30 +203,88 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     }
 
     /**
-     * Part of the {@link #execute} operation, creates the {@code WEB-INF} staging directory.
+     * Provides library JARs that will be used for the archive creation.
+     *
+     * @param jars Java archive files
+     * @return this operation instance
      */
-    protected File executeCreateWebInfDirectory(File stagingDirectory) throws IOException {
-        var boot_inf = new File(stagingDirectory, "WEB-INF");
-        mkDirs(boot_inf);
-        return boot_inf;
+    public AbstractBootOperation infLibs(List<File> jars) {
+        infLibs_.addAll(jars);
+        return this;
     }
 
     /**
-     * Part of the {@link #execute} operation, configure the JAR launcher class.
+     * Provides library JARs that will be used for the archive creation.
+     *
+     * @param jar Java archive file
+     * @return this operation instance
      */
-    protected AbstractBootOperation launcherClass(String className) {
+    public AbstractBootOperation infLibs(File... jar) {
+        infLibs_.addAll(List.of(jar));
+        return this;
+    }
+
+    /**
+     * Retrieves the library JARs in {@code BOOT-INF}  or {@code WEB-INF}.
+     */
+    public List<File> infLibs() {
+        return infLibs_;
+    }
+
+    /**
+     * Part of the {@link #execute} operation, configure the JAR launcher ({@code spring-boot-loader}) class name.
+     */
+    public AbstractBootOperation launcherClass(String className) {
         launcherClass_ = className;
         return this;
     }
 
     /**
-     * Retrieves the JAR launcher class fully-qualified name.
+     * Retrieves the JAR launcher ({@code spring-boot-loader}) class fully-qualified name.
      */
     protected String launcherClass() {
         if (launcherClass_ == null) {
-            throw new IllegalArgumentException("ERROR: Spring boot launcher class required.");
+            throw new IllegalArgumentException("ERROR: Spring boot launcher (spring-boot-loader) class " +
+                    "required.");
         }
         return launcherClass_;
+    }
+
+    /**
+     * Retrieves the launcher ({@code spring-boot-loader}) JARs.
+     */
+    public List<File> launcherJars() {
+        return launcherJars_;
+    }
+
+    /**
+     * Part of the {@link #execute} operation, configure the launcher ({@code spring-boot-loader}) JAR location.
+     */
+    public AbstractBootOperation launcherJars(List<File> jars) throws IOException {
+        if (!jars.isEmpty()) {
+            for (var j : jars) {
+                if (!j.exists()) {
+                    throw new IOException("ERROR: launcher (spring-boot-loader) JAR(s) not found: " + j);
+                }
+            }
+            launcherJars_.addAll(jars);
+        }
+        return this;
+    }
+
+    /**
+     * Provides the fully-qualified main class name.
+     */
+    protected AbstractBootOperation mainClass(String className) {
+        mainClass_ = className;
+        return this;
+    }
+
+    /**
+     * Retrieves the main class name.
+     */
+    public String mainClass() {
+        return mainClass_;
     }
 
     /**
@@ -242,7 +313,6 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
      *
      * @param attributes the attributes to put in the manifest
      * @return this operation instance
-     * \
      */
     public AbstractBootOperation manifestAttributes(Collection<BootManifestAttribute> attributes) {
         manifestAttributes_.addAll(attributes);
@@ -259,6 +329,21 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     }
 
     /**
+     * Provides the bld project.
+     */
+    public AbstractBootOperation project(Project project) {
+        project_ = project;
+        return this;
+    }
+
+    /**
+     * Retrieves the bld project.
+     */
+    public Project project() {
+        return project_;
+    }
+
+    /**
      * Provides source directories that will be used for the jar archive creation.
      *
      * @param directories source directories
@@ -267,5 +352,27 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     public AbstractBootOperation sourceDirectories(File... directories) {
         sourceDirectories_.addAll(List.of(directories));
         return this;
+    }
+
+    /**
+     * Retrieves the source directories that will be used for the jar archive creation.
+     */
+    public List<File> sourceDirectories() {
+        return sourceDirectories_;
+    }
+
+    /**
+     * Verifies that all the elements required to create the archived have been provided, throws an
+     * {@link IllegalArgumentException} otherwise.
+     */
+    protected boolean verifyExecute() throws IllegalArgumentException {
+        if (mainClass() == null) {
+            throw new IllegalArgumentException("ERROR: project mainClass required.");
+        } else if (launcherClass().isEmpty()) {
+            throw new IllegalArgumentException(("ERROR: launcher (spring-boot-loader) class required"));
+        } else if (launcherJars().isEmpty()) {
+            throw new IllegalArgumentException(("ERROR: launcher (spring-boot-loader) JAR(s) required"));
+        }
+        return true;
     }
 }
