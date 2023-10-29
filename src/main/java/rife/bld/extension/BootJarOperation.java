@@ -76,8 +76,8 @@ public class BootJarOperation extends AbstractBootOperation {
      * @return this operation instance
      */
     @Override
-    public AbstractBootOperation infLibs(File... jar) {
-        return super.infLibs(jar);
+    public BootJarOperation infLibs(File... jar) {
+        return (BootJarOperation) super.infLibs(jar);
     }
 
     /**
@@ -91,6 +91,7 @@ public class BootJarOperation extends AbstractBootOperation {
     /**
      * Part of the {@link #execute} operation, configure the launcher ({@code spring-boot-loader}) JAR(s).
      */
+    @Override
     public BootJarOperation launcherJars(List<File> jars) throws IOException {
         return (BootJarOperation) super.launcherJars(jars);
     }
@@ -98,6 +99,7 @@ public class BootJarOperation extends AbstractBootOperation {
     /**
      * Provides the fully-qualified main class name.
      */
+    @Override
     public BootJarOperation mainClass(String className) {
         return (BootJarOperation) super.mainClass(className);
     }

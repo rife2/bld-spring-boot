@@ -93,6 +93,7 @@ public class BootWarOperation extends AbstractBootOperation {
     /**
      * Part of the {@link #execute} operation, configure the launcher ({@code spring-boot-loader}) JAR(s).
      */
+    @Override
     public BootWarOperation launcherJars(List<File> jars) throws IOException {
         return (BootWarOperation) super.launcherJars(jars);
     }
@@ -100,6 +101,7 @@ public class BootWarOperation extends AbstractBootOperation {
     /**
      * Provides the fully-qualified main class name.
      */
+    @Override
     public BootWarOperation mainClass(String className) {
         return (BootWarOperation) super.mainClass(className);
     }
