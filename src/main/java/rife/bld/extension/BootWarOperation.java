@@ -34,121 +34,9 @@ import java.util.logging.Logger;
  * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a>
  * @since 1.0
  */
-public class BootWarOperation extends AbstractBootOperation {
+public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     private static final Logger LOGGER = Logger.getLogger(BootWarOperation.class.getName());
     private final List<File> webInfProvidedLibs_ = new ArrayList<>();
-
-    /**
-     * Provides the destination file name that will be used for the WAR creation.
-     *
-     * @param name the wAR archive destination file name
-     * @return this operation instance
-     */
-    @Override
-    public BootWarOperation destinationArchiveFileName(String name) {
-        return (BootWarOperation) super.destinationArchiveFileName(name);
-    }
-
-    /**
-     * Provides the destination directory in which the WAR will be created.
-     *
-     * @param directory the WAR destination directory
-     * @return this operation instance
-     */
-    @Override
-    public BootWarOperation destinationDirectory(File directory) throws IOException {
-        return (BootWarOperation) super.destinationDirectory(directory);
-    }
-
-    /**
-     * Provides JAR libraries that will be used for the WAR creation.
-     *
-     * @param jars Java archive files
-     * @return this operation instance
-     */
-    @Override
-    public BootWarOperation infLibs(List<File> jars) {
-        return (BootWarOperation) super.infLibs(jars);
-    }
-
-    /**
-     * Provides JAR libraries that will be used for the WAR creation.
-     *
-     * @param jar Java archive file
-     * @return this operation instance
-     */
-    @Override
-    public BootWarOperation infLibs(File... jar) {
-        return (BootWarOperation) super.infLibs(jar);
-    }
-
-    /**
-     * Part of the {@link #execute} operation, configure the JAR launcher ({@code spring-boot-loader}) class.
-     */
-    @Override
-    public BootWarOperation launcherClass(String className) {
-        return (BootWarOperation) super.launcherClass(className);
-    }
-
-    /**
-     * Part of the {@link #execute} operation, configure the launcher ({@code spring-boot-loader}) JAR(s).
-     */
-    @Override
-    public BootWarOperation launcherJars(List<File> jars) throws IOException {
-        return (BootWarOperation) super.launcherJars(jars);
-    }
-
-    /**
-     * Provides the fully-qualified main class name.
-     */
-    @Override
-    public BootWarOperation mainClass(String className) {
-        return (BootWarOperation) super.mainClass(className);
-    }
-
-    /**
-     * Provides an attribute to put in the JAR manifest.
-     *
-     * @param name  the attribute name to put in the manifest
-     * @param value the attribute value to put in the manifest
-     * @return this operation instance
-     */
-    @Override
-    public BootWarOperation manifestAttribute(String name, String value) {
-        return (BootWarOperation) super.manifestAttribute(name, value);
-    }
-
-    /**
-     * Provides a map of attributes to put in the jar manifest.
-     * <p>
-     * A copy will be created to allow this map to be independently modifiable.
-     *
-     * @param attributes the attributes to put in the manifest
-     * @return this operation instance
-     */
-    @Override
-    public BootWarOperation manifestAttributes(Collection<BootManifestAttribute> attributes) {
-        return (BootWarOperation) super.manifestAttributes(attributes);
-    }
-
-    /**
-     * Provides the bld project.
-     */
-    @Override
-    public BootWarOperation project(Project project) {
-        return (BootWarOperation) super.project(project);
-    }
-
-    /**
-     * Provides source directories that will be used for the jar archive creation.
-     *
-     * @param directories source directories
-     * @return this operation instance
-     */
-    @Override
-    public BootWarOperation sourceDirectories(File... directories) {
-        return (BootWarOperation) super.sourceDirectories(directories);
-    }
 
     /**
      * Performs the BootJar operation.
@@ -204,7 +92,6 @@ public class BootWarOperation extends AbstractBootOperation {
      * @param project the project to configure the operation from
      */
     public BootWarOperation fromProject(Project project) throws IOException {
-        project(project);
         mainClass(project.mainClass());
 
         return destinationDirectory(project.buildDistDirectory())
@@ -223,7 +110,6 @@ public class BootWarOperation extends AbstractBootOperation {
                         ))
                 .sourceDirectories(project.buildMainDirectory(), project.srcMainResourcesDirectory());
     }
-
 
     /**
      * Provides JAR libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.

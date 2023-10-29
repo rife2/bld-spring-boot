@@ -22,7 +22,6 @@ import rife.tools.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,120 +32,8 @@ import java.util.logging.Logger;
  * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a>
  * @since 1.0
  */
-public class BootJarOperation extends AbstractBootOperation {
+public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
     private static final Logger LOGGER = Logger.getLogger(BootJarOperation.class.getName());
-
-    /**
-     * Provides the destination file name that will be used for the JAR creation.
-     *
-     * @param name the JAR destination file name
-     * @return this operation instance
-     */
-    @Override
-    public BootJarOperation destinationArchiveFileName(String name) {
-        return (BootJarOperation) super.destinationArchiveFileName(name);
-    }
-
-    /**
-     * Provides the destination directory in which the JAR will be created.
-     *
-     * @param directory the JAR destination directory
-     * @return this operation instance
-     */
-    @Override
-    public BootJarOperation destinationDirectory(File directory) throws IOException {
-        return (BootJarOperation) super.destinationDirectory(directory);
-    }
-
-    /**
-     * Provides JAR libraries that will be used for the JAR creation.
-     *
-     * @param jars Java archive files
-     * @return this operation instance
-     */
-    @Override
-    public BootJarOperation infLibs(List<File> jars) {
-        return (BootJarOperation) super.infLibs(jars);
-    }
-
-    /**
-     * Provides JAR libraries that will be used for the JAR creation.
-     *
-     * @param jar Java archive file
-     * @return this operation instance
-     */
-    @Override
-    public BootJarOperation infLibs(File... jar) {
-        return (BootJarOperation) super.infLibs(jar);
-    }
-
-    /**
-     * Part of the {@link #execute} operation, configure the JAR launcher ({@code spring-boot-loader}) class.
-     */
-    @Override
-    public BootJarOperation launcherClass(String className) {
-        return (BootJarOperation) super.launcherClass(className);
-    }
-
-    /**
-     * Part of the {@link #execute} operation, configure the launcher ({@code spring-boot-loader}) JAR(s).
-     */
-    @Override
-    public BootJarOperation launcherJars(List<File> jars) throws IOException {
-        return (BootJarOperation) super.launcherJars(jars);
-    }
-
-    /**
-     * Provides the fully-qualified main class name.
-     */
-    @Override
-    public BootJarOperation mainClass(String className) {
-        return (BootJarOperation) super.mainClass(className);
-    }
-
-    /**
-     * Provides an attribute to put in the JAR manifest.
-     *
-     * @param name  the attribute name to put in the manifest
-     * @param value the attribute value to put in the manifest
-     * @return this operation instance
-     */
-    @Override
-    public BootJarOperation manifestAttribute(String name, String value) {
-        return (BootJarOperation) super.manifestAttribute(name, value);
-    }
-
-    /**
-     * Provides a map of attributes to put in the jar manifest.
-     * <p>
-     * A copy will be created to allow this map to be independently modifiable.
-     *
-     * @param attributes the attributes to put in the manifest
-     * @return this operation instance
-     */
-    @Override
-    public BootJarOperation manifestAttributes(Collection<BootManifestAttribute> attributes) {
-        return (BootJarOperation) super.manifestAttributes(attributes);
-    }
-
-    /**
-     * Provides the bld project.
-     */
-    @Override
-    public BootJarOperation project(Project project) {
-        return (BootJarOperation) super.project(project);
-    }
-
-    /**
-     * Provides source directories that will be used for the jar archive creation.
-     *
-     * @param directories source directories
-     * @return this operation instance
-     */
-    @Override
-    public BootJarOperation sourceDirectories(File... directories) {
-        return (BootJarOperation) super.sourceDirectories(directories);
-    }
 
     /**
      * Performs the BootJar operation.
@@ -174,7 +61,6 @@ public class BootJarOperation extends AbstractBootOperation {
         }
     }
 
-
     /**
      * Part of the {@link #execute} operation, creates the {@code BOOT-INF} staging directory.
      */
@@ -188,7 +74,6 @@ public class BootJarOperation extends AbstractBootOperation {
      * Configures the operation from a {@link Project}.
      */
     public BootJarOperation fromProject(Project project) throws IOException {
-        project(project);
         mainClass(project.mainClass());
 
         return destinationDirectory(project.buildDistDirectory())

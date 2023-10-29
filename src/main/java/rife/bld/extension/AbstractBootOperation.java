@@ -16,7 +16,6 @@
 
 package rife.bld.extension;
 
-import rife.bld.Project;
 import rife.bld.operations.AbstractOperation;
 import rife.tools.FileUtils;
 import rife.tools.exceptions.FileUtilsErrorException;
@@ -35,13 +34,14 @@ import java.util.logging.Logger;
 import java.util.spi.ToolProvider;
 
 /**
- * Implements commons methods used by Spring Boot operations, such as {@link BootJarOperation} and
+ * Implements common methods used by Spring Boot operations, such as {@link BootJarOperation} and
  * {@link BootWarOperation}.
  *
  * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a>
  * @since 1.0
  */
-public abstract class AbstractBootOperation extends AbstractOperation<AbstractBootOperation> {
+public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
+        extends AbstractOperation<AbstractBootOperation<T>> {
     private final List<File> infLibs_ = new ArrayList<>();
     private final List<File> launcherJars_ = new ArrayList<>();
     private final List<BootManifestAttribute> manifestAttributes_ = new ArrayList<>();
@@ -50,7 +50,6 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     private File destinationDirectory_;
     private String launcherClass_;
     private String mainClass_;
-    private Project project_;
 
     public void deleteDirectories(File... directory) throws FileUtilsErrorException {
         for (var d : directory) {
@@ -66,9 +65,10 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
      * @param name the archive file name
      * @return this operation instance
      */
-    public AbstractBootOperation destinationArchiveFileName(String name) {
+    public T destinationArchiveFileName(String name) {
         destinationArchiveFileName = name;
-        return this;
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -95,10 +95,11 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
      * @param directory the destination directory
      * @return this operation instance
      */
-    public AbstractBootOperation destinationDirectory(File directory) throws IOException {
+    public T destinationDirectory(File directory) throws IOException {
         destinationDirectory_ = directory;
         mkDirs(destinationDirectory_);
-        return this;
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -209,9 +210,10 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
      * @param jars Java archive files
      * @return this operation instance
      */
-    public AbstractBootOperation infLibs(List<File> jars) {
+    public T infLibs(List<File> jars) {
         infLibs_.addAll(jars);
-        return this;
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -220,9 +222,10 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
      * @param jar Java archive file
      * @return this operation instance
      */
-    public AbstractBootOperation infLibs(File... jar) {
+    public T infLibs(File... jar) {
         infLibs_.addAll(List.of(jar));
-        return this;
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -235,9 +238,10 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     /**
      * Part of the {@link #execute} operation, configure the JAR launcher ({@code spring-boot-loader}) class name.
      */
-    public AbstractBootOperation launcherClass(String className) {
+    public T launcherClass(String className) {
         launcherClass_ = className;
-        return this;
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -261,7 +265,7 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     /**
      * Part of the {@link #execute} operation, configure the launcher ({@code spring-boot-loader}) JAR location.
      */
-    public AbstractBootOperation launcherJars(List<File> jars) throws IOException {
+    public T launcherJars(List<File> jars) throws IOException {
         if (!jars.isEmpty()) {
             for (var j : jars) {
                 if (!j.exists()) {
@@ -270,15 +274,17 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
             }
             launcherJars_.addAll(jars);
         }
-        return this;
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
      * Provides the fully-qualified main class name.
      */
-    protected AbstractBootOperation mainClass(String className) {
+    protected T mainClass(String className) {
         mainClass_ = className;
-        return this;
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -295,9 +301,10 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
      * @param value the attribute value to put in the manifest
      * @return this operation instance
      */
-    public AbstractBootOperation manifestAttribute(String name, String value) {
+    public T manifestAttribute(String name, String value) {
         manifestAttributes_.add(new BootManifestAttribute(name, value));
-        return this;
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -315,9 +322,10 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
      * @param attributes the attributes to put in the manifest
      * @return this operation instance
      */
-    public AbstractBootOperation manifestAttributes(Collection<BootManifestAttribute> attributes) {
+    public T manifestAttributes(Collection<BootManifestAttribute> attributes) {
         manifestAttributes_.addAll(attributes);
-        return this;
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -330,29 +338,15 @@ public abstract class AbstractBootOperation extends AbstractOperation<AbstractBo
     }
 
     /**
-     * Provides the bld project.
-     */
-    public AbstractBootOperation project(Project project) {
-        project_ = project;
-        return this;
-    }
-
-    /**
-     * Retrieves the bld project.
-     */
-    public Project project() {
-        return project_;
-    }
-
-    /**
      * Provides source directories that will be used for the jar archive creation.
      *
      * @param directories source directories
      * @return this operation instance
      */
-    public AbstractBootOperation sourceDirectories(File... directories) {
+    public T sourceDirectories(File... directories) {
         sourceDirectories_.addAll(List.of(directories));
-        return this;
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**

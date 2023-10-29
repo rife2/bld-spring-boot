@@ -39,12 +39,8 @@ public class DemoApplicationBuild extends WebProject {
     }
 
     public static void main(String[] args) {
-        var level = Level.FINER;
-        var consoleHandler = new ConsoleHandler();
-        consoleHandler.setLevel(level);
-        var logger = Logger.getLogger(BootJarOperation.class.getName());
-        logger.addHandler(consoleHandler);
-        logger.setLevel(level);
+        var logger = Logger.getLogger("rife.bld.extension");
+        logger.setLevel(Level.FINER);
 
         new DemoApplicationBuild().start(args);
     }
