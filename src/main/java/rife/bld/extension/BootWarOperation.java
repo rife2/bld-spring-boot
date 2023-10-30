@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  */
 public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     private static final Logger LOGGER = Logger.getLogger(BootWarOperation.class.getName());
-    private final List<File> webInfProvidedLibs_ = new ArrayList<>();
+    private final List<File> providedLibs_ = new ArrayList<>();
 
     /**
      * Performs the BootJar operation.
@@ -57,7 +57,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
             executeCreateArchive(staging_dir, LOGGER);
 
             if (!silent() && LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info(String.format("The executable WAR (%s) was created in: %s%n", destinationArchiveFileName(),
+                LOGGER.info(String.format("The executable WAR (%s) was created in: %s%n", destinationFileName(),
                         destinationDirectory()));
             }
         } finally {
@@ -67,18 +67,22 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
 
     /**
      * Part of the {@link #execute} operation, copy the {@code BOOT-INF} libs.
+     *
+     * @param stagingBootInfDirectory the staging {@code BOOT-INF} directory
      */
     protected void executeCopyWebInfProvidedLib(File stagingBootInfDirectory) throws IOException {
         var boot_inf_lib_dir = new File(stagingBootInfDirectory, "lib");
         mkDirs(boot_inf_lib_dir);
 
-        for (var jar : webInfProvidedLibs_) {
+        for (var jar : providedLibs_) {
             Files.copy(jar.toPath(), boot_inf_lib_dir.toPath().resolve(jar.getName()));
         }
     }
 
     /**
      * Part of the {@link #execute} operation, creates the {@code WEB-INF} staging directory.
+     *
+     * @return the {@code WEB-INF} directory location
      */
     protected File executeCreateWebInfDirectory(File stagingDirectory) throws IOException {
         var boot_inf = new File(stagingDirectory, "WEB-INF");
@@ -90,18 +94,19 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * Configures the operation from a {@link Project}.
      *
      * @param project the project to configure the operation from
+     * @return this operation instance
      */
     public BootWarOperation fromProject(Project project) throws IOException {
         mainClass(project.mainClass());
 
         return destinationDirectory(project.buildDistDirectory())
-                .destinationArchiveFileName(project.archiveBaseName() + "-" + project.version() + "-boot.war")
+                .destinationFileName(project.archiveBaseName() + "-" + project.version() + "-boot.war")
                 .infLibs(project.compileClasspathJars())
                 .infLibs(project.runtimeClasspathJars())
                 .infLibs(project.buildDistDirectory())
                 // TODO add provided libs
                 .launcherClass("org.springframework.boot.loader.WarLauncher")
-                .launcherJars(project.standaloneClasspathJars())
+                .launcherLibs(project.standaloneClasspathJars())
                 .manifestAttributes(
                         List.of(
                                 new BootManifestAttribute("Manifest-Version", "1.0"),
@@ -114,22 +119,22 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     /**
      * Provides JAR libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
      *
-     * @param jars Java archive files
+     * @param jars a collection of Java archive files
      * @return this operation instance
      */
-    public BootWarOperation webInfProvidedLibs(Collection<File> jars) {
-        webInfProvidedLibs_.addAll(jars);
+    public BootWarOperation providedLibs(Collection<File> jars) {
+        providedLibs_.addAll(jars);
         return this;
     }
 
     /**
      * Provides the JAR libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
      *
-     * @param jar Java archive file
+     * @param jar one or more Java archive file
      * @return this operation instance
      */
-    public BootWarOperation webInfProvidedLibs(File... jar) {
-        webInfProvidedLibs_.addAll(List.of(jar));
+    public BootWarOperation providedLibs(File... jar) {
+        providedLibs_.addAll(List.of(jar));
         return this;
     }
 }

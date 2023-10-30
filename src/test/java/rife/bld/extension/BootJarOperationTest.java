@@ -139,11 +139,11 @@ class BootJarOperationTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("spring-boot-loader");
 
-        assertThatCode(() -> new BootWarOperation().launcherJars(List.of(new File("foo"))))
+        assertThatCode(() -> new BootWarOperation().launcherLibs(List.of(new File("foo"))))
                 .isInstanceOf(IOException.class)
                 .hasMessageContaining("found");
 
-        bootWar = bootWar.launcherJars(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)));
+        bootWar = bootWar.launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)));
         assertThatCode(bootWar::execute)
                 .isInstanceOf((IllegalArgumentException.class))
                 .hasMessageContaining("class required").hasMessageContaining("spring-boot-loader");
@@ -158,9 +158,9 @@ class BootJarOperationTest {
         var jar = "foo-1.1.1.jar";
         new BootJarOperation()
                 .launcherClass("org.springframework.boot.loader.JarLauncher")
-                .launcherJars(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)))
+                .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)))
                 .destinationDirectory(tmp_dir)
-                .destinationArchiveFileName(jar)
+                .destinationFileName(jar)
                 .infLibs(new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT),
                         new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR))
                 .mainClass(MAIN_CLASS)
@@ -195,7 +195,7 @@ class BootJarOperationTest {
         var tmp_dir = Files.createTempDirectory("bootwartmp").toFile();
         new BootJarOperation()
                 .fromProject(new CustomProject(new File(".")))
-                .launcherJars(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)))
+                .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)))
                 .destinationDirectory(tmp_dir)
                 .infLibs(new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT),
                         new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR))
@@ -246,8 +246,8 @@ class BootJarOperationTest {
         assertThat(bootJar.destinationDirectory().getAbsolutePath()).as("destinationDirectory")
                 .isEqualTo(Path.of(tmp_dir.getPath(), "build", "dist").toString());
         assertThat(bootJar.infLibs()).as("infoLibs").isEmpty();
-        assertThat(bootJar.launcherJars()).as("launcherJars").isEmpty();
-        assertThat(bootJar.destinationArchiveFileName()).isEqualTo("test_project-0.0.1-boot.jar");
+        assertThat(bootJar.launcherLibs()).as("launcherJars").isEmpty();
+        assertThat(bootJar.destinationFileName()).isEqualTo("test_project-0.0.1-boot.jar");
 
         FileUtils.deleteDirectory(tmp_dir);
     }
@@ -257,7 +257,7 @@ class BootJarOperationTest {
         var tmp_dir = Files.createTempDirectory("bootjartmp").toFile();
         new BootWarOperation()
                 .fromProject(new CustomProject(new File(".")))
-                .launcherJars(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)))
+                .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)))
                 .destinationDirectory(tmp_dir)
                 .infLibs(new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT),
                         new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR))

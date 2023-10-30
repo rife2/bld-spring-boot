@@ -53,7 +53,7 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
             executeCreateArchive(staging_dir, LOGGER);
 
             if (!silent() && LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info(String.format("The executable JAR (%s) was created in: %s%n", destinationArchiveFileName(),
+                LOGGER.info(String.format("The executable JAR (%s) was created in: %s%n", destinationFileName(),
                         destinationDirectory()));
             }
         } finally {
@@ -63,6 +63,9 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
 
     /**
      * Part of the {@link #execute} operation, creates the {@code BOOT-INF} staging directory.
+     *
+     * @param stagingDirectory the staging directory
+     * @return the {@code BOOT-INF} directory location
      */
     protected File executeCreateBootInfDirectory(File stagingDirectory) throws IOException {
         var boot_inf = new File(stagingDirectory, "BOOT-INF");
@@ -72,16 +75,19 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
 
     /**
      * Configures the operation from a {@link Project}.
+     *
+     * @param project the project
+     * @return this operation instance
      */
     public BootJarOperation fromProject(Project project) throws IOException {
         mainClass(project.mainClass());
 
         return destinationDirectory(project.buildDistDirectory())
-                .destinationArchiveFileName(project.archiveBaseName() + "-" + project.version() + "-boot.jar")
+                .destinationFileName(project.archiveBaseName() + "-" + project.version() + "-boot.jar")
                 .infLibs(project.compileClasspathJars())
                 .infLibs(project.runtimeClasspathJars())
                 .launcherClass("org.springframework.boot.loader.JarLauncher")
-                .launcherJars(project.standaloneClasspathJars())
+                .launcherLibs(project.standaloneClasspathJars())
                 .manifestAttributes(
                         List.of(
                                 new BootManifestAttribute("Manifest-Version", "1.0"),

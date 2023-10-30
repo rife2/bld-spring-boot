@@ -58,14 +58,4 @@ public class DemoApplicationBuild extends WebProject {
                 .fromProject(this)
                 .execute();
     }
-
-    @BuildCommand(summary = "Creates an executable JAR for the project")
-    public void uberjar() throws Exception {
-        bootjar();
-    }
-
-    @BuildCommand(summary = "Create an executable WAR for the project")
-    public void war() throws Exception {
-        bootwar();
-    }
 }
