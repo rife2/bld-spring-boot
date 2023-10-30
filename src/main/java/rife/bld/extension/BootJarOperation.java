@@ -50,7 +50,7 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
             executeCopyInfLibs(boot_inf_dir);
             executeCopyBootLoader(staging_dir);
 
-            executeCreateArchive(staging_dir, LOGGER);
+            executeCreateArchive(staging_dir);
 
             if (!silent() && LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.info(String.format("The executable JAR (%s) was created in: %s%n", destinationFileName(),

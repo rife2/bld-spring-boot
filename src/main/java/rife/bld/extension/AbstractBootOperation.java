@@ -42,6 +42,7 @@ import java.util.spi.ToolProvider;
  */
 public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         extends AbstractOperation<AbstractBootOperation<T>> {
+    private static final Logger LOGGER = Logger.getLogger(AbstractBootOperation.class.getName());
     private final List<File> infLibs_ = new ArrayList<>();
     private final List<File> launcherLibs_ = new ArrayList<>();
     private final List<BootManifestAttribute> manifestAttributes_ = new ArrayList<>();
@@ -119,9 +120,13 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         } else {
             var meta_inf_dir = new File(stagingDirectory, "META-INF");
             for (var jar : launcherLibs()) {
-                FileUtils.unzipFile(jar, stagingDirectory);
-                if (meta_inf_dir.exists()) {
-                    FileUtils.deleteDirectory(meta_inf_dir);
+                if (jar.exists()) {
+                    FileUtils.unzipFile(jar, stagingDirectory);
+                    if (meta_inf_dir.exists()) {
+                        FileUtils.deleteDirectory(meta_inf_dir);
+                    }
+                } else if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning("ERROR: file not found: " + jar.getAbsolutePath());
                 }
             }
         }
@@ -139,6 +144,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         for (var dir : sourceDirectories()) {
             if (dir.exists()) {
                 FileUtils.copyDirectory(dir, inf_classes_dir);
+            } else if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning("ERROR: directory not found: " + dir.getAbsolutePath());
             }
         }
 
@@ -155,7 +162,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         mkDirs(inf_lib_dir);
 
         for (var jar : infLibs_) {
-            Files.copy(jar.toPath(), inf_lib_dir.toPath().resolve(jar.getName()));
+            if (jar.exists()) {
+                Files.copy(jar.toPath(), inf_lib_dir.toPath().resolve(jar.getName()));
+            } else if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning("ERROR: file not found: " + jar.getAbsolutePath());
+            }
         }
     }
 
@@ -163,17 +174,16 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * Part of the {@link #execute} operation, create the archive from the staging directory.
      *
      * @param stagingDirectory the staging directory
-     * @param logger           the logger instance
      */
-    protected void executeCreateArchive(File stagingDirectory, Logger logger)
+    protected void executeCreateArchive(File stagingDirectory)
             throws IOException {
         executeCreateManifest(stagingDirectory);
-        if (logger.isLoggable(Level.FINE) && (!silent())) {
-            logger.fine(MessageFormat.format("Staging Directory:     {0} (exists:{1})", stagingDirectory,
+        if (LOGGER.isLoggable(Level.FINE) && (!silent())) {
+            LOGGER.fine(MessageFormat.format("Staging Directory:     {0} (exists:{1})", stagingDirectory,
                     stagingDirectory.exists()));
-            logger.fine(MessageFormat.format("Destination Directory: {0} (exists:{1})", destinationDirectory(),
+            LOGGER.fine(MessageFormat.format("Destination Directory: {0} (exists:{1})", destinationDirectory(),
                     destinationDirectory().exists()));
-            logger.fine(MessageFormat.format("Destination Archive:   {0}", destinationFileName()));
+            LOGGER.fine(MessageFormat.format("Destination Archive:   {0}", destinationFileName()));
         }
 
         var out = new StringWriter();
@@ -183,7 +193,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         var jarTool = ToolProvider.findFirst("jar").orElseThrow();
 
         String args;
-        if (logger.isLoggable(Level.FINER)) {
+        if (LOGGER.isLoggable(Level.FINER)) {
             args = "-0cMvf";
         } else {
             args = "-0cMf";
@@ -198,8 +208,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
             throw new IOException(errBuff.toString());
         } else {
             var outBuff = out.getBuffer();
-            if (!outBuff.isEmpty() && logger.isLoggable(Level.INFO) && !silent()) {
-                logger.info(outBuff.toString());
+            if (!outBuff.isEmpty() && LOGGER.isLoggable(Level.INFO) && !silent()) {
+                LOGGER.info(outBuff.toString());
             }
         }
     }

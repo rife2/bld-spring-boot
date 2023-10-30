@@ -76,6 +76,11 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
 
         for (var jar : providedLibs_) {
             Files.copy(jar.toPath(), boot_inf_lib_dir.toPath().resolve(jar.getName()));
+            if (jar.exists()) {
+                Files.copy(jar.toPath(), lib_provided_dir.toPath().resolve(jar.getName()));
+            } else if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning("ERROR: file not found: " + jar);
+            }
         }
     }
 
