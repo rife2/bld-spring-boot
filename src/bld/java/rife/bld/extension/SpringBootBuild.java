@@ -27,6 +27,7 @@ import java.util.List;
 import static rife.bld.dependencies.Repository.*;
 import static rife.bld.dependencies.Scope.compile;
 import static rife.bld.dependencies.Scope.test;
+import static rife.bld.operations.JavadocOptions.DocLinkOption.NO_MISSING;
 
 public class SpringBootBuild extends Project {
     public SpringBootBuild() {
@@ -45,6 +46,12 @@ public class SpringBootBuild extends Project {
                 .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 10, 0)))
                 .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 10, 0)))
                 .include(dependency("org.assertj", "assertj-core", version(3, 24, 2)));
+
+        javadocOperation()
+                .javadocOptions()
+                .docLint(NO_MISSING)
+                .link("https://rife2.github.io/bld/")
+                .link("https://rife2.github.io/rife2/");
 
         publishOperation()
                 .repository(version.isSnapshot() ? RIFE2_SNAPSHOTS : RIFE2_RELEASES)
