@@ -43,3 +43,5 @@ public void bootwar() throws Exception {
 Please check the [BootJarOperation documentation](https://rife2.github.io/bld-spring-boot/rife/bld/extension/BootJarOperation.html#method-summary)
 or [BootWarOperation documentation](https://rife2.github.io/bld-spring-boot/rife/bld/extension/BootWarOperation.html#method-summary)
 for all available configuration options.
+
+You might also want to have a look at the [Spring Boot Example for bld](https://github.com/rife2/spring-boot-bld).
