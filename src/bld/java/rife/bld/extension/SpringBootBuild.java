@@ -54,7 +54,7 @@ public class SpringBootBuild extends Project {
                 .link("https://rife2.github.io/rife2/");
 
         publishOperation()
-                .repository(version.isSnapshot() ? RIFE2_SNAPSHOTS : RIFE2_RELEASES)
+                .repository(version.isSnapshot() ? repository("rife2-snapshot") : repository("rife2"))
                 .info()
                 .groupId("com.uwyn.rife2")
                 .artifactId("bld-spring-boot")
