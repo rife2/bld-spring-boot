@@ -54,11 +54,10 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
             executeCopyWebInfProvidedLib(web_inf_dir);
             executeCopyBootLoader(staging_dir);
 
-            executeCreateArchive(staging_dir);
+            var archive = executeCreateArchive(staging_dir);
 
             if (!silent() && LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info(String.format("The executable WAR (%s) was created in: %s%n", destinationFileName(),
-                        destinationDirectory()));
+                LOGGER.info("The executable WAR was created: " + archive.getAbsolutePath());
             }
         } finally {
             FileUtils.deleteDirectory(staging_dir);

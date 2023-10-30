@@ -50,11 +50,10 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
             executeCopyInfLibs(boot_inf_dir);
             executeCopyBootLoader(staging_dir);
 
-            executeCreateArchive(staging_dir);
+            var archive = executeCreateArchive(staging_dir);
 
             if (!silent() && LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info(String.format("The executable JAR (%s) was created in: %s%n", destinationFileName(),
-                        destinationDirectory()));
+                LOGGER.info("The executable JAR was created: " + archive.getAbsolutePath());
             }
         } finally {
             FileUtils.deleteDirectory(staging_dir);

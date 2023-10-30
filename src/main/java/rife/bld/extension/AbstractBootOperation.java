@@ -174,8 +174,9 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * Part of the {@link #execute} operation, create the archive from the staging directory.
      *
      * @param stagingDirectory the staging directory
+     * @return the archive
      */
-    protected void executeCreateArchive(File stagingDirectory)
+    protected File executeCreateArchive(File stagingDirectory)
             throws IOException {
         executeCreateManifest(stagingDirectory);
         if (LOGGER.isLoggable(Level.FINE) && (!silent())) {
@@ -199,9 +200,9 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
             args = "-0cMf";
         }
 
-        jarTool.run(stdout, stderr, args,
-                new File(destinationDirectory(), destinationFileName()).getAbsolutePath(),
-                "-C", stagingDirectory.getAbsolutePath(), ".");
+        var archive = new File(destinationDirectory(), destinationFileName());
+
+        jarTool.run(stdout, stderr, args, archive.getAbsolutePath(), "-C", stagingDirectory.getAbsolutePath(), ".");
 
         var errBuff = err.getBuffer();
         if (!errBuff.isEmpty()) {
@@ -212,6 +213,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
                 LOGGER.info(outBuff.toString());
             }
         }
+
+        return archive;
     }
 
     /**
