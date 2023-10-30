@@ -54,7 +54,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
             executeCopyWebInfProvidedLib(web_inf_dir);
             executeCopyBootLoader(staging_dir);
 
-            executeCreateArchive(staging_dir, LOGGER);
+            executeCreateArchive(staging_dir);
 
             if (!silent() && LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.info(String.format("The executable WAR (%s) was created in: %s%n", destinationFileName(),
@@ -66,16 +66,15 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     }
 
     /**
-     * Part of the {@link #execute} operation, copy the {@code BOOT-INF} libs.
+     * Part of the {@link #execute} operation, copy the {@code WEB-INF/lib-provided} libs.
      *
-     * @param stagingBootInfDirectory the staging {@code BOOT-INF} directory
+     * @param stagingWebInfDirectory the staging {@code WEB-INF/lib-provided} directory
      */
-    protected void executeCopyWebInfProvidedLib(File stagingBootInfDirectory) throws IOException {
-        var boot_inf_lib_dir = new File(stagingBootInfDirectory, "lib");
-        mkDirs(boot_inf_lib_dir);
+    protected void executeCopyWebInfProvidedLib(File stagingWebInfDirectory) throws IOException {
+        var lib_provided_dir = new File(stagingWebInfDirectory, "lib-provided");
+        mkDirs(lib_provided_dir);
 
         for (var jar : providedLibs_) {
-            Files.copy(jar.toPath(), boot_inf_lib_dir.toPath().resolve(jar.getName()));
             if (jar.exists()) {
                 Files.copy(jar.toPath(), lib_provided_dir.toPath().resolve(jar.getName()));
             } else if (LOGGER.isLoggable(Level.WARNING)) {

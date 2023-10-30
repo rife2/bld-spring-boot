@@ -283,7 +283,8 @@ class BootJarOperationTest {
                         "WEB-INF/lib/" + BLD + '\n' +
                         "WEB-INF/lib/dist/\n" +
                         "WEB-INF/lib/" + SPRING_BOOT + '\n' +
-                        "WEB-INF/lib/" + SPRING_BOOT_ACTUATOR + '\n' + LAUNCHER_JARS);
+                        "WEB-INF/lib/" + SPRING_BOOT_ACTUATOR + '\n' +
+                        "WEB-INF/lib-provided/\n" + LAUNCHER_JARS);
 
         FileUtils.deleteDirectory(tmp_dir);
     }
