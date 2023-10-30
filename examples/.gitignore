@@ -4,7 +4,9 @@ build
 lib/bld/**
 !lib/bld/bld-wrapper.jar
 !lib/bld/bld-wrapper.properties
+lib/compile/
 lib/runtime/
+lib/standalone/
 lib/test/
 
 # IDEA ignores
