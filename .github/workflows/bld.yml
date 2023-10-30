@@ -28,5 +28,12 @@ jobs:
       - name: Download the dependencies
         run: ./bld download
 
+      - name: Download the examples dependencies
+        run: |
+          cd examples
+          chmod +x bld
+          ./bld download
+          cd ..
+
       - name: Run tests with bld
         run: ./bld compile test
