@@ -137,7 +137,9 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         mkDirs(inf_classes_dir);
 
         for (var dir : sourceDirectories()) {
-            FileUtils.copyDirectory(dir, inf_classes_dir);
+            if (dir.exists()) {
+                FileUtils.copyDirectory(dir, inf_classes_dir);
+            }
         }
 
         deleteDirectories(new File(inf_classes_dir, "resources"), new File(inf_classes_dir, "templates"));
