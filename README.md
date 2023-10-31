@@ -46,4 +46,4 @@ Please check the [BootJarOperation documentation](https://rife2.github.io/bld-sp
 or [BootWarOperation documentation](https://rife2.github.io/bld-spring-boot/rife/bld/extension/BootWarOperation.html#method-summary)
 for all available configuration options.
 
-You might also want to have a look at the [Spring Boot Web Application Example for bld](https://github.com/rife2/spring-boot-bld).
+You might also want to have a look at the [Spring Boot Web Application Example for bld](https://github.com/rife2/spring-boot-bld-example).
