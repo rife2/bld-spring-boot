@@ -36,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 class BootJarOperationTest {
     private static final String BLD = "bld-1.7.5.jar";
     private static final String EXAMPLES_LIB_COMPILE = "examples/lib/compile/";
+    private static final String EXAMPLES_LIB_RUNTIME = "examples/lib/runtime/";
     private static final String EXAMPLES_LIB_STANDALONE = "examples/lib/standalone/";
     private static final String LAUNCHER_JARS = """
             org/
@@ -114,6 +115,7 @@ class BootJarOperationTest {
             org/springframework/boot/loader/util/SystemPropertyUtils.class
             """;
     private static final String MAIN_CLASS = "com.example.Foo";
+    private static final String PROVIDED_LIB = "LatencyUtils-2.0.3.jar";
     private static final String SPRING_BOOT = "spring-boot-3.1.5.jar";
     private static final String SPRING_BOOT_ACTUATOR = "spring-boot-actuator-3.1.5.jar";
     private static final String SPRING_BOOT_LOADER = "spring-boot-loader-3.1.5.jar";
@@ -227,7 +229,7 @@ class BootJarOperationTest {
 
     @Test
     void testProject() throws IOException {
-        var tmp_dir = Files.createTempDirectory("bootjartmp").toFile();
+        var tmp_dir = Files.createTempDirectory("bootprjtmp").toFile();
         var project = new CustomProject(tmp_dir);
         var bootJar = new BootJarOperation().fromProject(project);
 
@@ -255,15 +257,17 @@ class BootJarOperationTest {
     @Test
     void testWarProjectExecute() throws Exception {
         var tmp_dir = Files.createTempDirectory("bootjartmp").toFile();
+        var project = new CustomProject(new File("."));
         new BootWarOperation()
-                .fromProject(new CustomProject(new File(".")))
+                .fromProject(project)
                 .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)))
                 .destinationDirectory(tmp_dir)
                 .infLibs(new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT),
                         new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR))
+                .providedLibs(new File(EXAMPLES_LIB_RUNTIME + PROVIDED_LIB))
                 .execute();
 
-        var warFile = new File(tmp_dir, "test_project-0.0.1-boot.war");
+        var warFile = new File(tmp_dir, project.name() + '-' + project.version().toString() + "-boot.war");
         assertThat(warFile).exists();
 
         var jarEntries = readJarEntries(warFile);
@@ -284,7 +288,8 @@ class BootJarOperationTest {
                         "WEB-INF/lib/dist/\n" +
                         "WEB-INF/lib/" + SPRING_BOOT + '\n' +
                         "WEB-INF/lib/" + SPRING_BOOT_ACTUATOR + '\n' +
-                        "WEB-INF/lib-provided/\n" + LAUNCHER_JARS);
+                        "WEB-INF/lib-provided/\n" +
+                        "WEB-INF/lib-provided/" + PROVIDED_LIB + '\n' + LAUNCHER_JARS);
 
         FileUtils.deleteDirectory(tmp_dir);
     }

@@ -66,7 +66,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     }
 
     /**
-     * Part of the {@link #execute} operation, copy the {@code WEB-INF/lib-provided} libs.
+     * Part of the {@link #execute} operation, copy the {@code WEB-INF/lib-provided} libraries.
      *
      * @param stagingWebInfDirectory the staging {@code WEB-INF/lib-provided} directory
      */
@@ -121,7 +121,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     }
 
     /**
-     * Provides JAR libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
+     * Provides libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
      *
      * @param jars a collection of Java archive files
      * @return this operation instance
@@ -132,7 +132,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     }
 
     /**
-     * Provides the JAR libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
+     * Provides the libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
      *
      * @param jar one or more Java archive file
      * @return this operation instance
