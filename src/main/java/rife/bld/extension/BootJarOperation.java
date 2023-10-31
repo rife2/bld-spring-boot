@@ -53,7 +53,8 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
             var archive = executeCreateArchive(staging_dir);
 
             if (!silent() && LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info("The executable JAR was created: " + archive.getAbsolutePath());
+                LOGGER.info(String.format("The executable JAR was created: %s (%s)", archive.getAbsolutePath(),
+                        fileSize(archive)));
             }
         } finally {
             FileUtils.deleteDirectory(staging_dir);

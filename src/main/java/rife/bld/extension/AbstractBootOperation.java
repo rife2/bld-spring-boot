@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,11 +58,39 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param directory the directory to delete
      */
-    public void deleteDirectories(File... directory) throws FileUtilsErrorException {
+    public static void deleteDirectories(File... directory) throws FileUtilsErrorException {
         for (var d : directory) {
             if (d.exists()) {
                 FileUtils.deleteDirectory(d);
             }
+        }
+    }
+
+    /**
+     * Return the given file size in bytes, kilobytes, megabytes, gigabytes or terabytes.
+     *
+     * @param file the file
+     * @return the file size in B, KB, MB, GB, or TB.
+     */
+    public static String fileSize(File file) {
+        var size = file.length();
+        if (size <= 0) {
+            return "0 B";
+        }
+        var units = new String[]{"B", "KB", "MB", "GB", "TB"};
+        var digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups))
+                + ' ' + units[digitGroups];
+    }
+
+    /**
+     * Makes a directory for the given path, including any necessary but nonexistent parent directories.
+     *
+     * @param path the directory path
+     */
+    public static void mkDirs(File path) throws IOException {
+        if (!path.exists() && !path.mkdirs()) {
+            throw new IOException("ERROR: unable to create: " + path.getAbsolutePath());
         }
     }
 
@@ -377,17 +406,6 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Makes a directory for the given path, including any necessary but nonexistent parent directories.
-     *
-     * @param path the directory path
-     */
-    protected void mkDirs(File path) throws IOException {
-        if (!path.exists() && !path.mkdirs()) {
-            throw new IOException("ERROR: unable to create: " + path.getAbsolutePath());
-        }
-    }
-
-    /**
      * Provides source directories that will be used for the jar archive creation.
      *
      * @param directories one or more source directory
@@ -414,6 +432,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @return {@code true} or an {@link IllegalArgumentException}
      */
+    @SuppressWarnings("SameReturnValue")
     protected boolean verifyExecute() throws IllegalArgumentException {
         if (mainClass() == null) {
             throw new IllegalArgumentException("ERROR: project mainClass required.");

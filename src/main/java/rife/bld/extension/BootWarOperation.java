@@ -57,7 +57,8 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
             var archive = executeCreateArchive(staging_dir);
 
             if (!silent() && LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info("The executable WAR was created: " + archive.getAbsolutePath());
+                LOGGER.info(String.format("The executable WAR was created: %s (%s)", archive.getAbsolutePath(),
+                        fileSize(archive)));
             }
         } finally {
             FileUtils.deleteDirectory(staging_dir);
