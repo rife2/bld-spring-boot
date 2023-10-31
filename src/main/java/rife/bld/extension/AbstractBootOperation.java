@@ -138,7 +138,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Part of the {@link #execute} operation, copy the {@code spring-boot-loader} archive content to the staging
+     * Part of the {@link #execute execute} operation, copy the {@code spring-boot-loader} archive content to the staging
      * directory.
      *
      * @param stagingDirectory the staging directory
@@ -162,7 +162,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Part of the {@link #execute} operation, copy the {@code BOOT-INF} or {@code WEB-INF} classes.
+     * Part of the {@link #execute execute} operation, copy the {@code BOOT-INF} or {@code WEB-INF} classes.
      *
      * @param stagingInfDirectory Tte staging {@code INF} directory
      */
@@ -182,7 +182,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Part of the {@link #execute} operation, copy the {@code BOOT-INF} or (@code WEB-INF) libs.
+     * Part of the {@link #execute execute} operation, copy the {@code BOOT-INF} or (@code WEB-INF) libs.
      *
      * @param stagingInfDirectory the staging {@code INF} directory
      */
@@ -200,7 +200,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Part of the {@link #execute} operation, create the archive from the staging directory.
+     * Part of the {@link #execute execute} operation, create the archive from the staging directory.
      *
      * @param stagingDirectory the staging directory
      * @return the archive
@@ -247,7 +247,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Part of the {@link #execute} operation, create the manifest for the archive.
+     * Part of the {@link #execute execute} operation, create the manifest for the archive.
      *
      * @param stagingDirectory the staging directory
      */

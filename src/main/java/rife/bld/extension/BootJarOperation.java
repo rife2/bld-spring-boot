@@ -62,7 +62,7 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
     }
 
     /**
-     * Part of the {@link #execute} operation, creates the {@code BOOT-INF} staging directory.
+     * Part of the {@link #execute execute} operation, creates the {@code BOOT-INF} staging directory.
      *
      * @param stagingDirectory the staging directory
      * @return the {@code BOOT-INF} directory location

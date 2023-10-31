@@ -66,7 +66,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     }
 
     /**
-     * Part of the {@link #execute} operation, copy the {@code WEB-INF/lib-provided} libraries.
+     * Part of the {@link #execute execute} operation, copy the {@code WEB-INF/lib-provided} libraries.
      *
      * @param stagingWebInfDirectory the staging {@code WEB-INF/lib-provided} directory
      */
@@ -84,7 +84,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     }
 
     /**
-     * Part of the {@link #execute} operation, creates the {@code WEB-INF} staging directory.
+     * Part of the {@link #execute execute} operation, creates the {@code WEB-INF} staging directory.
      *
      * @return the {@code WEB-INF} directory location
      */
