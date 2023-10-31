@@ -10,7 +10,8 @@
 
 To install, please refer to the [extensions documentation](https://github.com/rife2/bld/wiki/Extensions).
 
-To create a Spring Boot executable Java Archive (JAR) from the current project:
+To create a [Spring Boot executable Java Archive](https://docs.spring.io/spring-boot/docs/current/reference/html/executable-jar.html)
+(JAR) from the current project:
 
 ```java
 @@BuildCommand(summary = "Creates an executable JAR for the project")
@@ -25,7 +26,8 @@ public void bootjar() throws Exception {
 ./bld compile bootjar
 ```
 
-To create a Spring Boot executable Web Archive (WAR) from the current project:
+To create a [Spring Boot executable Web Archive](https://docs.spring.io/spring-boot/docs/current/reference/html/executable-jar.html#appendix.executable-jar.nested-jars.war-structure)
+(WAR) from the current project:
 
 ```java
 @BuildCommand(summary = "Create an executable WAR for the project")
