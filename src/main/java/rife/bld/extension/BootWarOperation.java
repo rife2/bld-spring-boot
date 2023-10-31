@@ -97,12 +97,11 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     /**
      * Configures the operation from a {@link Project}.
      *
-     * @param project the project to configure the operation from
+     * @param project the project
      * @return this operation instance
      */
+    @Override
     public BootWarOperation fromProject(Project project) throws IOException {
-        mainClass(project.mainClass());
-
         return destinationDirectory(project.buildDistDirectory())
                 .destinationFileName(project.archiveBaseName() + "-" + project.version() + "-boot.war")
                 .infLibs(project.compileClasspathJars())
@@ -111,6 +110,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
                 // TODO add provided libs
                 .launcherClass("org.springframework.boot.loader.WarLauncher")
                 .launcherLibs(project.standaloneClasspathJars())
+                .mainClass(project.mainClass())
                 .manifestAttributes(
                         List.of(
                                 new BootManifestAttribute("Manifest-Version", "1.0"),

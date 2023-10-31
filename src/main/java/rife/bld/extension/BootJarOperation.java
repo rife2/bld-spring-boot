@@ -79,15 +79,15 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
      * @param project the project
      * @return this operation instance
      */
+    @Override
     public BootJarOperation fromProject(Project project) throws IOException {
-        mainClass(project.mainClass());
-
         return destinationDirectory(project.buildDistDirectory())
                 .destinationFileName(project.archiveBaseName() + "-" + project.version() + "-boot.jar")
                 .infLibs(project.compileClasspathJars())
                 .infLibs(project.runtimeClasspathJars())
                 .launcherClass("org.springframework.boot.loader.JarLauncher")
                 .launcherLibs(project.standaloneClasspathJars())
+                .mainClass(project.mainClass())
                 .manifestAttributes(
                         List.of(
                                 new BootManifestAttribute("Manifest-Version", "1.0"),
