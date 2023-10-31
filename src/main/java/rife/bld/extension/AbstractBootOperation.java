@@ -16,6 +16,7 @@
 
 package rife.bld.extension;
 
+import rife.bld.Project;
 import rife.bld.operations.AbstractOperation;
 import rife.tools.FileUtils;
 import rife.tools.exceptions.FileUtilsErrorException;
@@ -263,6 +264,14 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
             }
         }
     }
+
+    /**
+     * Configures the operation from a {@link Project}.
+     *
+     * @param project the project
+     * @return this operation instance
+     */
+    public abstract T fromProject(Project project) throws IOException;
 
     /**
      * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
