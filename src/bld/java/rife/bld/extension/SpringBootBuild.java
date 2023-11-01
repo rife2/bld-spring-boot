@@ -51,8 +51,7 @@ public class SpringBootBuild extends Project {
         javadocOperation()
                 .javadocOptions()
                 .docLint(NO_MISSING)
-                .link("https://rife2.github.io/bld/")
-                .link("https://rife2.github.io/rife2/");
+                .link("https://rife2.github.io/bld/");
 
         publishOperation()
                 .repository(version.isSnapshot() ? repository("rife2-snapshot") : repository("rife2"))

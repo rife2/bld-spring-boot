@@ -66,7 +66,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     }
 
     /**
-     * Part of the {@link #execute execute} operation, copy the {@code WEB-INF/lib-provided} libraries.
+     * Part of the {@link #execute execute} operation, copies the {@code WEB-INF/lib-provided} libraries.
      *
      * @param stagingWebInfDirectory the staging {@code WEB-INF/lib-provided} directory
      */
@@ -78,7 +78,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
             if (jar.exists()) {
                 Files.copy(jar.toPath(), lib_provided_dir.toPath().resolve(jar.getName()));
             } else if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning("ERROR: file not found: " + jar);
+                LOGGER.warning("File not found: " + jar);
             }
         }
     }
@@ -111,12 +111,11 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
                 .launcherClass("org.springframework.boot.loader.WarLauncher")
                 .launcherLibs(project.standaloneClasspathJars())
                 .mainClass(project.mainClass())
-                .manifestAttributes(
-                        List.of(
-                                new BootManifestAttribute("Manifest-Version", "1.0"),
-                                new BootManifestAttribute("Main-Class", launcherClass()),
-                                new BootManifestAttribute("Start-Class", mainClass())
-                        ))
+                .manifestAttributes(List.of(
+                        new BootManifestAttribute("Manifest-Version", "1.0"),
+                        new BootManifestAttribute("Main-Class", launcherClass()),
+                        new BootManifestAttribute("Start-Class", mainClass())
+                ))
                 .sourceDirectories(project.buildMainDirectory(), project.srcMainResourcesDirectory());
     }
 

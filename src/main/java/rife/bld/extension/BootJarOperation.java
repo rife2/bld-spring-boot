@@ -88,12 +88,11 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
                 .launcherClass("org.springframework.boot.loader.JarLauncher")
                 .launcherLibs(project.standaloneClasspathJars())
                 .mainClass(project.mainClass())
-                .manifestAttributes(
-                        List.of(
-                                new BootManifestAttribute("Manifest-Version", "1.0"),
-                                new BootManifestAttribute("Main-Class", launcherClass()),
-                                new BootManifestAttribute("Start-Class", mainClass()))
-                )
+                .manifestAttributes(List.of(
+                        new BootManifestAttribute("Manifest-Version", "1.0"),
+                        new BootManifestAttribute("Main-Class", launcherClass()),
+                        new BootManifestAttribute("Start-Class", mainClass())
+                ))
                 .sourceDirectories(project.buildMainDirectory(), project.srcMainResourcesDirectory());
     }
 }

@@ -68,7 +68,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Return the given file size in bytes, kilobytes, megabytes, gigabytes or terabytes.
+     * Calculates the given file size in bytes, kilobytes, megabytes, gigabytes or terabytes.
      *
      * @param file the file
      * @return the file size in B, KB, MB, GB, or TB.
@@ -91,7 +91,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      */
     public static void mkDirs(File path) throws IOException {
         if (!path.exists() && !path.mkdirs()) {
-            throw new IOException("ERROR: unable to create: " + path.getAbsolutePath());
+            throw new IOException("Unable to create: " + path.getAbsolutePath());
         }
     }
 
@@ -139,14 +139,14 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Part of the {@link #execute execute} operation, copy the {@code spring-boot-loader} archive content to the staging
-     * directory.
+     * Part of the {@link #execute execute} operation, copies the Spring Boot loader launcher archive content to the
+     * staging directory.
      *
      * @param stagingDirectory the staging directory
      */
     protected void executeCopyBootLoader(File stagingDirectory) throws FileUtilsErrorException {
         if (launcherLibs_.isEmpty()) {
-            throw new IllegalArgumentException("ERROR: Spring Boot Loader required.");
+            throw new IllegalArgumentException("Spring Boot loader launcher required.");
         } else {
             var meta_inf_dir = new File(stagingDirectory, "META-INF");
             for (var jar : launcherLibs()) {
@@ -156,14 +156,14 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
                         FileUtils.deleteDirectory(meta_inf_dir);
                     }
                 } else if (LOGGER.isLoggable(Level.WARNING)) {
-                    LOGGER.warning("ERROR: file not found: " + jar.getAbsolutePath());
+                    LOGGER.warning("File not found: " + jar.getAbsolutePath());
                 }
             }
         }
     }
 
     /**
-     * Part of the {@link #execute execute} operation, copy the {@code BOOT-INF} or {@code WEB-INF} classes.
+     * Part of the {@link #execute execute} operation, copies the {@code BOOT-INF} or {@code WEB-INF} classes.
      *
      * @param stagingInfDirectory Tte staging {@code INF} directory
      */
@@ -175,7 +175,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
             if (dir.exists()) {
                 FileUtils.copyDirectory(dir, inf_classes_dir);
             } else if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning("ERROR: directory not found: " + dir.getAbsolutePath());
+                LOGGER.warning("Directory not found: " + dir.getAbsolutePath());
             }
         }
 
@@ -183,7 +183,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Part of the {@link #execute execute} operation, copy the {@code BOOT-INF} or (@code WEB-INF) libs.
+     * Part of the {@link #execute execute} operation, copies the {@code BOOT-INF} or (@code WEB-INF) libs.
      *
      * @param stagingInfDirectory the staging {@code INF} directory
      */
@@ -195,26 +195,30 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
             if (jar.exists()) {
                 Files.copy(jar.toPath(), inf_lib_dir.toPath().resolve(jar.getName()));
             } else if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning("ERROR: file not found: " + jar.getAbsolutePath());
+                LOGGER.warning("File not found: " + jar.getAbsolutePath());
             }
         }
     }
 
     /**
-     * Part of the {@link #execute execute} operation, create the archive from the staging directory.
+     * Part of the {@link #execute execute} operation, creates the archive from the staging directory.
      *
      * @param stagingDirectory the staging directory
      * @return the archive
      */
-    protected File executeCreateArchive(File stagingDirectory)
-            throws IOException {
+    protected File executeCreateArchive(File stagingDirectory) throws IOException {
         executeCreateManifest(stagingDirectory);
+
         if (LOGGER.isLoggable(Level.FINE) && (!silent())) {
-            LOGGER.fine(MessageFormat.format("Staging Directory:     {0} (exists:{1})", stagingDirectory,
-                    stagingDirectory.exists()));
-            LOGGER.fine(MessageFormat.format("Destination Directory: {0} (exists:{1})", destinationDirectory(),
-                    destinationDirectory().exists()));
-            LOGGER.fine(MessageFormat.format("Destination Archive:   {0}", destinationFileName()));
+            LOGGER.fine(MessageFormat.format("""
+                            \tStaging     -> {0} [exists={1}]
+                            \tDestination -> {2} [exists={3}]
+                            \tArchive     -> {4}
+                            \tLauncher    -> {5}""",
+                    stagingDirectory, stagingDirectory.exists(),
+                    destinationDirectory(), destinationDirectory().exists(),
+                    destinationFileName(),
+                    launcherClass()));
         }
 
         var out = new StringWriter();
@@ -248,7 +252,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Part of the {@link #execute execute} operation, create the manifest for the archive.
+     * Part of the {@link #execute execute} operation, creates the manifest for the archive.
      *
      * @param stagingDirectory the staging directory
      */
@@ -307,12 +311,13 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Provides the launcher ({@code spring-boot-loader}) fully-qualified class name.
+     * Provides the Spring Boot loader launcher fully-qualified class name.
      * <p>
      * For examples:
      * <ul>
-     *     <li>{@code org.springframework.boot.loader.WarLauncher}</li>
      *     <li>{@code org.springframework.boot.loader.JarLauncher}</li>
+     *     <li>{@code org.springframework.boot.loader.PropertiesLauncher}</li>
+     *     <li>{@code org.springframework.boot.loader.WarLauncher}</li>
      * </ul>
      *
      * @param className the launcher class name
@@ -325,20 +330,19 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Retrieves the launcher ({@code spring-boot-loader}) fully-qualified class name.
+     * Retrieves the Spring Boot loader launcher fully-qualified class name.
      *
      * @return the launcher class name
      */
     protected String launcherClass() {
         if (launcherClass_ == null) {
-            throw new IllegalArgumentException("ERROR: Spring boot launcher (spring-boot-loader) class " +
-                    "required.");
+            throw new IllegalArgumentException("Spring boot loader launcher class required.");
         }
         return launcherClass_;
     }
 
     /**
-     * Retrieves the launcher ({@code spring-boot-loader}) libraries.
+     * Retrieves the Spring Boot loader launcher libraries.
      *
      * @return a list of Java archives
      */
@@ -347,19 +351,20 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Provides the libraries for the launcher ({@code spring-boot-loader}).
+     * Provides the libraries for the Spring Boot loader launcher.
      *
-     * @param jars a collection of a Java archives
+     * @param jars a collection of Java archives
      * @return this operation instance
      */
     public T launcherLibs(Collection<File> jars) throws IOException {
         if (!jars.isEmpty()) {
             for (var j : jars) {
-                if (!j.exists()) {
-                    throw new IOException("ERROR: launcher (spring-boot-loader) library not found: " + j);
+                if (j.exists()) {
+                    launcherLibs_.add(j);
+                } else {
+                    throw new IOException("Spring Boot loader launcher library not found: " + j);
                 }
             }
-            launcherLibs_.addAll(jars);
         }
         //noinspection unchecked
         return (T) this;
@@ -451,11 +456,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     @SuppressWarnings("SameReturnValue")
     protected boolean verifyExecute() throws IllegalArgumentException {
         if (mainClass() == null) {
-            throw new IllegalArgumentException("ERROR: project mainClass required.");
+            throw new IllegalArgumentException("Project mainClass required.");
         } else if (launcherClass().isEmpty()) {
-            throw new IllegalArgumentException(("ERROR: launcher (spring-boot-loader) class required"));
+            throw new IllegalArgumentException(("Spring Boot loader launcher class required."));
         } else if (launcherLibs().isEmpty()) {
-            throw new IllegalArgumentException(("ERROR: launcher (spring-boot-loader) libraries required"));
+            throw new IllegalArgumentException(("Spring Boot loader launcher libraries required."));
         }
         return true;
     }
