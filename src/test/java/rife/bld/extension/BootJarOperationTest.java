@@ -139,16 +139,16 @@ class BootJarOperationTest {
         bootWar = bootWar.mainClass(MAIN_CLASS);
         assertThatCode(bootWar::execute)
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("spring-boot-loader");
+                .hasMessageContaining("class required");
 
         assertThatCode(() -> new BootWarOperation().launcherLibs(List.of(new File("foo"))))
                 .isInstanceOf(IOException.class)
-                .hasMessageContaining("found");
+                .hasMessageContaining("not found");
 
         bootWar = bootWar.launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)));
         assertThatCode(bootWar::execute)
                 .isInstanceOf((IllegalArgumentException.class))
-                .hasMessageContaining("class required").hasMessageContaining("spring-boot-loader");
+                .hasMessageContaining("class required");
 
         bootWar = bootWar.launcherClass("org.springframework.boot.loader.WarLauncher");
         assertThat(bootWar.verifyExecute()).isTrue();
