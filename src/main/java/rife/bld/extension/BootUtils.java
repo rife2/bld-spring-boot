@@ -1,0 +1,77 @@
+/*
+ * Copyright 2023 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package rife.bld.extension;
+
+import rife.tools.FileUtils;
+import rife.tools.exceptions.FileUtilsErrorException;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.DecimalFormat;
+
+/**
+ * Collection of utility-type methods used by {@link AbstractBootOperation Spring Boot operations}.
+ *
+ * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a>
+ * @since 1.0
+ */
+public final class BootUtils {
+    private BootUtils() {
+        // no-op
+    }
+
+    /**
+     * Deletes the given directory.
+     *
+     * @param directory the directory to delete
+     */
+    public static void deleteDirectories(File... directory) throws FileUtilsErrorException {
+        for (var d : directory) {
+            if (d.exists()) {
+                FileUtils.deleteDirectory(d);
+            }
+        }
+    }
+
+    /**
+     * Calculates the given file size in bytes, kilobytes, megabytes, gigabytes or terabytes.
+     *
+     * @param file the file
+     * @return the file size in B, KB, MB, GB, or TB.
+     */
+    public static String fileSize(File file) {
+        var size = file.length();
+        if (size <= 0) {
+            return "0 B";
+        }
+        var units = new String[]{"B", "KB", "MB", "GB", "TB"};
+        var digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups))
+                + ' ' + units[digitGroups];
+    }
+
+    /**
+     * Makes a directory for the given path, including any necessary but nonexistent parent directories.
+     *
+     * @param path the directory path
+     */
+    public static void mkDirs(File path) throws IOException {
+        if (!path.exists() && !path.mkdirs()) {
+            throw new IOException("Unable to create: " + path.getAbsolutePath());
+        }
+    }
+}

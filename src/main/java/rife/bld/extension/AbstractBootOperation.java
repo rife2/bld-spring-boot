@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
-import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,47 +54,6 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     private String mainClass_;
 
     /**
-     * Deletes the given directory.
-     *
-     * @param directory the directory to delete
-     */
-    public static void deleteDirectories(File... directory) throws FileUtilsErrorException {
-        for (var d : directory) {
-            if (d.exists()) {
-                FileUtils.deleteDirectory(d);
-            }
-        }
-    }
-
-    /**
-     * Calculates the given file size in bytes, kilobytes, megabytes, gigabytes or terabytes.
-     *
-     * @param file the file
-     * @return the file size in B, KB, MB, GB, or TB.
-     */
-    public static String fileSize(File file) {
-        var size = file.length();
-        if (size <= 0) {
-            return "0 B";
-        }
-        var units = new String[]{"B", "KB", "MB", "GB", "TB"};
-        var digitGroups = (int) (Math.log10(size) / Math.log10(1024));
-        return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups))
-                + ' ' + units[digitGroups];
-    }
-
-    /**
-     * Makes a directory for the given path, including any necessary but nonexistent parent directories.
-     *
-     * @param path the directory path
-     */
-    public static void mkDirs(File path) throws IOException {
-        if (!path.exists() && !path.mkdirs()) {
-            throw new IOException("Unable to create: " + path.getAbsolutePath());
-        }
-    }
-
-    /**
      * Retrieves the destination directory in which the archive will be created.
      *
      * @return the destination directory
@@ -112,7 +70,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      */
     public T destinationDirectory(File directory) throws IOException {
         destinationDirectory_ = directory;
-        mkDirs(destinationDirectory_);
+        BootUtils.mkDirs(destinationDirectory_);
         //noinspection unchecked
         return (T) this;
     }
@@ -169,7 +127,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      */
     protected void executeCopyInfClassesFiles(File stagingInfDirectory) throws IOException {
         var inf_classes_dir = new File(stagingInfDirectory, "classes");
-        mkDirs(inf_classes_dir);
+        BootUtils.mkDirs(inf_classes_dir);
 
         for (var dir : sourceDirectories()) {
             if (dir.exists()) {
@@ -179,7 +137,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
             }
         }
 
-        deleteDirectories(new File(inf_classes_dir, "resources"), new File(inf_classes_dir, "templates"));
+        BootUtils.deleteDirectories(new File(inf_classes_dir, "resources"), new File(inf_classes_dir, "templates"));
     }
 
     /**
@@ -189,7 +147,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      */
     protected void executeCopyInfLibs(File stagingInfDirectory) throws IOException {
         var inf_lib_dir = new File(stagingInfDirectory, "lib");
-        mkDirs(inf_lib_dir);
+        BootUtils.mkDirs(inf_lib_dir);
 
         for (var jar : infLibs_) {
             if (jar.exists()) {
@@ -258,7 +216,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      */
     protected void executeCreateManifest(File stagingDirectory) throws IOException {
         var meta_inf_dir = new File(stagingDirectory, "META-INF");
-        mkDirs(meta_inf_dir);
+        BootUtils.mkDirs(meta_inf_dir);
 
         var manifest = new File(meta_inf_dir, "MANIFEST.MF").toPath();
 

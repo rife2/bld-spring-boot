@@ -182,6 +182,7 @@ class BootJarOperationTest {
                         "BOOT-INF/classes/rife/bld/extension/AbstractBootOperation.class\n" +
                         "BOOT-INF/classes/rife/bld/extension/BootJarOperation.class\n" +
                         "BOOT-INF/classes/rife/bld/extension/BootManifestAttribute.class\n" +
+                        "BOOT-INF/classes/rife/bld/extension/BootUtils.class\n" +
                         "BOOT-INF/classes/rife/bld/extension/BootWarOperation.class\n" +
                         "BOOT-INF/lib/\n" +
                         "BOOT-INF/lib/" + SPRING_BOOT + '\n' +
@@ -216,6 +217,7 @@ class BootJarOperationTest {
                         "BOOT-INF/classes/rife/bld/extension/AbstractBootOperation.class\n" +
                         "BOOT-INF/classes/rife/bld/extension/BootJarOperation.class\n" +
                         "BOOT-INF/classes/rife/bld/extension/BootManifestAttribute.class\n" +
+                        "BOOT-INF/classes/rife/bld/extension/BootUtils.class\n" +
                         "BOOT-INF/classes/rife/bld/extension/BootWarOperation.class\n" +
                         "BOOT-INF/lib/\n" +
                         "BOOT-INF/lib/" + BLD + '\n' +
@@ -282,6 +284,7 @@ class BootJarOperationTest {
                         "WEB-INF/classes/rife/bld/extension/AbstractBootOperation.class\n" +
                         "WEB-INF/classes/rife/bld/extension/BootJarOperation.class\n" +
                         "WEB-INF/classes/rife/bld/extension/BootManifestAttribute.class\n" +
+                        "WEB-INF/classes/rife/bld/extension/BootUtils.class\n" +
                         "WEB-INF/classes/rife/bld/extension/BootWarOperation.class\n" +
                         "WEB-INF/lib/\n" +
                         "WEB-INF/lib/" + BLD + '\n' +

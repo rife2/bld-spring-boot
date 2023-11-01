@@ -54,7 +54,7 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
 
             if (!silent() && LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.info(String.format("The executable JAR was created: %s (%s)", archive.getAbsolutePath(),
-                        fileSize(archive)));
+                        BootUtils.fileSize(archive)));
             }
         } finally {
             FileUtils.deleteDirectory(staging_dir);
@@ -69,7 +69,7 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
      */
     protected File executeCreateBootInfDirectory(File stagingDirectory) throws IOException {
         var boot_inf = new File(stagingDirectory, "BOOT-INF");
-        mkDirs(boot_inf);
+        BootUtils.mkDirs(boot_inf);
         return boot_inf;
     }
 

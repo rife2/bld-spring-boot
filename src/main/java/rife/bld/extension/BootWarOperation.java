@@ -58,7 +58,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
 
             if (!silent() && LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.info(String.format("The executable WAR was created: %s (%s)", archive.getAbsolutePath(),
-                        fileSize(archive)));
+                        BootUtils.fileSize(archive)));
             }
         } finally {
             FileUtils.deleteDirectory(staging_dir);
@@ -72,7 +72,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      */
     protected void executeCopyWebInfProvidedLib(File stagingWebInfDirectory) throws IOException {
         var lib_provided_dir = new File(stagingWebInfDirectory, "lib-provided");
-        mkDirs(lib_provided_dir);
+        BootUtils.mkDirs(lib_provided_dir);
 
         for (var jar : providedLibs_) {
             if (jar.exists()) {
@@ -90,7 +90,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      */
     protected File executeCreateWebInfDirectory(File stagingDirectory) throws IOException {
         var boot_inf = new File(stagingDirectory, "WEB-INF");
-        mkDirs(boot_inf);
+        BootUtils.mkDirs(boot_inf);
         return boot_inf;
     }
 
