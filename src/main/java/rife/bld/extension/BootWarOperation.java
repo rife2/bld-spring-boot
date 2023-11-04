@@ -115,7 +115,8 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
                         new BootManifestAttribute("Main-Class", launcherClass()),
                         new BootManifestAttribute("Start-Class", mainClass())
                 ))
-                .providedLibs(project.providedClasspathJars())
+                // TODO enable when bld 1.7.6 is available
+                // .providedLibs(project.providedClasspathJars())
                 .sourceDirectories(project.buildMainDirectory(), project.srcMainResourcesDirectory());
     }
 
