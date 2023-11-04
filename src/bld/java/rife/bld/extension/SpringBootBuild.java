@@ -41,7 +41,7 @@ public class SpringBootBuild extends Project {
         repositories = List.of(MAVEN_LOCAL, MAVEN_CENTRAL, RIFE2_RELEASES);
 
         scope(compile)
-                .include(dependency("com.uwyn.rife2", "bld", version(1, 7, 6, "SNAPSHOT")));
+                .include(dependency("com.uwyn.rife2", "bld", version(1, 7, 5)));
         scope(test)
                 .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 10, 0)))
                 .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 10, 0)))
