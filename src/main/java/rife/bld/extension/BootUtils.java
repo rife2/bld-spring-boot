@@ -35,12 +35,12 @@ public final class BootUtils {
     }
 
     /**
-     * Deletes the given directory.
+     * Deletes the given directories.
      *
-     * @param directory the directory to delete
+     * @param directories one or more directories to delete
      */
-    public static void deleteDirectories(File... directory) throws FileUtilsErrorException {
-        for (var d : directory) {
+    public static void deleteDirectories(File... directories) throws FileUtilsErrorException {
+        for (var d : directories) {
             if (d.exists()) {
                 FileUtils.deleteDirectory(d);
             }

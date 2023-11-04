@@ -107,7 +107,6 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
                 .infLibs(project.compileClasspathJars())
                 .infLibs(project.runtimeClasspathJars())
                 .infLibs(project.buildDistDirectory())
-                // TODO add provided libs
                 .launcherClass("org.springframework.boot.loader.WarLauncher")
                 .launcherLibs(project.standaloneClasspathJars())
                 .mainClass(project.mainClass())
@@ -116,6 +115,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
                         new BootManifestAttribute("Main-Class", launcherClass()),
                         new BootManifestAttribute("Start-Class", mainClass())
                 ))
+                .providedLibs(project.providedClasspathJars())
                 .sourceDirectories(project.buildMainDirectory(), project.srcMainResourcesDirectory());
     }
 
@@ -133,11 +133,11 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     /**
      * Provides the libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
      *
-     * @param jar one or more Java archive file
+     * @param jars one or more Java archive files
      * @return this operation instance
      */
-    public BootWarOperation providedLibs(File... jar) {
-        providedLibs_.addAll(List.of(jar));
+    public BootWarOperation providedLibs(File... jars) {
+        providedLibs_.addAll(List.of(jars));
         return this;
     }
 }

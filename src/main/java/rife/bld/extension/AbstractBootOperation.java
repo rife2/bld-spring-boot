@@ -250,11 +250,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     /**
      * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
      *
-     * @param jar one or more Java archive file
+     * @param jars one or more Java archive files
      * @return this operation instance
      */
-    public T infLibs(File... jar) {
-        infLibs_.addAll(List.of(jar));
+    public T infLibs(File... jars) {
+        infLibs_.addAll(List.of(jars));
         //noinspection unchecked
         return (T) this;
     }
@@ -386,7 +386,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     /**
      * Provides source directories that will be used for the archive creation.
      *
-     * @param directories one or more source directory
+     * @param directories one or more source directories
      * @return this operation instance
      */
     public T sourceDirectories(File... directories) {
