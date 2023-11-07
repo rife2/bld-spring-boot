@@ -21,6 +21,8 @@ package rife.bld.extension;
  *
  * @param name  The attribute name
  * @param value The attribute value
+ * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a>
+ * @since 1.0
  */
 public record BootManifestAttribute(String name, String value) {
 }

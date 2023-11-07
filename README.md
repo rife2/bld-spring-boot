@@ -25,6 +25,7 @@ public void bootjar() throws Exception {
 ```text
 ./bld compile bootjar
 ```
+- [View Examples Project](https://github.com/rife2/bld-spring-boot/tree/main/examples)
 
 To create a [Spring Boot executable Web Archive](https://docs.spring.io/spring-boot/docs/current/reference/html/executable-jar.html#appendix.executable-jar.nested-jars.war-structure)
 (WAR) from the current project:
@@ -41,6 +42,7 @@ public void bootwar() throws Exception {
 ```text
 ./bld compile bootwar
 ```
+- [View Examples Project](https://github.com/rife2/bld-spring-boot/tree/main/examples)
 
 Please check the [BootJarOperation documentation](https://rife2.github.io/bld-spring-boot/rife/bld/extension/BootJarOperation.html#method-summary)
 or [BootWarOperation documentation](https://rife2.github.io/bld-spring-boot/rife/bld/extension/BootWarOperation.html#method-summary)

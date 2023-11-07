@@ -155,6 +155,7 @@ class BootJarOperationTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     void testJarExecute() throws Exception {
         var tmp_dir = Files.createTempDirectory("bootjartmp").toFile();
         var jar = "foo-1.1.1.jar";

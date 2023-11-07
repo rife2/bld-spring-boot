@@ -76,6 +76,16 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
+     * Provides the destination directory in which the archive will be created.
+     *
+     * @param directory the destination directory
+     * @return this operation instance
+     */
+    public T destinationDirectory(String directory) throws IOException {
+        return destinationDirectory(new File(directory));
+    }
+
+    /**
      * Provides the file name that will be used for the archive creation.
      *
      * @param name the archive file name
