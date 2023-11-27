@@ -1,6 +1,5 @@
 # [b<span style="color:orange">l</span>d](https://rife2.com/bld) Extension to Help Create [Spring Boot](https://spring.io/projects/spring-boot) Web Applications
 
-
 [![License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Java](https://img.shields.io/badge/java-17%2B-blue)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 [![bld](https://img.shields.io/badge/1.7.3-FA9052?label=bld&labelColor=2392FF)](https://rife2.com/bld)
@@ -22,9 +21,10 @@ public void bootjar() throws Exception {
 }
 ```
 
-```text
+```console
 ./bld compile bootjar
 ```
+
 - [View Examples Project](https://github.com/rife2/bld-spring-boot/tree/main/examples)
 
 To create a [Spring Boot executable Web Archive](https://docs.spring.io/spring-boot/docs/current/reference/html/executable-jar.html#appendix.executable-jar.nested-jars.war-structure)
@@ -39,9 +39,10 @@ public void bootwar() throws Exception {
 }
 ```
 
-```text
+```console
 ./bld compile bootwar
 ```
+
 - [View Examples Project](https://github.com/rife2/bld-spring-boot/tree/main/examples)
 
 Please check the [BootJarOperation documentation](https://rife2.github.io/bld-spring-boot/rife/bld/extension/BootJarOperation.html#method-summary)

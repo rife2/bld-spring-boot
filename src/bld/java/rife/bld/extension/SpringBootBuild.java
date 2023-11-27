@@ -60,13 +60,24 @@ public class SpringBootBuild extends Project {
                 .artifactId("bld-spring-boot")
                 .description("bld Extension for Spring Boot")
                 .url("https://github.com/rife2/bld-spring-boot")
-                .developer(new PublishDeveloper().id("ethauvin").name("Erik C. Thauvin").email("erik@thauvin.net")
-                        .url("https://erik.thauvin.net/"))
-                .license(new PublishLicense().name("The Apache License, Version 2.0")
-                        .url("http://www.apache.org/licenses/LICENSE-2.0.txt"))
-                .scm(new PublishScm().connection("scm:git:https://github.com/rife2/bld-spring-boot.git")
-                        .developerConnection("scm:git:git@github.com:rife2/bld-spring-boot.git")
-                        .url("https://github.com/rife2/bld-spring-boot"))
+                .developer(
+                        new PublishDeveloper()
+                                .id("ethauvin")
+                                .name("Erik C. Thauvin")
+                                .email("erik@thauvin.net")
+                                .url("https://erik.thauvin.net/")
+                )
+                .license(
+                        new PublishLicense()
+                                .name("The Apache License, Version 2.0")
+                                .url("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                )
+                .scm(
+                        new PublishScm()
+                                .connection("scm:git:https://github.com/rife2/bld-spring-boot.git")
+                                .developerConnection("scm:git:git@github.com:rife2/bld-spring-boot.git")
+                                .url("https://github.com/rife2/bld-spring-boot")
+                )
                 .signKey(property("sign.key"))
                 .signPassphrase(property("sign.passphrase"));
     }

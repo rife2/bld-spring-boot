@@ -38,6 +38,7 @@ public final class BootUtils {
      * Deletes the given directories.
      *
      * @param directories one or more directories to delete
+     * @throws FileUtilsErrorException if an error occurs
      */
     public static void deleteDirectories(File... directories) throws FileUtilsErrorException {
         for (var d : directories) {
@@ -68,6 +69,7 @@ public final class BootUtils {
      * Makes a directory for the given path, including any necessary but nonexistent parent directories.
      *
      * @param path the directory path
+     * @throws IOException if an error occurs
      */
     public static void mkDirs(File path) throws IOException {
         if (!path.exists() && !path.mkdirs()) {

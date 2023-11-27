@@ -38,6 +38,7 @@ import java.util.spi.ToolProvider;
  * Implements common methods used by Spring Boot operations, such as {@link BootJarOperation} and
  * {@link BootWarOperation}.
  *
+ * @param <T> the type parameter
  * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a>
  * @since 1.0
  */
@@ -67,6 +68,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param directory the destination directory
      * @return this operation instance
+     * @throws IOException if an error occurs
      */
     public T destinationDirectory(File directory) throws IOException {
         destinationDirectory_ = directory;
@@ -80,6 +82,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param directory the destination directory
      * @return this operation instance
+     * @throws IOException if an error occurs
      */
     public T destinationDirectory(String directory) throws IOException {
         return destinationDirectory(new File(directory));
@@ -111,6 +114,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * staging directory.
      *
      * @param stagingDirectory the staging directory
+     * @throws FileUtilsErrorException if an error occurs
      */
     protected void executeCopyBootLoader(File stagingDirectory) throws FileUtilsErrorException {
         if (launcherLibs_.isEmpty()) {
@@ -134,6 +138,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * Part of the {@link #execute execute} operation, copies the {@code BOOT-INF} or {@code WEB-INF} classes.
      *
      * @param stagingInfDirectory Tte staging {@code INF} directory
+     * @throws IOException if an error occurs
      */
     protected void executeCopyInfClassesFiles(File stagingInfDirectory) throws IOException {
         var inf_classes_dir = new File(stagingInfDirectory, "classes");
@@ -154,6 +159,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * Part of the {@link #execute execute} operation, copies the {@code BOOT-INF} or (@code WEB-INF) libs.
      *
      * @param stagingInfDirectory the staging {@code INF} directory
+     * @throws IOException if an error occurs
      */
     protected void executeCopyInfLibs(File stagingInfDirectory) throws IOException {
         var inf_lib_dir = new File(stagingInfDirectory, "lib");
@@ -173,6 +179,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param stagingDirectory the staging directory
      * @return the archive
+     * @throws IOException if an error occurs
      */
     protected File executeCreateArchive(File stagingDirectory) throws IOException {
         executeCreateManifest(stagingDirectory);
@@ -223,6 +230,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * Part of the {@link #execute execute} operation, creates the manifest for the archive.
      *
      * @param stagingDirectory the staging directory
+     * @throws IOException if an error occurs
      */
     protected void executeCreateManifest(File stagingDirectory) throws IOException {
         var meta_inf_dir = new File(stagingDirectory, "META-INF");
@@ -242,6 +250,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param project the project
      * @return this operation instance
+     * @throws IOException if an error occurs
      */
     public abstract T fromProject(Project project) throws IOException;
 
@@ -323,6 +332,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars a collection of Java archives
      * @return this operation instance
+     * @throws IOException if an error occurs
      */
     public T launcherLibs(Collection<File> jars) throws IOException {
         if (!jars.isEmpty()) {
@@ -420,6 +430,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * {@link IllegalArgumentException} otherwise.
      *
      * @return {@code true} or an {@link IllegalArgumentException}
+     * @throws IllegalArgumentException if an error occurs
      */
     @SuppressWarnings("SameReturnValue")
     protected boolean verifyExecute() throws IllegalArgumentException {

@@ -66,6 +66,7 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
      *
      * @param stagingDirectory the staging directory
      * @return the {@code BOOT-INF} directory location
+     * @throws IOException if an error occurs
      */
     protected File executeCreateBootInfDirectory(File stagingDirectory) throws IOException {
         var boot_inf = new File(stagingDirectory, "BOOT-INF");

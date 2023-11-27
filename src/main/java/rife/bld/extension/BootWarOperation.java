@@ -69,6 +69,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * Part of the {@link #execute execute} operation, copies the {@code WEB-INF/lib-provided} libraries.
      *
      * @param stagingWebInfDirectory the staging {@code WEB-INF/lib-provided} directory
+     * @throws IOException if an error occurs
      */
     protected void executeCopyWebInfProvidedLib(File stagingWebInfDirectory) throws IOException {
         var lib_provided_dir = new File(stagingWebInfDirectory, "lib-provided");
@@ -86,7 +87,9 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     /**
      * Part of the {@link #execute execute} operation, creates the {@code WEB-INF} staging directory.
      *
+     * @param stagingDirectory the staging directory
      * @return the {@code WEB-INF} directory location
+     * @throws IOException if an error occurs
      */
     protected File executeCreateWebInfDirectory(File stagingDirectory) throws IOException {
         var boot_inf = new File(stagingDirectory, "WEB-INF");
