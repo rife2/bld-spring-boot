@@ -86,7 +86,7 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
                 .destinationFileName(project.archiveBaseName() + "-" + project.version() + "-boot.jar")
                 .infLibs(project.compileClasspathJars())
                 .infLibs(project.runtimeClasspathJars())
-                .launcherClass("org.springframework.boot.loader.JarLauncher")
+                .launcherClass(BootUtils.launcherClass(project, "JarLauncher"))
                 .launcherLibs(project.standaloneClasspathJars())
                 .mainClass(project.mainClass())
                 .manifestAttributes(List.of(

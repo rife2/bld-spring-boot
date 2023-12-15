@@ -45,6 +45,13 @@ public void bootwar() throws Exception {
 
 - [View Examples Project](https://github.com/rife2/bld-spring-boot/tree/main/examples)
 
+Don't forget to include the _Spring Boot Loader_ dependency to your project:
+
+```java
+scope(standalone)
+    .include(dependency("org.springframeworkboot:spring-boot-loader:3.2.0"));
+```
+
 Please check the [BootJarOperation documentation](https://rife2.github.io/bld-spring-boot/rife/bld/extension/BootJarOperation.html#method-summary)
 or [BootWarOperation documentation](https://rife2.github.io/bld-spring-boot/rife/bld/extension/BootWarOperation.html#method-summary)
 for all available configuration options.

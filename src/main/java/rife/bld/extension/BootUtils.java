@@ -16,12 +16,14 @@
 
 package rife.bld.extension;
 
+import rife.bld.Project;
 import rife.tools.FileUtils;
 import rife.tools.exceptions.FileUtilsErrorException;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.regex.Pattern;
 
 /**
  * Collection of utility-type methods used by {@link AbstractBootOperation Spring Boot operations}.
@@ -30,6 +32,8 @@ import java.text.DecimalFormat;
  * @since 1.0
  */
 public final class BootUtils {
+    private static final Pattern LOADER_JAR = Pattern.compile("spring-boot-loader-(\\d+).(\\d+).(\\d+).jar");
+
     private BootUtils() {
         // no-op
     }
@@ -63,6 +67,28 @@ public final class BootUtils {
         var digitGroups = (int) (Math.log10(size) / Math.log10(1024));
         return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups))
                 + ' ' + units[digitGroups];
+    }
+
+    /**
+     * Return the fully qualified name of the launcher class.
+     *
+     * @param project the project
+     * @param name    the class name
+     * @return the fully qualified class name
+     */
+    public static String launcherClass(Project project, String name) {
+        for (var jar : project.standaloneClasspathJars()) {
+            var matcher = LOADER_JAR.matcher(jar.getName());
+            if (matcher.find()) {
+                var major = Integer.parseInt(matcher.group(1));
+                var minor = Integer.parseInt(matcher.group(2));
+                if (major == 3 && minor >= 2 || major > 3) {
+                    return "org.springframework.boot.loader.launch." + name;
+                }
+            }
+        }
+
+        return "org.springframework.boot.loader." + name;
     }
 
     /**

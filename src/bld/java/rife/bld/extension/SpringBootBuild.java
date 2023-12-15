@@ -38,6 +38,7 @@ public class SpringBootBuild extends Project {
         javaRelease = 17;
         downloadSources = true;
         autoDownloadPurge = true;
+
         repositories = List.of(MAVEN_LOCAL, MAVEN_CENTRAL, RIFE2_RELEASES);
 
         scope(compile)

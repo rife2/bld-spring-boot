@@ -43,82 +43,117 @@ class BootJarOperationTest {
             org/springframework/
             org/springframework/boot/
             org/springframework/boot/loader/
-            org/springframework/boot/loader/ClassPathIndexFile.class
-            org/springframework/boot/loader/ExecutableArchiveLauncher.class
-            org/springframework/boot/loader/JarLauncher.class
-            org/springframework/boot/loader/LaunchedURLClassLoader$DefinePackageCallType.class
-            org/springframework/boot/loader/LaunchedURLClassLoader$UseFastConnectionExceptionsEnumeration.class
-            org/springframework/boot/loader/LaunchedURLClassLoader.class
-            org/springframework/boot/loader/Launcher.class
-            org/springframework/boot/loader/MainMethodRunner.class
-            org/springframework/boot/loader/PropertiesLauncher$ArchiveEntryFilter.class
-            org/springframework/boot/loader/PropertiesLauncher$ClassPathArchives.class
-            org/springframework/boot/loader/PropertiesLauncher$PrefixMatchingArchiveFilter.class
-            org/springframework/boot/loader/PropertiesLauncher.class
-            org/springframework/boot/loader/WarLauncher.class
-            org/springframework/boot/loader/archive/
-            org/springframework/boot/loader/archive/Archive$Entry.class
-            org/springframework/boot/loader/archive/Archive$EntryFilter.class
-            org/springframework/boot/loader/archive/Archive.class
-            org/springframework/boot/loader/archive/ExplodedArchive$AbstractIterator.class
-            org/springframework/boot/loader/archive/ExplodedArchive$ArchiveIterator.class
-            org/springframework/boot/loader/archive/ExplodedArchive$EntryIterator.class
-            org/springframework/boot/loader/archive/ExplodedArchive$FileEntry.class
-            org/springframework/boot/loader/archive/ExplodedArchive$SimpleJarFileArchive.class
-            org/springframework/boot/loader/archive/ExplodedArchive.class
-            org/springframework/boot/loader/archive/JarFileArchive$AbstractIterator.class
-            org/springframework/boot/loader/archive/JarFileArchive$EntryIterator.class
-            org/springframework/boot/loader/archive/JarFileArchive$JarFileEntry.class
-            org/springframework/boot/loader/archive/JarFileArchive$NestedArchiveIterator.class
-            org/springframework/boot/loader/archive/JarFileArchive.class
-            org/springframework/boot/loader/data/
-            org/springframework/boot/loader/data/RandomAccessData.class
-            org/springframework/boot/loader/data/RandomAccessDataFile$DataInputStream.class
-            org/springframework/boot/loader/data/RandomAccessDataFile$FileAccess.class
-            org/springframework/boot/loader/data/RandomAccessDataFile.class
             org/springframework/boot/loader/jar/
-            org/springframework/boot/loader/jar/AbstractJarFile$JarFileType.class
-            org/springframework/boot/loader/jar/AbstractJarFile.class
-            org/springframework/boot/loader/jar/AsciiBytes.class
-            org/springframework/boot/loader/jar/Bytes.class
-            org/springframework/boot/loader/jar/CentralDirectoryEndRecord$Zip64End.class
-            org/springframework/boot/loader/jar/CentralDirectoryEndRecord$Zip64Locator.class
-            org/springframework/boot/loader/jar/CentralDirectoryEndRecord.class
-            org/springframework/boot/loader/jar/CentralDirectoryFileHeader.class
-            org/springframework/boot/loader/jar/CentralDirectoryParser.class
-            org/springframework/boot/loader/jar/CentralDirectoryVisitor.class
-            org/springframework/boot/loader/jar/FileHeader.class
-            org/springframework/boot/loader/jar/Handler.class
-            org/springframework/boot/loader/jar/JarEntry.class
-            org/springframework/boot/loader/jar/JarEntryCertification.class
-            org/springframework/boot/loader/jar/JarEntryFilter.class
-            org/springframework/boot/loader/jar/JarFile$1.class
-            org/springframework/boot/loader/jar/JarFile$JarEntryEnumeration.class
-            org/springframework/boot/loader/jar/JarFile.class
-            org/springframework/boot/loader/jar/JarFileEntries$1.class
-            org/springframework/boot/loader/jar/JarFileEntries$EntryIterator.class
-            org/springframework/boot/loader/jar/JarFileEntries$Offsets.class
-            org/springframework/boot/loader/jar/JarFileEntries$Zip64Offsets.class
-            org/springframework/boot/loader/jar/JarFileEntries$ZipOffsets.class
-            org/springframework/boot/loader/jar/JarFileEntries.class
-            org/springframework/boot/loader/jar/JarFileWrapper.class
-            org/springframework/boot/loader/jar/JarURLConnection$1.class
-            org/springframework/boot/loader/jar/JarURLConnection$JarEntryName.class
-            org/springframework/boot/loader/jar/JarURLConnection.class
-            org/springframework/boot/loader/jar/StringSequence.class
+            org/springframework/boot/loader/jar/ManifestInfo.class
+            org/springframework/boot/loader/jar/MetaInfVersionsInfo.class
+            org/springframework/boot/loader/jar/NestedJarFile$JarEntriesEnumeration.class
+            org/springframework/boot/loader/jar/NestedJarFile$JarEntryInflaterInputStream.class
+            org/springframework/boot/loader/jar/NestedJarFile$JarEntryInputStream.class
+            org/springframework/boot/loader/jar/NestedJarFile$NestedJarEntry.class
+            org/springframework/boot/loader/jar/NestedJarFile$RawZipDataInputStream.class
+            org/springframework/boot/loader/jar/NestedJarFile$ZipContentEntriesSpliterator.class
+            org/springframework/boot/loader/jar/NestedJarFile.class
+            org/springframework/boot/loader/jar/NestedJarFileResources.class
+            org/springframework/boot/loader/jar/SecurityInfo.class
             org/springframework/boot/loader/jar/ZipInflaterInputStream.class
             org/springframework/boot/loader/jarmode/
             org/springframework/boot/loader/jarmode/JarMode.class
-            org/springframework/boot/loader/jarmode/JarModeLauncher.class
-            org/springframework/boot/loader/jarmode/TestJarMode.class
-            org/springframework/boot/loader/util/
-            org/springframework/boot/loader/util/SystemPropertyUtils.class
+            org/springframework/boot/loader/launch/
+            org/springframework/boot/loader/launch/Archive$Entry.class
+            org/springframework/boot/loader/launch/Archive.class
+            org/springframework/boot/loader/launch/ClassPathIndexFile.class
+            org/springframework/boot/loader/launch/ExecutableArchiveLauncher.class
+            org/springframework/boot/loader/launch/ExplodedArchive$FileArchiveEntry.class
+            org/springframework/boot/loader/launch/ExplodedArchive.class
+            org/springframework/boot/loader/launch/JarFileArchive$JarArchiveEntry.class
+            org/springframework/boot/loader/launch/JarFileArchive.class
+            org/springframework/boot/loader/launch/JarLauncher.class
+            org/springframework/boot/loader/launch/JarModeRunner.class
+            org/springframework/boot/loader/launch/LaunchedClassLoader$DefinePackageCallType.class
+            org/springframework/boot/loader/launch/LaunchedClassLoader.class
+            org/springframework/boot/loader/launch/Launcher.class
+            org/springframework/boot/loader/launch/PropertiesLauncher$Instantiator$Using.class
+            org/springframework/boot/loader/launch/PropertiesLauncher$Instantiator.class
+            org/springframework/boot/loader/launch/PropertiesLauncher.class
+            org/springframework/boot/loader/launch/SystemPropertyUtils.class
+            org/springframework/boot/loader/launch/WarLauncher.class
+            org/springframework/boot/loader/log/
+            org/springframework/boot/loader/log/DebugLogger$DisabledDebugLogger.class
+            org/springframework/boot/loader/log/DebugLogger$SystemErrDebugLogger.class
+            org/springframework/boot/loader/log/DebugLogger.class
+            org/springframework/boot/loader/net/
+            org/springframework/boot/loader/net/protocol/
+            org/springframework/boot/loader/net/protocol/Handlers.class
+            org/springframework/boot/loader/net/protocol/jar/
+            org/springframework/boot/loader/net/protocol/jar/Canonicalizer.class
+            org/springframework/boot/loader/net/protocol/jar/Handler.class
+            org/springframework/boot/loader/net/protocol/jar/JarFileUrlKey.class
+            org/springframework/boot/loader/net/protocol/jar/JarUrl.class
+            org/springframework/boot/loader/net/protocol/jar/JarUrlClassLoader$OptimizedEnumeration.class
+            org/springframework/boot/loader/net/protocol/jar/JarUrlClassLoader.class
+            org/springframework/boot/loader/net/protocol/jar/JarUrlConnection$ConnectionInputStream.class
+            org/springframework/boot/loader/net/protocol/jar/JarUrlConnection$EmptyUrlStreamHandler.class
+            org/springframework/boot/loader/net/protocol/jar/JarUrlConnection.class
+            org/springframework/boot/loader/net/protocol/jar/LazyDelegatingInputStream.class
+            org/springframework/boot/loader/net/protocol/jar/Optimizations.class
+            org/springframework/boot/loader/net/protocol/jar/UrlJarEntry.class
+            org/springframework/boot/loader/net/protocol/jar/UrlJarFile.class
+            org/springframework/boot/loader/net/protocol/jar/UrlJarFileFactory.class
+            org/springframework/boot/loader/net/protocol/jar/UrlJarFiles$Cache.class
+            org/springframework/boot/loader/net/protocol/jar/UrlJarFiles.class
+            org/springframework/boot/loader/net/protocol/jar/UrlJarManifest$ManifestSupplier.class
+            org/springframework/boot/loader/net/protocol/jar/UrlJarManifest.class
+            org/springframework/boot/loader/net/protocol/jar/UrlNestedJarFile.class
+            org/springframework/boot/loader/net/protocol/nested/
+            org/springframework/boot/loader/net/protocol/nested/Handler.class
+            org/springframework/boot/loader/net/protocol/nested/NestedLocation.class
+            org/springframework/boot/loader/net/protocol/nested/NestedUrlConnection$ConnectionInputStream.class
+            org/springframework/boot/loader/net/protocol/nested/NestedUrlConnection.class
+            org/springframework/boot/loader/net/protocol/nested/NestedUrlConnectionResources.class
+            org/springframework/boot/loader/net/util/
+            org/springframework/boot/loader/net/util/UrlDecoder.class
+            org/springframework/boot/loader/nio/
+            org/springframework/boot/loader/nio/file/
+            org/springframework/boot/loader/nio/file/NestedByteChannel$Resources.class
+            org/springframework/boot/loader/nio/file/NestedByteChannel.class
+            org/springframework/boot/loader/nio/file/NestedFileStore.class
+            org/springframework/boot/loader/nio/file/NestedFileSystem.class
+            org/springframework/boot/loader/nio/file/NestedFileSystemProvider.class
+            org/springframework/boot/loader/nio/file/NestedPath.class
+            org/springframework/boot/loader/ref/
+            org/springframework/boot/loader/ref/Cleaner.class
+            org/springframework/boot/loader/ref/DefaultCleaner.class
+            org/springframework/boot/loader/zip/
+            org/springframework/boot/loader/zip/ByteArrayDataBlock.class
+            org/springframework/boot/loader/zip/CloseableDataBlock.class
+            org/springframework/boot/loader/zip/DataBlock.class
+            org/springframework/boot/loader/zip/DataBlockInputStream.class
+            org/springframework/boot/loader/zip/FileChannelDataBlock$ManagedFileChannel.class
+            org/springframework/boot/loader/zip/FileChannelDataBlock$Tracker.class
+            org/springframework/boot/loader/zip/FileChannelDataBlock.class
+            org/springframework/boot/loader/zip/NameOffsetLookups.class
+            org/springframework/boot/loader/zip/VirtualDataBlock.class
+            org/springframework/boot/loader/zip/VirtualZipDataBlock$DataPart.class
+            org/springframework/boot/loader/zip/VirtualZipDataBlock.class
+            org/springframework/boot/loader/zip/Zip64EndOfCentralDirectoryLocator.class
+            org/springframework/boot/loader/zip/Zip64EndOfCentralDirectoryRecord.class
+            org/springframework/boot/loader/zip/ZipCentralDirectoryFileHeaderRecord.class
+            org/springframework/boot/loader/zip/ZipContent$Entry.class
+            org/springframework/boot/loader/zip/ZipContent$Loader.class
+            org/springframework/boot/loader/zip/ZipContent$Source.class
+            org/springframework/boot/loader/zip/ZipContent.class
+            org/springframework/boot/loader/zip/ZipDataDescriptorRecord.class
+            org/springframework/boot/loader/zip/ZipEndOfCentralDirectoryRecord$Located.class
+            org/springframework/boot/loader/zip/ZipEndOfCentralDirectoryRecord.class
+            org/springframework/boot/loader/zip/ZipLocalFileHeaderRecord.class
+            org/springframework/boot/loader/zip/ZipString$CompareType.class
+            org/springframework/boot/loader/zip/ZipString.class
             """;
     private static final String MAIN_CLASS = "com.example.Foo";
     private static final String PROVIDED_LIB = "LatencyUtils-2.0.3.jar";
-    private static final String SPRING_BOOT = "spring-boot-3.1.5.jar";
-    private static final String SPRING_BOOT_ACTUATOR = "spring-boot-actuator-3.1.5.jar";
-    private static final String SPRING_BOOT_LOADER = "spring-boot-loader-3.1.5.jar";
+    private static final String SPRING_BOOT = "spring-boot-3.2.0.jar";
+    private static final String SPRING_BOOT_ACTUATOR = "spring-boot-actuator-3.2.0.jar";
+    private static final String SPRING_BOOT_LOADER = "spring-boot-loader-3.2.0.jar";
 
     private StringBuilder readJarEntries(File jar) throws IOException {
         var jarEntries = new StringBuilder();
@@ -150,7 +185,7 @@ class BootJarOperationTest {
                 .isInstanceOf((IllegalArgumentException.class))
                 .hasMessageContaining("class required");
 
-        bootWar = bootWar.launcherClass("org.springframework.boot.loader.WarLauncher");
+        bootWar = bootWar.launcherClass("org.springframework.boot.loader.launch.WarLauncher");
         assertThat(bootWar.verifyExecute()).isTrue();
     }
 
@@ -160,7 +195,7 @@ class BootJarOperationTest {
         var tmp_dir = Files.createTempDirectory("bootjartmp").toFile();
         var jar = "foo-1.1.1.jar";
         new BootJarOperation()
-                .launcherClass("org.springframework.boot.loader.JarLauncher")
+                .launcherClass("org.springframework.boot.loader.launch.JarLauncher")
                 .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)))
                 .destinationDirectory(tmp_dir)
                 .destinationFileName(jar)

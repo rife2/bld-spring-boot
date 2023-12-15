@@ -110,7 +110,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
                 .infLibs(project.compileClasspathJars())
                 .infLibs(project.runtimeClasspathJars())
                 .infLibs(project.buildDistDirectory())
-                .launcherClass("org.springframework.boot.loader.WarLauncher")
+                .launcherClass(BootUtils.launcherClass(project, "WarLauncher"))
                 .launcherLibs(project.standaloneClasspathJars())
                 .mainClass(project.mainClass())
                 .manifestAttributes(List.of(
