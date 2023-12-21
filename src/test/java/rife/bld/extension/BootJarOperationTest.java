@@ -151,9 +151,9 @@ class BootJarOperationTest {
             """;
     private static final String MAIN_CLASS = "com.example.Foo";
     private static final String PROVIDED_LIB = "LatencyUtils-2.0.3.jar";
-    private static final String SPRING_BOOT = "spring-boot-3.2.0.jar";
-    private static final String SPRING_BOOT_ACTUATOR = "spring-boot-actuator-3.2.0.jar";
-    private static final String SPRING_BOOT_LOADER = "spring-boot-loader-3.2.0.jar";
+    private static final String SPRING_BOOT = "spring-boot-3.2.1.jar";
+    private static final String SPRING_BOOT_ACTUATOR = "spring-boot-actuator-3.2.1.jar";
+    private static final String SPRING_BOOT_LOADER = "spring-boot-loader-3.2.1.jar";
 
     private StringBuilder readJarEntries(File jar) throws IOException {
         var jarEntries = new StringBuilder();
