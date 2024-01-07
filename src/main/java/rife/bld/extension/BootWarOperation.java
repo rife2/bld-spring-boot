@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 the original author or authors.
+ * Copyright 2023-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,6 +99,24 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
 
     /**
      * Configures the operation from a {@link Project}.
+     * <p>
+     * Sets the following:
+     * <ul>
+     *     <li>The {@link #destinationFileName(String) destination file name} to
+     *     {@link Project#archiveBaseName() archiveBaseName} and {@link Project#version() version}</li>
+     *     <li>The {@link #infLibs(File...) INF libs} to {@link Project#compileClasspathJars() compileClasspathJars},
+     *     {@link Project#runtimeClasspathJars() runtimeClasspathJars} and
+     *     {@link Project#buildDistDirectory() buildDistDirectory}</li>
+     *     <li>The {@link #launcherClass(String) launcher class} to {@code WarLauncher}</li>
+     *     <li>The {@link #launcherLibs(Collection) launcher libs} to
+     *     {@link Project#standaloneClasspathJars() standaloneClasspathJars}</li>
+     *     <li>The {@link #mainClass(String) main class} to {@link Project#mainClass() mainClass}</li>
+     *     <li>The {@code Manifest-Version}, {@code Main-Class} and {@code Start-Class}
+     *     {@link #manifestAttributes(Collection) manifest attributes}</li>
+     *     <li>The {@link #sourceDirectories(File...) source directories} to
+     *     {@link Project#buildMainDirectory() buildMainDirectory} and
+     *     {@link Project#srcMainResourcesDirectory() srcMainResourcesDirectory}</li>
+     * </ul>
      *
      * @param project the project
      * @return this operation instance
@@ -118,11 +136,9 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
                         new BootManifestAttribute("Main-Class", launcherClass()),
                         new BootManifestAttribute("Start-Class", mainClass())
                 ))
-                // TODO enable when bld 1.7.6 is available
-                // .providedLibs(project.providedClasspathJars())
+                .providedLibs(project.providedClasspathJars())
                 .sourceDirectories(project.buildMainDirectory(), project.srcMainResourcesDirectory());
     }
-
     /**
      * Provides libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
      *

@@ -1,4 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="EntryPointsManager">
+    <pattern value="com.example.demo.DemoApplicationBuild" method="bootjar" />
+    <pattern value="com.example.demo.DemoApplicationBuild" method="bootwar" />
+    <pattern value="com.example.demo.DemoApplicationBuild" />
+  </component>
   <component name="PDMPlugin">
     <option name="customRuleSets">
       <list>
@@ -7,6 +13,7 @@
         <option value="$PROJECT_DIR$/../../bld-checkstyle/config/pmd.xml" />
         <option value="$PROJECT_DIR$/../../bld-exec/config/pmd.xml" />
         <option value="$PROJECT_DIR$/../../bld-testng/config/pmd.xml" />
+        <option value="$PROJECT_DIR$/../../bld-pitest/config/pmd.xml" />
       </list>
     </option>
     <option name="skipTestSources" value="false" />

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 the original author or authors.
+ * Copyright 2023-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import rife.tools.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -76,6 +77,23 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
 
     /**
      * Configures the operation from a {@link Project}.
+     * <p>
+     * Sets the following:
+     * <ul>
+     *     <li>The {@link #destinationFileName(String) destination file name} to
+     *     {@link Project#archiveBaseName() archiveBaseName} and {@link Project#version() version}</li>
+     *     <li>The {@link #infLibs(File...) INF libs} to {@link Project#compileClasspathJars() compileClasspathJars}
+     *     and {@link Project#runtimeClasspathJars() runtimeClasspathJars}</li>
+     *     <li>The {@link #launcherClass(String) launcher class} to {@code JarLauncher}</li>
+     *     <li>The {@link #launcherLibs(Collection) launcher libs} to
+     *     {@link Project#standaloneClasspathJars() standaloneClasspathJars}</li>
+     *     <li>The {@link #mainClass(String) main class} to {@link Project#mainClass() mainClass}</li>
+     *     <li>The {@code Manifest-Version}, {@code Main-Class} and {@code Start-Class}
+     *     {@link #manifestAttributes(Collection) manifest attributes}</li>
+     *     <li>The {@link #sourceDirectories(File...) source directories} to
+     *     {@link Project#buildMainDirectory() buildMainDirectory} and
+     *     {@link Project#srcMainResourcesDirectory() srcMainResourcesDirectory}</li>
+     * </ul>
      *
      * @param project the project
      * @return this operation instance
