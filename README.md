@@ -31,7 +31,7 @@ To create a [Spring Boot executable Web Archive](https://docs.spring.io/spring-b
 (WAR) from the current project:
 
 ```java
-@BuildCommand(summary = "Create an executable WAR for the project")
+@BuildCommand(summary = "Creates an executable WAR for the project")
 public void bootwar() throws Exception {
     new BootWarOperation()
             .fromProject(this)

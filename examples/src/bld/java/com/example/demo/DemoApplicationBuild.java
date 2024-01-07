@@ -57,7 +57,7 @@ public class DemoApplicationBuild extends WebProject {
                 .execute();
     }
 
-    @BuildCommand(summary = "Create an executable WAR for the project")
+    @BuildCommand(summary = "Creates an executable WAR for the project")
     public void bootwar() throws Exception {
         new BootWarOperation()
                 .fromProject(this)
