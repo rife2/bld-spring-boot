@@ -139,6 +139,7 @@ class BootJarOperationTest {
             org/springframework/boot/loader/zip/Zip64EndOfCentralDirectoryRecord.class
             org/springframework/boot/loader/zip/ZipCentralDirectoryFileHeaderRecord.class
             org/springframework/boot/loader/zip/ZipContent$Entry.class
+            org/springframework/boot/loader/zip/ZipContent$Kind.class
             org/springframework/boot/loader/zip/ZipContent$Loader.class
             org/springframework/boot/loader/zip/ZipContent$Source.class
             org/springframework/boot/loader/zip/ZipContent.class
@@ -151,9 +152,9 @@ class BootJarOperationTest {
             """;
     private static final String MAIN_CLASS = "com.example.Foo";
     private static final String PROVIDED_LIB = "LatencyUtils-2.0.3.jar";
-    private static final String SPRING_BOOT = "spring-boot-3.2.1.jar";
-    private static final String SPRING_BOOT_ACTUATOR = "spring-boot-actuator-3.2.1.jar";
-    private static final String SPRING_BOOT_LOADER = "spring-boot-loader-3.2.1.jar";
+    private static final String SPRING_BOOT = "spring-boot-3.2.2.jar";
+    private static final String SPRING_BOOT_ACTUATOR = "spring-boot-actuator-3.2.2.jar";
+    private static final String SPRING_BOOT_LOADER = "spring-boot-loader-3.2.2.jar";
 
     private StringBuilder readJarEntries(File jar) throws IOException {
         var jarEntries = new StringBuilder();
