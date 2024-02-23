@@ -49,7 +49,7 @@ Don't forget to include the _Spring Boot Loader_ dependency to your project:
 
 ```java
 scope(standalone)
-    .include(dependency("org.springframeworkboot:spring-boot-loader:3.2.2"));
+    .include(dependency("org.springframeworkboot:spring-boot-loader:3.2.3"));
 ```
 
 Please check the [BootJarOperation documentation](https://rife2.github.io/bld-spring-boot/rife/bld/extension/BootJarOperation.html#method-summary)
