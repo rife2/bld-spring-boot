@@ -33,7 +33,7 @@ public class SpringBootBuild extends Project {
     public SpringBootBuild() {
         pkg = "rife.bld.extension";
         name = "bld-spring-boot";
-        version = version(0, 9, 2);
+        version = version(0, 9, 3);
 
         javaRelease = 17;
         downloadSources = true;
@@ -42,7 +42,7 @@ public class SpringBootBuild extends Project {
         repositories = List.of(MAVEN_LOCAL, MAVEN_CENTRAL, RIFE2_RELEASES, RIFE2_SNAPSHOTS);
 
         scope(compile)
-                .include(dependency("com.uwyn.rife2", "bld", version(1, 8, 0, "SNAPSHOT")));
+                .include(dependency("com.uwyn.rife2", "bld", version(1, 9, 0)));
         scope(test)
                 .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 10, 2)))
                 .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 10, 2)))
@@ -71,7 +71,7 @@ public class SpringBootBuild extends Project {
                 .license(
                         new PublishLicense()
                                 .name("The Apache License, Version 2.0")
-                                .url("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                                .url("https://www.apache.org/licenses/LICENSE-2.0.txt")
                 )
                 .scm(
                         new PublishScm()
