@@ -19,12 +19,13 @@
         </properties>
     </rule>
 
+
     <!-- CODE STYLE -->
     <rule ref="category/java/codestyle.xml">
         <exclude name="AtLeastOneConstructor"/>
         <exclude name="ClassNamingConventions"/>
-        <exclude name="ConfusingTernary"/>
         <exclude name="CommentDefaultAccessModifier"/>
+        <exclude name="ConfusingTernary"/>
         <exclude name="FieldNamingConventions"/>
         <exclude name="LocalVariableCouldBeFinal"/>
         <exclude name="LocalVariableNamingConventions"/>
@@ -35,8 +36,9 @@
         <exclude name="ShortClassName"/>
         <exclude name="ShortMethodName"/>
         <exclude name="ShortVariable"/>
-        <exclude name="UselessParentheses"/>
+        <exclude name="UseExplicitTypes"/>
         <exclude name="UseUnderscoresInNumericLiterals"/>
+        <exclude name="UselessParentheses"/>
     </rule>
 
     <rule ref="category/java/codestyle.xml/UnnecessaryImport">
@@ -52,8 +54,6 @@
         <exclude name="AvoidUncheckedExceptionsInSignatures"/>
         <exclude name="CognitiveComplexity"/>
         <exclude name="CyclomaticComplexity"/>
-        <exclude name="ExcessiveClassLength"/>
-        <exclude name="ExcessiveMethodLength"/>
         <exclude name="ExcessiveParameterList"/>
         <exclude name="ExcessivePublicCount"/>
         <exclude name="GodClass"/>
