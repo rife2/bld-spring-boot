@@ -128,9 +128,10 @@ class BootJarOperationTest {
             org/springframework/boot/loader/zip/CloseableDataBlock.class
             org/springframework/boot/loader/zip/DataBlock.class
             org/springframework/boot/loader/zip/DataBlockInputStream.class
-            org/springframework/boot/loader/zip/FileChannelDataBlock$ManagedFileChannel.class
-            org/springframework/boot/loader/zip/FileChannelDataBlock$Tracker.class
-            org/springframework/boot/loader/zip/FileChannelDataBlock.class
+            org/springframework/boot/loader/zip/FileDataBlock$FileAccess.class
+            org/springframework/boot/loader/zip/FileDataBlock$Tracker$1.class
+            org/springframework/boot/loader/zip/FileDataBlock$Tracker.class
+            org/springframework/boot/loader/zip/FileDataBlock.class
             org/springframework/boot/loader/zip/NameOffsetLookups.class
             org/springframework/boot/loader/zip/VirtualDataBlock.class
             org/springframework/boot/loader/zip/VirtualZipDataBlock$DataPart.class
@@ -152,9 +153,9 @@ class BootJarOperationTest {
             """;
     private static final String MAIN_CLASS = "com.example.Foo";
     private static final String PROVIDED_LIB = "LatencyUtils-2.0.3.jar";
-    private static final String SPRING_BOOT = "spring-boot-3.2.4.jar";
-    private static final String SPRING_BOOT_ACTUATOR = "spring-boot-actuator-3.2.4.jar";
-    private static final String SPRING_BOOT_LOADER = "spring-boot-loader-3.2.4.jar";
+    private static final String SPRING_BOOT = "spring-boot-3.2.5.jar";
+    private static final String SPRING_BOOT_ACTUATOR = "spring-boot-actuator-3.2.5.jar";
+    private static final String SPRING_BOOT_LOADER = "spring-boot-loader-3.2.5.jar";
 
     private StringBuilder readJarEntries(File jar) throws IOException {
         var jarEntries = new StringBuilder();
