@@ -35,6 +35,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 class BootJarOperationTest {
     private static final String BLD = "bld-1.9.1.jar";
+    private static final String BOOT_VERSION = "3.3.0";
     private static final String EXAMPLES_LIB_COMPILE = "examples/lib/compile/";
     private static final String EXAMPLES_LIB_RUNTIME = "examples/lib/runtime/";
     private static final String EXAMPLES_LIB_STANDALONE = "examples/lib/standalone/";
@@ -120,6 +121,7 @@ class BootJarOperationTest {
             org/springframework/boot/loader/nio/file/NestedFileSystem.class
             org/springframework/boot/loader/nio/file/NestedFileSystemProvider.class
             org/springframework/boot/loader/nio/file/NestedPath.class
+            org/springframework/boot/loader/nio/file/UriPathEncoder.class
             org/springframework/boot/loader/ref/
             org/springframework/boot/loader/ref/Cleaner.class
             org/springframework/boot/loader/ref/DefaultCleaner.class
@@ -153,9 +155,9 @@ class BootJarOperationTest {
             """;
     private static final String MAIN_CLASS = "com.example.Foo";
     private static final String PROVIDED_LIB = "LatencyUtils-2.0.3.jar";
-    private static final String SPRING_BOOT = "spring-boot-3.2.5.jar";
-    private static final String SPRING_BOOT_ACTUATOR = "spring-boot-actuator-3.2.5.jar";
-    private static final String SPRING_BOOT_LOADER = "spring-boot-loader-3.2.5.jar";
+    private static final String SPRING_BOOT = "spring-boot-" + BOOT_VERSION + ".jar";
+    private static final String SPRING_BOOT_ACTUATOR = "spring-boot-actuator-" + BOOT_VERSION + ".jar";
+    private static final String SPRING_BOOT_LOADER = "spring-boot-loader-" + BOOT_VERSION + ".jar";
 
     private StringBuilder readJarEntries(File jar) throws IOException {
         var jarEntries = new StringBuilder();
