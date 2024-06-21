@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 class BootJarOperationTest {
     private static final String BLD = "bld-1.9.1.jar";
-    private static final String BOOT_VERSION = "3.3.0";
+    private static final String BOOT_VERSION = "3.3.1";
     private static final String EXAMPLES_LIB_COMPILE = "examples/lib/compile/";
     private static final String EXAMPLES_LIB_RUNTIME = "examples/lib/runtime/";
     private static final String EXAMPLES_LIB_STANDALONE = "examples/lib/standalone/";
@@ -180,7 +180,13 @@ class BootJarOperationTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("class required");
 
-        assertThatCode(() -> new BootWarOperation().launcherLibs(List.of(new File("foo"))))
+        assertThatCode(() -> new BootWarOperation().launcherLibs(new File("foo")))
+                .as("foo")
+                .isInstanceOf(IOException.class)
+                .hasMessageContaining("not found");
+
+        assertThatCode(() -> new BootWarOperation().launcherLibs("bar"))
+                .as("bar")
                 .isInstanceOf(IOException.class)
                 .hasMessageContaining("not found");
 
@@ -221,7 +227,6 @@ class BootJarOperationTest {
                         "BOOT-INF/classes/rife/bld/extension/\n" +
                         "BOOT-INF/classes/rife/bld/extension/AbstractBootOperation.class\n" +
                         "BOOT-INF/classes/rife/bld/extension/BootJarOperation.class\n" +
-                        "BOOT-INF/classes/rife/bld/extension/BootManifestAttribute.class\n" +
                         "BOOT-INF/classes/rife/bld/extension/BootUtils.class\n" +
                         "BOOT-INF/classes/rife/bld/extension/BootWarOperation.class\n" +
                         "BOOT-INF/lib/\n" +
@@ -239,9 +244,9 @@ class BootJarOperationTest {
         new BootJarOperation()
                 .fromProject(new CustomProject(new File(".")))
                 .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)))
-                .destinationDirectory(tmp_dir)
-                .infLibs(new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT),
-                        new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR))
+                .destinationDirectory(tmp_dir.getAbsolutePath())
+                .infLibs(new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT).getAbsolutePath(),
+                        new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR).getAbsolutePath())
                 .execute();
 
         var jarFile = new File(tmp_dir, "test_project-0.0.1-boot.jar");
@@ -256,7 +261,6 @@ class BootJarOperationTest {
                         "BOOT-INF/classes/rife/bld/extension/\n" +
                         "BOOT-INF/classes/rife/bld/extension/AbstractBootOperation.class\n" +
                         "BOOT-INF/classes/rife/bld/extension/BootJarOperation.class\n" +
-                        "BOOT-INF/classes/rife/bld/extension/BootManifestAttribute.class\n" +
                         "BOOT-INF/classes/rife/bld/extension/BootUtils.class\n" +
                         "BOOT-INF/classes/rife/bld/extension/BootWarOperation.class\n" +
                         "BOOT-INF/lib/\n" +
@@ -278,14 +282,11 @@ class BootJarOperationTest {
         assertThat(bootJar.mainClass()).as("mainClass").isEqualTo(MAIN_CLASS);
         assertThat(bootJar.sourceDirectories()).as("sourceDirectories.size").hasSize(2);
         assertThat(bootJar.manifestAttributes()).as("manifestAttributes.size").hasSize(3);
-        assertThat(bootJar.manifestAttributes().get(0)).as("Manifest-Version")
-                .isEqualTo(new BootManifestAttribute("Manifest-Version", "1.0"));
-        assertThat(bootJar.manifestAttributes().get(1).value()).as("Main-Class").endsWith("JarLauncher");
-        assertThat(bootJar.manifestAttributes().get(2)).as("Start-Class")
-                .isEqualTo(new BootManifestAttribute("Start-Class", MAIN_CLASS));
+        assertThat(bootJar.manifestAttributes().get("Manifest-Version")).as("Manifest-Version").isEqualTo("1.0");
+        assertThat(bootJar.manifestAttributes().get("Main-Class")).as("Main-Class").endsWith("JarLauncher");
+        assertThat(bootJar.manifestAttributes().get("Start-Class")).as("Start-Class").isEqualTo(MAIN_CLASS);
         assertThat(bootJar.manifestAttribute("Manifest-Test", "tsst")
-                .manifestAttributes()).as("Manifest-Test").hasSize(4)
-                .element(3).extracting(BootManifestAttribute::name).isEqualTo("Manifest-Test");
+                .manifestAttributes().get("Manifest-Test")).as("Manifest-Test").isEqualTo("tsst");
         assertThat(bootJar.destinationDirectory()).as("destinationDirectory").isDirectory();
         assertThat(bootJar.destinationDirectory().getAbsolutePath()).as("destinationDirectory")
                 .isEqualTo(Path.of(tmp_dir.getPath(), "build", "dist").toString());
@@ -323,7 +324,6 @@ class BootJarOperationTest {
                         "WEB-INF/classes/rife/bld/extension/\n" +
                         "WEB-INF/classes/rife/bld/extension/AbstractBootOperation.class\n" +
                         "WEB-INF/classes/rife/bld/extension/BootJarOperation.class\n" +
-                        "WEB-INF/classes/rife/bld/extension/BootManifestAttribute.class\n" +
                         "WEB-INF/classes/rife/bld/extension/BootUtils.class\n" +
                         "WEB-INF/classes/rife/bld/extension/BootWarOperation.class\n" +
                         "WEB-INF/lib/\n" +

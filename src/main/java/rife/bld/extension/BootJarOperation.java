@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -89,7 +89,7 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
      *     {@link Project#standaloneClasspathJars() standaloneClasspathJars}</li>
      *     <li>The {@link #mainClass(String) main class} to {@link Project#mainClass() mainClass}</li>
      *     <li>The {@code Manifest-Version}, {@code Main-Class} and {@code Start-Class}
-     *     {@link #manifestAttributes(Collection) manifest attributes}</li>
+     *     {@link #manifestAttributes() manifest attributes}</li>
      *     <li>The {@link #sourceDirectories(File...) source directories} to
      *     {@link Project#buildMainDirectory() buildMainDirectory} and
      *     {@link Project#srcMainResourcesDirectory() srcMainResourcesDirectory}</li>
@@ -107,11 +107,10 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
                 .launcherClass(BootUtils.launcherClass(project, "JarLauncher"))
                 .launcherLibs(project.standaloneClasspathJars())
                 .mainClass(project.mainClass())
-                .manifestAttributes(List.of(
-                        new BootManifestAttribute("Manifest-Version", "1.0"),
-                        new BootManifestAttribute("Main-Class", launcherClass()),
-                        new BootManifestAttribute("Start-Class", mainClass())
-                ))
+                .manifestAttributes(Map.of(
+                        "Manifest-Version", "1.0",
+                        "Main-Class", launcherClass(),
+                        "Start-Class", mainClass()))
                 .sourceDirectories(project.buildMainDirectory(), project.srcMainResourcesDirectory());
     }
 }

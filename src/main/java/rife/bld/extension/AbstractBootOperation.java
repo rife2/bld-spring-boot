@@ -26,10 +26,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.spi.ToolProvider;
@@ -45,10 +45,10 @@ import java.util.spi.ToolProvider;
 public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         extends AbstractOperation<AbstractBootOperation<T>> {
     private static final Logger LOGGER = Logger.getLogger(AbstractBootOperation.class.getName());
-    private final List<File> infLibs_ = new ArrayList<>();
-    private final List<File> launcherLibs_ = new ArrayList<>();
-    private final List<BootManifestAttribute> manifestAttributes_ = new ArrayList<>();
-    private final List<File> sourceDirectories_ = new ArrayList<>();
+    private final Collection<File> infLibs_ = new ArrayList<>();
+    private final Collection<File> launcherLibs_ = new ArrayList<>();
+    private final Map<String, String> manifestAttributes_ = new ConcurrentHashMap<>();
+    private final Collection<File> sourceDirectories_ = new ArrayList<>();
     private File destinationDirectory_;
     private String destinationFileName_;
     private String launcherClass_;
@@ -239,8 +239,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         var manifest = new File(meta_inf_dir, "MANIFEST.MF").toPath();
 
         try (var fileWriter = Files.newBufferedWriter(manifest)) {
-            for (var manifestAttribute : manifestAttributes()) {
-                fileWriter.write(manifestAttribute.name() + ": " + manifestAttribute.value() + System.lineSeparator());
+            for (var set : manifestAttributes_.entrySet()) {
+                fileWriter.write(set.getKey() + ": " + set.getValue() + System.lineSeparator());
             }
         }
     }
@@ -279,11 +279,23 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
+     * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
+     *
+     * @param jars one or more Java archive files
+     * @return this operation instance
+     */
+    public T infLibs(String... jars) {
+        infLibs_.addAll(Arrays.stream(jars).map(File::new).toList());
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
      * Retrieves the libraries in {@code BOOT-INF} or {@code WEB-INF}.
      *
-     * @return a list of Java archives
+     * @return the Java archives
      */
-    public List<File> infLibs() {
+    public Collection<File> infLibs() {
         return infLibs_;
     }
 
@@ -321,9 +333,9 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     /**
      * Retrieves the Spring Boot loader launcher libraries.
      *
-     * @return a list of Java archives
+     * @return the Java archives
      */
-    public List<File> launcherLibs() {
+    public Collection<File> launcherLibs() {
         return launcherLibs_;
     }
 
@@ -332,16 +344,55 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars a collection of Java archives
      * @return this operation instance
-     * @throws IOException if an error occurs
+     * @throws IOException if a JAR could not be found
      */
     public T launcherLibs(Collection<File> jars) throws IOException {
-        if (!jars.isEmpty()) {
-            for (var j : jars) {
-                if (j.exists()) {
-                    launcherLibs_.add(j);
-                } else {
-                    throw new IOException("Spring Boot loader launcher library not found: " + j);
-                }
+        for (var j : jars) {
+            if (j.exists()) {
+                launcherLibs_.add(j);
+            } else {
+                throw new IOException("Spring Boot loader launcher library not found: " + j);
+            }
+        }
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Provides the libraries for the Spring Boot loader launcher.
+     *
+     * @param jars one or more Java archives
+     * @return this operation instance
+     * @throws IOException if a JAR could not be found
+     */
+    @SuppressWarnings("UnusedReturnValue")
+    public T launcherLibs(File... jars) throws IOException {
+        for (var j : jars) {
+            if (j.exists()) {
+                launcherLibs_.add(j);
+            } else {
+                throw new IOException("Spring Boot loader launcher library not found: " + j);
+            }
+        }
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Provides the libraries for the Spring Boot loader launcher.
+     *
+     * @param jars one or more Java archives
+     * @return this operation instance
+     * @throws IOException if a JAR could not be found
+     */
+    @SuppressWarnings("UnusedReturnValue")
+    public T launcherLibs(String... jars) throws IOException {
+        for (var j : jars) {
+            var p = Path.of(j);
+            if (Files.exists(p)) {
+                launcherLibs_.add(p.toFile());
+            } else {
+                throw new IOException("Spring Boot loader launcher library not found: " + j);
             }
         }
         //noinspection unchecked
@@ -377,17 +428,17 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @return this operation instance
      */
     public T manifestAttribute(String name, String value) {
-        manifestAttributes_.add(new BootManifestAttribute(name, value));
+        manifestAttributes_.put(name, value);
         //noinspection unchecked
         return (T) this;
     }
 
     /**
-     * Retrieves the list of attributes that will be put in the archive manifest.
+     * Retrieves the attributes that will be put in the archive manifest.
      *
-     * @return a list of manifest attributes
+     * @return the manifest attributes
      */
-    public List<BootManifestAttribute> manifestAttributes() {
+    public Map<String, String> manifestAttributes() {
         return manifestAttributes_;
     }
 
@@ -396,9 +447,10 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param attributes the manifest attributes
      * @return this operation instance
+     * @see #manifestAttribute(String, String)
      */
-    public T manifestAttributes(Collection<BootManifestAttribute> attributes) {
-        manifestAttributes_.addAll(attributes);
+    public T manifestAttributes(Map<String, String> attributes) {
+        manifestAttributes_.putAll(attributes);
         //noinspection unchecked
         return (T) this;
     }
@@ -416,11 +468,23 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
+     * Provides source directories that will be used for the archive creation.
+     *
+     * @param directories one or more source directories
+     * @return this operation instance
+     */
+    public T sourceDirectories(String... directories) {
+        sourceDirectories_.addAll(Arrays.stream(directories).map(File::new).toList());
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
      * Retrieves the source directories that will be used for the archive creation.
      *
-     * @return a list of directories
+     * @return the source directories
      */
-    public List<File> sourceDirectories() {
+    public Collection<File> sourceDirectories() {
         return sourceDirectories_;
     }
 
