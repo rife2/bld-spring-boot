@@ -144,15 +144,13 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         var inf_classes_dir = new File(stagingInfDirectory, "classes");
         BootUtils.mkDirs(inf_classes_dir);
 
-        for (var dir : sourceDirectories()) {
+        for (var dir : sourceDirectories_) {
             if (dir.exists()) {
                 FileUtils.copyDirectory(dir, inf_classes_dir);
             } else if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning("Directory not found: " + dir.getAbsolutePath());
             }
         }
-
-        BootUtils.deleteDirectories(new File(inf_classes_dir, "resources"), new File(inf_classes_dir, "templates"));
     }
 
     /**
