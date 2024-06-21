@@ -13,7 +13,7 @@ To create a [Spring Boot executable Java Archive](https://docs.spring.io/spring-
 (JAR) from the current project:
 
 ```java
-@@BuildCommand(summary = "Creates an executable JAR for the project")
+@BuildCommand(summary = "Creates an executable JAR for the project")
 public void bootjar() throws Exception {
     new BootJarOperation()
             .fromProject(this)
