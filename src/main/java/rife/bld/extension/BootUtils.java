@@ -39,20 +39,6 @@ public final class BootUtils {
     }
 
     /**
-     * Deletes the given directories.
-     *
-     * @param directories one or more directories to delete
-     * @throws FileUtilsErrorException if an error occurs
-     */
-    public static void deleteDirectories(File... directories) throws FileUtilsErrorException {
-        for (var d : directories) {
-            if (d.exists()) {
-                FileUtils.deleteDirectory(d);
-            }
-        }
-    }
-
-    /**
      * Calculates the given file size in bytes, kilobytes, megabytes, gigabytes or terabytes.
      *
      * @param file the file
