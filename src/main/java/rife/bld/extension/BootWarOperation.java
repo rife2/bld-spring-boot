@@ -139,6 +139,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
                 .providedLibs(project.providedClasspathJars())
                 .sourceDirectories(project.buildMainDirectory(), project.srcMainResourcesDirectory());
     }
+
     /**
      * Provides libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
      *

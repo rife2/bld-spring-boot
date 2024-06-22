@@ -24,7 +24,6 @@ import rife.tools.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -277,10 +276,12 @@ class BootJarOperationTest {
     void testProject() throws IOException {
         var tmp_dir = Files.createTempDirectory("bootprjtmp").toFile();
         var project = new CustomProject(tmp_dir);
-        var bootJar = new BootJarOperation().fromProject(project);
+        var bootJar = new BootJarOperation().fromProject(project).sourceDirectories("src/main/java");
 
         assertThat(bootJar.mainClass()).as("mainClass").isEqualTo(MAIN_CLASS);
-        assertThat(bootJar.sourceDirectories()).as("sourceDirectories.size").hasSize(2);
+        assertThat(bootJar.sourceDirectories()).as("sourceDirectories.size").hasSize(3)
+                .containsExactly(project.buildMainDirectory(), project.srcMainResourcesDirectory(),
+                        new File("src/main/java"));
         assertThat(bootJar.manifestAttributes()).as("manifestAttributes.size").hasSize(3);
         assertThat(bootJar.manifestAttributes().get("Manifest-Version")).as("Manifest-Version").isEqualTo("1.0");
         assertThat(bootJar.manifestAttributes().get("Main-Class")).as("Main-Class").endsWith("JarLauncher");
@@ -288,8 +289,7 @@ class BootJarOperationTest {
         assertThat(bootJar.manifestAttribute("Manifest-Test", "tsst")
                 .manifestAttributes().get("Manifest-Test")).as("Manifest-Test").isEqualTo("tsst");
         assertThat(bootJar.destinationDirectory()).as("destinationDirectory").isDirectory();
-        assertThat(bootJar.destinationDirectory().getAbsolutePath()).as("destinationDirectory")
-                .isEqualTo(Path.of(tmp_dir.getPath(), "build", "dist").toString());
+        assertThat(bootJar.destinationDirectory()).isEqualTo(project.buildDistDirectory());
         assertThat(bootJar.infLibs()).as("infoLibs").isEmpty();
         assertThat(bootJar.launcherLibs()).as("launcherJars").isEmpty();
         assertThat(bootJar.destinationFileName()).isEqualTo("test_project-0.0.1-boot.jar");
