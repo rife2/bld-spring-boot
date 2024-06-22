@@ -17,8 +17,6 @@
 package rife.bld.extension;
 
 import rife.bld.Project;
-import rife.tools.FileUtils;
-import rife.tools.exceptions.FileUtilsErrorException;
 
 import java.io.File;
 import java.io.IOException;
