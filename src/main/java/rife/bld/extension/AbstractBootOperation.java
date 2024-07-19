@@ -18,6 +18,7 @@ package rife.bld.extension;
 
 import rife.bld.Project;
 import rife.bld.operations.AbstractOperation;
+import rife.bld.operations.exceptions.ExitStatusException;
 import rife.tools.FileUtils;
 import rife.tools.exceptions.FileUtilsErrorException;
 
@@ -116,9 +117,12 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @param stagingDirectory the staging directory
      * @throws FileUtilsErrorException if an error occurs
      */
-    protected void executeCopyBootLoader(File stagingDirectory) throws FileUtilsErrorException {
+    protected void executeCopyBootLoader(File stagingDirectory) throws FileUtilsErrorException, ExitStatusException {
         if (launcherLibs_.isEmpty()) {
-            throw new IllegalArgumentException("Spring Boot loader launcher required.");
+            if (LOGGER.isLoggable(Level.SEVERE) && !silent()) {
+                LOGGER.severe("Spring Boot loader launcher required.");
+            }
+            throw new ExitStatusException(ExitStatusException.EXIT_FAILURE);
         } else {
             var meta_inf_dir = new File(stagingDirectory, "META-INF");
             for (var jar : launcherLibs()) {
@@ -127,7 +131,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
                     if (meta_inf_dir.exists()) {
                         FileUtils.deleteDirectory(meta_inf_dir);
                     }
-                } else if (LOGGER.isLoggable(Level.WARNING)) {
+                } else if (LOGGER.isLoggable(Level.WARNING) && !silent()) {
                     LOGGER.warning("File not found: " + jar.getAbsolutePath());
                 }
             }
@@ -147,7 +151,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         for (var dir : sourceDirectories_) {
             if (dir.exists()) {
                 FileUtils.copyDirectory(dir, inf_classes_dir);
-            } else if (LOGGER.isLoggable(Level.WARNING)) {
+            } else if (LOGGER.isLoggable(Level.WARNING) && !silent()) {
                 LOGGER.warning("Directory not found: " + dir.getAbsolutePath());
             }
         }
@@ -166,7 +170,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         for (var jar : infLibs_) {
             if (jar.exists()) {
                 Files.copy(jar.toPath(), inf_lib_dir.toPath().resolve(jar.getName()));
-            } else if (LOGGER.isLoggable(Level.WARNING)) {
+            } else if (LOGGER.isLoggable(Level.WARNING) && !silent()) {
                 LOGGER.warning("File not found: " + jar.getAbsolutePath());
             }
         }
@@ -201,7 +205,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         var jarTool = ToolProvider.findFirst("jar").orElseThrow();
 
         String args;
-        if (LOGGER.isLoggable(Level.FINER)) {
+        if (LOGGER.isLoggable(Level.FINER) && !silent()) {
             args = "-0cMvf";
         } else {
             args = "-0cMf";
