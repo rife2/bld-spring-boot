@@ -33,7 +33,7 @@ public class SpringBootBuild extends Project {
     public SpringBootBuild() {
         pkg = "rife.bld.extension";
         name = "bld-spring-boot";
-        version = version(0, 9, 6);
+        version = version(0, 9, 7, "SNAPSHOT");
 
         javaRelease = 17;
 

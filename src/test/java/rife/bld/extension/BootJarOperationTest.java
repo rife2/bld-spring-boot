@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 class BootJarOperationTest {
-    private static final String BLD = "bld-1.9.1.jar";
+    private static final String BLD = "bld-2.0.0-20240720.190338-27.jar";
     private static final String BOOT_VERSION = "3.3.2";
     private static final String EXAMPLES_LIB_COMPILE = "examples/lib/compile/";
     private static final String EXAMPLES_LIB_RUNTIME = "examples/lib/runtime/";
