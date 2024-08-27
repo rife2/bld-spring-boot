@@ -29,7 +29,10 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -87,6 +90,17 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      */
     public T destinationDirectory(String directory) throws IOException {
         return destinationDirectory(new File(directory));
+    }
+
+    /**
+     * Provides the destination directory in which the archive will be created.
+     *
+     * @param directory the destination directory
+     * @return this operation instance
+     * @throws IOException if an error occurs
+     */
+    public T destinationDirectory(Path directory) throws IOException {
+        return destinationDirectory(directory.toFile());
     }
 
     /**
@@ -275,9 +289,17 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @return this operation instance
      */
     public T infLibs(File... jars) {
-        infLibs_.addAll(List.of(jars));
-        //noinspection unchecked
-        return (T) this;
+        return infLibs(List.of(jars));
+    }
+
+    /**
+     * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
+     *
+     * @param jars one or more Java archive files
+     * @return this operation instance
+     */
+    public T infLibs(Path... jars) {
+        return infLibsPaths(List.of(jars));
     }
 
     /**
@@ -287,9 +309,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @return this operation instance
      */
     public T infLibs(String... jars) {
-        infLibs_.addAll(Arrays.stream(jars).map(File::new).toList());
-        //noinspection unchecked
-        return (T) this;
+        return infLibsStrings(List.of(jars));
     }
 
     /**
@@ -299,6 +319,26 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      */
     public Collection<File> infLibs() {
         return infLibs_;
+    }
+
+    /**
+     * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
+     *
+     * @param jars one or more Java archive files
+     * @return this operation instance
+     */
+    public T infLibsPaths(Collection<Path> jars) {
+        return infLibs(jars.stream().map(Path::toFile).toList());
+    }
+
+    /**
+     * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
+     *
+     * @param jars one or more Java archive files
+     * @return this operation instance
+     */
+    public T infLibsStrings(Collection<String> jars) {
+        return infLibs(jars.stream().map(File::new).toList());
     }
 
     /**
@@ -367,17 +407,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @return this operation instance
      * @throws IOException if a JAR could not be found
      */
-    @SuppressWarnings("UnusedReturnValue")
     public T launcherLibs(File... jars) throws IOException {
-        for (var j : jars) {
-            if (j.exists()) {
-                launcherLibs_.add(j);
-            } else {
-                throw new IOException("Spring Boot loader launcher library not found: " + j);
-            }
-        }
-        //noinspection unchecked
-        return (T) this;
+        return launcherLibs(List.of(jars));
     }
 
     /**
@@ -387,18 +418,41 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @return this operation instance
      * @throws IOException if a JAR could not be found
      */
-    @SuppressWarnings("UnusedReturnValue")
     public T launcherLibs(String... jars) throws IOException {
-        for (var j : jars) {
-            var p = Path.of(j);
-            if (Files.exists(p)) {
-                launcherLibs_.add(p.toFile());
-            } else {
-                throw new IOException("Spring Boot loader launcher library not found: " + j);
-            }
-        }
-        //noinspection unchecked
-        return (T) this;
+        return launcherLibsStrings(List.of(jars));
+    }
+
+    /**
+     * Provides the libraries for the Spring Boot loader launcher.
+     *
+     * @param jars one or more Java archives
+     * @return this operation instance
+     * @throws IOException if a JAR could not be found
+     */
+    public T launcherLibs(Path... jars) throws IOException {
+        return launcherLibsPaths(List.of(jars));
+    }
+
+    /**
+     * Provides the libraries for the Spring Boot loader launcher.
+     *
+     * @param jars one or more Java archives
+     * @return this operation instance
+     * @throws IOException if a JAR could not be found
+     */
+    public T launcherLibsPaths(Collection<Path> jars) throws IOException {
+        return launcherLibs(jars.stream().map(Path::toFile).toList());
+    }
+
+    /**
+     * Provides the libraries for the Spring Boot loader launcher.
+     *
+     * @param jars one or more Java archives
+     * @return this operation instance
+     * @throws IOException if a JAR could not be found
+     */
+    public T launcherLibsStrings(Collection<String> jars) throws IOException {
+        return launcherLibs(jars.stream().map(File::new).toList());
     }
 
     /**
@@ -463,8 +517,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @param directories one or more source directories
      * @return this operation instance
      */
-    public T sourceDirectories(File... directories) {
-        sourceDirectories_.addAll(List.of(directories));
+    public T sourceDirectories(Collection<File> directories) {
+        sourceDirectories_.addAll(directories);
         //noinspection unchecked
         return (T) this;
     }
@@ -475,10 +529,28 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @param directories one or more source directories
      * @return this operation instance
      */
+    public T sourceDirectories(File... directories) {
+        return sourceDirectories(List.of(directories));
+    }
+
+    /**
+     * Provides source directories that will be used for the archive creation.
+     *
+     * @param directories one or more source directories
+     * @return this operation instance
+     */
     public T sourceDirectories(String... directories) {
-        sourceDirectories_.addAll(Arrays.stream(directories).map(File::new).toList());
-        //noinspection unchecked
-        return (T) this;
+        return sourceDirectoriesStrings(List.of(directories));
+    }
+
+    /**
+     * Provides source directories that will be used for the archive creation.
+     *
+     * @param directories one or more source directories
+     * @return this operation instance
+     */
+    public T sourceDirectories(Path... directories) {
+        return sourceDirectoriesPaths(List.of(directories));
     }
 
     /**
@@ -488,6 +560,26 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      */
     public Collection<File> sourceDirectories() {
         return sourceDirectories_;
+    }
+
+    /**
+     * Provides source directories that will be used for the archive creation.
+     *
+     * @param directories one or more source directories
+     * @return this operation instance
+     */
+    public T sourceDirectoriesPaths(Collection<Path> directories) {
+        return sourceDirectories(directories.stream().map(Path::toFile).toList());
+    }
+
+    /**
+     * Provides source directories that will be used for the archive creation.
+     *
+     * @param directories one or more source directories
+     * @return this operation instance
+     */
+    public T sourceDirectoriesStrings(Collection<String> directories) {
+        return sourceDirectories(directories.stream().map(File::new).toList());
     }
 
     /**

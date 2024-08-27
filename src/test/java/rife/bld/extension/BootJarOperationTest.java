@@ -24,6 +24,7 @@ import rife.tools.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -159,6 +160,7 @@ class BootJarOperationTest {
     private static final String SPRING_BOOT = "spring-boot-" + BOOT_VERSION + ".jar";
     private static final String SPRING_BOOT_ACTUATOR = "spring-boot-actuator-" + BOOT_VERSION + ".jar";
     private static final String SPRING_BOOT_LOADER = "spring-boot-loader-" + BOOT_VERSION + ".jar";
+    private static final String SRC_MAIN_JAVA = "src/main/java";
 
     private StringBuilder readJarEntries(File jar) throws IOException {
         var jarEntries = new StringBuilder();
@@ -198,6 +200,37 @@ class BootJarOperationTest {
 
         bootWar = bootWar.launcherClass("org.springframework.boot.loader.launch.WarLauncher");
         assertThat(bootWar.verifyExecute()).isTrue();
+    }
+
+    @Test
+    void testInfLibs() {
+        var op = new BootWarOperation();
+
+        var foo = new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT);
+        op = op.infLibs(EXAMPLES_LIB_COMPILE + SPRING_BOOT);
+        assertThat(op.infLibs()).containsExactly(foo);
+        op.infLibs().clear();
+
+        op = op.infLibs(foo);
+        assertThat(op.infLibs()).containsExactly(foo);
+        op.infLibs().clear();
+
+        op = op.infLibs(foo.toPath());
+        assertThat(op.infLibs()).containsExactly(foo);
+        op.infLibs().clear();
+
+        var bar = new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR);
+        op.infLibs(EXAMPLES_LIB_COMPILE + SPRING_BOOT, EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR);
+        assertThat(op.infLibs()).containsExactly(foo, bar);
+        op.infLibs().clear();
+
+        op.infLibs(foo, bar);
+        assertThat(op.infLibs()).containsExactly(foo, bar);
+        op.infLibs().clear();
+
+        op.infLibs(foo.toPath(), bar.toPath());
+        assertThat(op.infLibs()).containsExactly(foo, bar);
+        op.infLibs().clear();
     }
 
     @Test
@@ -275,15 +308,33 @@ class BootJarOperationTest {
     }
 
     @Test
+    void testLauncherLibs() throws IOException {
+        var op = new BootJarOperation();
+
+        var launcher = new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER);
+        op = op.launcherLibs(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER);
+        assertThat(op.launcherLibs()).containsExactly(launcher);
+        op.launcherLibs().clear();
+
+        op = op.launcherLibs(launcher);
+        assertThat(op.launcherLibs()).containsExactly(launcher);
+        op.launcherLibs().clear();
+
+        op = op.launcherLibs(launcher.toPath());
+        assertThat(op.launcherLibs()).containsExactly(launcher);
+        op.launcherLibs().clear();
+    }
+
+    @Test
     void testProject() throws IOException {
         var tmp_dir = Files.createTempDirectory("bootprjtmp").toFile();
         var project = new CustomProject(tmp_dir);
-        var bootJar = new BootJarOperation().fromProject(project).sourceDirectories("src/main/java");
+        var bootJar = new BootJarOperation().fromProject(project).sourceDirectories(SRC_MAIN_JAVA);
 
         assertThat(bootJar.mainClass()).as("mainClass").isEqualTo(MAIN_CLASS);
         assertThat(bootJar.sourceDirectories()).as("sourceDirectories.size").hasSize(3)
                 .containsExactly(project.buildMainDirectory(), project.srcMainResourcesDirectory(),
-                        new File("src/main/java"));
+                        new File(SRC_MAIN_JAVA));
         assertThat(bootJar.manifestAttributes()).as("manifestAttributes.size").hasSize(3);
         assertThat(bootJar.manifestAttributes().get("Manifest-Version")).as("Manifest-Version").isEqualTo("1.0");
         assertThat(bootJar.manifestAttributes().get("Main-Class")).as("Main-Class").endsWith("JarLauncher");
@@ -300,15 +351,46 @@ class BootJarOperationTest {
     }
 
     @Test
+    void testSourceDirectories() {
+        var op = new BootJarOperation();
+
+        var src = new File(SRC_MAIN_JAVA);
+        op = op.sourceDirectories(SRC_MAIN_JAVA);
+        assertThat(op.sourceDirectories()).containsExactly(src);
+        op.sourceDirectories().clear();
+
+        op = op.sourceDirectories(src);
+        assertThat(op.sourceDirectories()).containsExactly(src);
+        op.sourceDirectories().clear();
+
+        op = op.sourceDirectories(src.toPath());
+        assertThat(op.sourceDirectories()).containsExactly(src);
+        op.sourceDirectories().clear();
+
+        var test = new File("src/test/java");
+        op.sourceDirectories(SRC_MAIN_JAVA, "src/test/java");
+        assertThat(op.sourceDirectories()).containsExactly(src, test);
+        op.sourceDirectories().clear();
+
+        op.sourceDirectories(src, test);
+        assertThat(op.sourceDirectories()).containsExactly(src, test);
+        op.sourceDirectories().clear();
+
+        op.sourceDirectories(src.toPath(), test.toPath());
+        assertThat(op.sourceDirectories()).containsExactly(src, test);
+        op.sourceDirectories().clear();
+    }
+
+    @Test
     void testWarProjectExecute() throws Exception {
         var tmp_dir = Files.createTempDirectory("bootjartmp").toFile();
         var project = new CustomProject(new File("."));
         new BootWarOperation()
                 .fromProject(project)
                 .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)))
-                .destinationDirectory(tmp_dir)
-                .infLibs(new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT),
-                        new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR))
+                .destinationDirectory(tmp_dir.toPath())
+                .infLibs(Path.of(EXAMPLES_LIB_COMPILE + SPRING_BOOT),
+                        Path.of(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR))
                 .providedLibs(new File(EXAMPLES_LIB_RUNTIME + PROVIDED_LIB))
                 .execute();
 
@@ -337,6 +419,24 @@ class BootJarOperationTest {
                         "WEB-INF/lib-provided/" + PROVIDED_LIB + '\n' + LAUNCHER_JARS);
 
         FileUtils.deleteDirectory(tmp_dir);
+    }
+
+    @Test
+    void testWarProvidedLibs() {
+        var op = new BootWarOperation();
+
+        var foo = new File(EXAMPLES_LIB_RUNTIME + PROVIDED_LIB);
+        op = op.providedLibs(EXAMPLES_LIB_RUNTIME + PROVIDED_LIB);
+        assertThat(op.providedLibs()).containsExactly(foo);
+        op.providedLibs().clear();
+
+        op = op.providedLibs(foo);
+        assertThat(op.providedLibs()).containsExactly(foo);
+        op.providedLibs().clear();
+
+        op = op.providedLibs(foo.toPath());
+        assertThat(op.providedLibs()).containsExactly(foo);
+        op.providedLibs().clear();
     }
 
     static class CustomProject extends Project {
