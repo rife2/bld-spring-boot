@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 class BootJarOperationTest {
-    private static final String BLD = "bld-2.0.1.jar";
+    private static final String BLD = "bld-2.1.0.jar";
     private static final String BOOT_VERSION = "3.3.3";
     private static final String EXAMPLES_LIB_COMPILE = "examples/lib/compile/";
     private static final String EXAMPLES_LIB_RUNTIME = "examples/lib/runtime/";
@@ -161,6 +161,7 @@ class BootJarOperationTest {
     private static final String SPRING_BOOT_ACTUATOR = "spring-boot-actuator-" + BOOT_VERSION + ".jar";
     private static final String SPRING_BOOT_LOADER = "spring-boot-loader-" + BOOT_VERSION + ".jar";
     private static final String SRC_MAIN_JAVA = "src/main/java";
+    private static final String SRC_TEST_JAVA = "src/test/java";
 
     private StringBuilder readJarEntries(File jar) throws IOException {
         var jarEntries = new StringBuilder();
@@ -207,29 +208,30 @@ class BootJarOperationTest {
         var op = new BootWarOperation();
 
         var foo = new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT);
-        op = op.infLibs(EXAMPLES_LIB_COMPILE + SPRING_BOOT);
-        assertThat(op.infLibs()).containsExactly(foo);
-        op.infLibs().clear();
-
-        op = op.infLibs(foo);
-        assertThat(op.infLibs()).containsExactly(foo);
-        op.infLibs().clear();
-
-        op = op.infLibs(foo.toPath());
-        assertThat(op.infLibs()).containsExactly(foo);
-        op.infLibs().clear();
-
         var bar = new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR);
+
         op.infLibs(EXAMPLES_LIB_COMPILE + SPRING_BOOT, EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR);
-        assertThat(op.infLibs()).containsExactly(foo, bar);
+        assertThat(op.infLibs()).as("String...").containsExactly(foo, bar);
         op.infLibs().clear();
 
         op.infLibs(foo, bar);
-        assertThat(op.infLibs()).containsExactly(foo, bar);
+        assertThat(op.infLibs()).as("File...").containsExactly(foo, bar);
         op.infLibs().clear();
 
         op.infLibs(foo.toPath(), bar.toPath());
-        assertThat(op.infLibs()).containsExactly(foo, bar);
+        assertThat(op.infLibs()).as("Path...").containsExactly(foo, bar);
+        op.infLibs().clear();
+
+        op.infLibsStrings(List.of(EXAMPLES_LIB_COMPILE + SPRING_BOOT, EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR));
+        assertThat(op.infLibs()).as("List(String...)").containsExactly(foo, bar);
+        op.infLibs().clear();
+
+        op.infLibs(List.of(foo, bar));
+        assertThat(op.infLibs()).as("List(File...)").containsExactly(foo, bar);
+        op.infLibs().clear();
+
+        op.infLibsPaths(List.of(foo.toPath(), bar.toPath()));
+        assertThat(op.infLibs()).as("List(Path...)").containsExactly(foo, bar);
         op.infLibs().clear();
     }
 
@@ -313,15 +315,27 @@ class BootJarOperationTest {
 
         var launcher = new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER);
         op = op.launcherLibs(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER);
-        assertThat(op.launcherLibs()).containsExactly(launcher);
+        assertThat(op.launcherLibs()).as("String...").containsExactly(launcher);
         op.launcherLibs().clear();
 
         op = op.launcherLibs(launcher);
-        assertThat(op.launcherLibs()).containsExactly(launcher);
+        assertThat(op.launcherLibs()).as("File...").containsExactly(launcher);
         op.launcherLibs().clear();
 
         op = op.launcherLibs(launcher.toPath());
-        assertThat(op.launcherLibs()).containsExactly(launcher);
+        assertThat(op.launcherLibs()).as("Path...").containsExactly(launcher);
+        op.launcherLibs().clear();
+
+        op = op.launcherLibsStrings(List.of(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER));
+        assertThat(op.launcherLibs()).as("List(String...)").containsExactly(launcher);
+        op.launcherLibs().clear();
+
+        op = op.launcherLibs(List.of(launcher));
+        assertThat(op.launcherLibs()).as("List(File...)").containsExactly(launcher);
+        op.launcherLibs().clear();
+
+        op = op.launcherLibsPaths(List.of(launcher.toPath()));
+        assertThat(op.launcherLibs()).as("List(Path...)").containsExactly(launcher);
         op.launcherLibs().clear();
     }
 
@@ -355,29 +369,29 @@ class BootJarOperationTest {
         var op = new BootJarOperation();
 
         var src = new File(SRC_MAIN_JAVA);
-        op = op.sourceDirectories(SRC_MAIN_JAVA);
-        assertThat(op.sourceDirectories()).containsExactly(src);
+        var test = new File(SRC_TEST_JAVA);
+        op = op.sourceDirectories(SRC_MAIN_JAVA, SRC_TEST_JAVA);
+        assertThat(op.sourceDirectories()).as("String...").containsExactly(src, test);
         op.sourceDirectories().clear();
 
-        op = op.sourceDirectories(src);
-        assertThat(op.sourceDirectories()).containsExactly(src);
+        op = op.sourceDirectories(src, test);
+        assertThat(op.sourceDirectories()).as("File...").containsExactly(src, test);
         op.sourceDirectories().clear();
 
-        op = op.sourceDirectories(src.toPath());
-        assertThat(op.sourceDirectories()).containsExactly(src);
+        op = op.sourceDirectories(src.toPath(), test.toPath());
+        assertThat(op.sourceDirectories()).as("Path...").containsExactly(src, test);
         op.sourceDirectories().clear();
 
-        var test = new File("src/test/java");
-        op.sourceDirectories(SRC_MAIN_JAVA, "src/test/java");
-        assertThat(op.sourceDirectories()).containsExactly(src, test);
+        op.sourceDirectoriesStrings(List.of(SRC_MAIN_JAVA, SRC_TEST_JAVA));
+        assertThat(op.sourceDirectories()).as("List(String...").containsExactly(src, test);
         op.sourceDirectories().clear();
 
-        op.sourceDirectories(src, test);
-        assertThat(op.sourceDirectories()).containsExactly(src, test);
+        op.sourceDirectories(List.of(src, test));
+        assertThat(op.sourceDirectories()).as("List(File...)").containsExactly(src, test);
         op.sourceDirectories().clear();
 
-        op.sourceDirectories(src.toPath(), test.toPath());
-        assertThat(op.sourceDirectories()).containsExactly(src, test);
+        op.sourceDirectoriesPaths(List.of(src.toPath(), test.toPath()));
+        assertThat(op.sourceDirectories()).as("List(Path...)").containsExactly(src, test);
         op.sourceDirectories().clear();
     }
 

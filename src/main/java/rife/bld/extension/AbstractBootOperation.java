@@ -275,6 +275,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars a collection of Java archive files
      * @return this operation instance
+     * @see #infLibs(File...)
      */
     public T infLibs(Collection<File> jars) {
         infLibs_.addAll(jars);
@@ -287,6 +288,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars one or more Java archive files
      * @return this operation instance
+     * @see #infLibs(Collection)
      */
     public T infLibs(File... jars) {
         return infLibs(List.of(jars));
@@ -297,6 +299,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars one or more Java archive files
      * @return this operation instance
+     * @see #infLibsPaths(Collection)
      */
     public T infLibs(Path... jars) {
         return infLibsPaths(List.of(jars));
@@ -307,6 +310,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars one or more Java archive files
      * @return this operation instance
+     * @see #infLibsStrings(Collection)
      */
     public T infLibs(String... jars) {
         return infLibsStrings(List.of(jars));
@@ -326,6 +330,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars one or more Java archive files
      * @return this operation instance
+     * @see #infLibs(Path...)
      */
     public T infLibsPaths(Collection<Path> jars) {
         return infLibs(jars.stream().map(Path::toFile).toList());
@@ -336,6 +341,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars one or more Java archive files
      * @return this operation instance
+     * @see #infLibs(String...)
      */
     public T infLibsStrings(Collection<String> jars) {
         return infLibs(jars.stream().map(File::new).toList());
@@ -387,6 +393,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @param jars a collection of Java archives
      * @return this operation instance
      * @throws IOException if a JAR could not be found
+     * @see #infLibs(File...)
      */
     public T launcherLibs(Collection<File> jars) throws IOException {
         for (var j : jars) {
@@ -406,6 +413,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @param jars one or more Java archives
      * @return this operation instance
      * @throws IOException if a JAR could not be found
+     * @see #infLibs(Collection)
      */
     public T launcherLibs(File... jars) throws IOException {
         return launcherLibs(List.of(jars));
@@ -417,6 +425,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @param jars one or more Java archives
      * @return this operation instance
      * @throws IOException if a JAR could not be found
+     * @see #launcherLibsStrings(Collection)
      */
     public T launcherLibs(String... jars) throws IOException {
         return launcherLibsStrings(List.of(jars));
@@ -428,6 +437,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @param jars one or more Java archives
      * @return this operation instance
      * @throws IOException if a JAR could not be found
+     * @see #launcherLibsPaths(Collection)
      */
     public T launcherLibs(Path... jars) throws IOException {
         return launcherLibsPaths(List.of(jars));
@@ -439,6 +449,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @param jars one or more Java archives
      * @return this operation instance
      * @throws IOException if a JAR could not be found
+     * @see #launcherLibs(Path...)
      */
     public T launcherLibsPaths(Collection<Path> jars) throws IOException {
         return launcherLibs(jars.stream().map(Path::toFile).toList());
@@ -450,6 +461,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @param jars one or more Java archives
      * @return this operation instance
      * @throws IOException if a JAR could not be found
+     * @see #launcherLibs(String...)
      */
     public T launcherLibsStrings(Collection<String> jars) throws IOException {
         return launcherLibs(jars.stream().map(File::new).toList());
@@ -516,6 +528,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param directories one or more source directories
      * @return this operation instance
+     * @see #sourceDirectories(File...)
      */
     public T sourceDirectories(Collection<File> directories) {
         sourceDirectories_.addAll(directories);
@@ -528,6 +541,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param directories one or more source directories
      * @return this operation instance
+     * @see #sourceDirectories(Collection)
      */
     public T sourceDirectories(File... directories) {
         return sourceDirectories(List.of(directories));
@@ -538,6 +552,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param directories one or more source directories
      * @return this operation instance
+     * @see #sourceDirectoriesStrings(Collection)
      */
     public T sourceDirectories(String... directories) {
         return sourceDirectoriesStrings(List.of(directories));
@@ -548,6 +563,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param directories one or more source directories
      * @return this operation instance
+     * @see #sourceDirectoriesPaths(Collection)
      */
     public T sourceDirectories(Path... directories) {
         return sourceDirectoriesPaths(List.of(directories));
@@ -567,6 +583,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param directories one or more source directories
      * @return this operation instance
+     * @see #sourceDirectories(Path...)
      */
     public T sourceDirectoriesPaths(Collection<Path> directories) {
         return sourceDirectories(directories.stream().map(Path::toFile).toList());
@@ -577,6 +594,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param directories one or more source directories
      * @return this operation instance
+     * @see #sourceDirectories(String...)
      */
     public T sourceDirectoriesStrings(Collection<String> directories) {
         return sourceDirectories(directories.stream().map(File::new).toList());

@@ -146,6 +146,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars a collection of Java archive files
      * @return this operation instance
+     * @see #providedLibs(File...)
      */
     public BootWarOperation providedLibs(Collection<File> jars) {
         providedLibs_.addAll(jars);
@@ -157,6 +158,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
+     * @see #providedLibsStrings(Collection)
      */
     public BootWarOperation providedLibs(String... jars) {
         return providedLibsStrings(List.of(jars));
@@ -167,6 +169,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
+     * @see #providedLibs(Collection)
      */
     public BootWarOperation providedLibs(File... jars) {
         return providedLibs(List.of(jars));
@@ -177,6 +180,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
+     * @see #providedLibsPaths(Collection)
      */
     public BootWarOperation providedLibs(Path... jars) {
         return providedLibsPaths(List.of(jars));
@@ -196,10 +200,10 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
+     * @see #providedLibs(Path...)
      */
     public BootWarOperation providedLibsPaths(Collection<Path> jars) {
-        providedLibs_.addAll(jars.stream().map(Path::toFile).toList());
-        return this;
+        return providedLibs(jars.stream().map(Path::toFile).toList());
     }
 
     /**
@@ -207,9 +211,9 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
+     * @see #providedLibs(String...)
      */
     public BootWarOperation providedLibsStrings(Collection<String> jars) {
-        providedLibs_.addAll(jars.stream().map(File::new).toList());
-        return this;
+        return providedLibs(jars.stream().map(File::new).toList());
     }
 }
