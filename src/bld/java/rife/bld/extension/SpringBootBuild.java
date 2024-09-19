@@ -33,7 +33,7 @@ public class SpringBootBuild extends Project {
     public SpringBootBuild() {
         pkg = "rife.bld.extension";
         name = "bld-spring-boot";
-        version = version(0, 9, 8);
+        version = version(0, 9, 9, "SNAPSHOT");
 
         javaRelease = 17;
 
@@ -57,28 +57,26 @@ public class SpringBootBuild extends Project {
 
         publishOperation()
                 .repository(version.isSnapshot() ? repository("rife2-snapshot") : repository("rife2"))
+                .repository(repository("github"))
                 .info()
                 .groupId("com.uwyn.rife2")
                 .artifactId("bld-spring-boot")
                 .description("bld Extension for Spring Boot")
                 .url("https://github.com/rife2/bld-spring-boot")
-                .developer(
-                        new PublishDeveloper()
-                                .id("ethauvin")
-                                .name("Erik C. Thauvin")
-                                .email("erik@thauvin.net")
-                                .url("https://erik.thauvin.net/")
+                .developer(new PublishDeveloper()
+                        .id("ethauvin")
+                        .name("Erik C. Thauvin")
+                        .email("erik@thauvin.net")
+                        .url("https://erik.thauvin.net/")
                 )
-                .license(
-                        new PublishLicense()
-                                .name("The Apache License, Version 2.0")
-                                .url("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                .license(new PublishLicense()
+                        .name("The Apache License, Version 2.0")
+                        .url("https://www.apache.org/licenses/LICENSE-2.0.txt")
                 )
-                .scm(
-                        new PublishScm()
-                                .connection("scm:git:https://github.com/rife2/bld-spring-boot.git")
-                                .developerConnection("scm:git:git@github.com:rife2/bld-spring-boot.git")
-                                .url("https://github.com/rife2/bld-spring-boot")
+                .scm(new PublishScm()
+                        .connection("scm:git:https://github.com/rife2/bld-spring-boot.git")
+                        .developerConnection("scm:git:git@github.com:rife2/bld-spring-boot.git")
+                        .url("https://github.com/rife2/bld-spring-boot")
                 )
                 .signKey(property("sign.key"))
                 .signPassphrase(property("sign.passphrase"));

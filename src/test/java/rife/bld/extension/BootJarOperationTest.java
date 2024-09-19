@@ -16,6 +16,7 @@
 
 package rife.bld.extension;
 
+import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.jupiter.api.Test;
 import rife.bld.Project;
 import rife.bld.dependencies.VersionNumber;
@@ -35,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 class BootJarOperationTest {
     private static final String BLD = "bld-2.1.0.jar";
-    private static final String BOOT_VERSION = "3.3.3";
+    private static final String BOOT_VERSION = "3.3.4";
     private static final String EXAMPLES_LIB_COMPILE = "examples/lib/compile/";
     private static final String EXAMPLES_LIB_RUNTIME = "examples/lib/runtime/";
     private static final String EXAMPLES_LIB_STANDALONE = "examples/lib/standalone/";
@@ -345,21 +346,24 @@ class BootJarOperationTest {
         var project = new CustomProject(tmp_dir);
         var bootJar = new BootJarOperation().fromProject(project).sourceDirectories(SRC_MAIN_JAVA);
 
-        assertThat(bootJar.mainClass()).as("mainClass").isEqualTo(MAIN_CLASS);
-        assertThat(bootJar.sourceDirectories()).as("sourceDirectories.size").hasSize(3)
-                .containsExactly(project.buildMainDirectory(), project.srcMainResourcesDirectory(),
-                        new File(SRC_MAIN_JAVA));
-        assertThat(bootJar.manifestAttributes()).as("manifestAttributes.size").hasSize(3);
-        assertThat(bootJar.manifestAttributes().get("Manifest-Version")).as("Manifest-Version").isEqualTo("1.0");
-        assertThat(bootJar.manifestAttributes().get("Main-Class")).as("Main-Class").endsWith("JarLauncher");
-        assertThat(bootJar.manifestAttributes().get("Start-Class")).as("Start-Class").isEqualTo(MAIN_CLASS);
-        assertThat(bootJar.manifestAttribute("Manifest-Test", "tsst")
-                .manifestAttributes().get("Manifest-Test")).as("Manifest-Test").isEqualTo("tsst");
-        assertThat(bootJar.destinationDirectory()).as("destinationDirectory").isDirectory();
-        assertThat(bootJar.destinationDirectory()).isEqualTo(project.buildDistDirectory());
-        assertThat(bootJar.infLibs()).as("infoLibs").isEmpty();
-        assertThat(bootJar.launcherLibs()).as("launcherJars").isEmpty();
-        assertThat(bootJar.destinationFileName()).isEqualTo("test_project-0.0.1-boot.jar");
+        try (var softly = new AutoCloseableSoftAssertions()) {
+            softly.assertThat(bootJar.mainClass()).as("mainClass").isEqualTo(MAIN_CLASS);
+            softly.assertThat(bootJar.sourceDirectories()).as("sourceDirectories.size").hasSize(3)
+                    .containsExactly(project.buildMainDirectory(), project.srcMainResourcesDirectory(),
+                            new File(SRC_MAIN_JAVA));
+            softly.assertThat(bootJar.manifestAttributes()).as("manifestAttributes.size").hasSize(3);
+            softly.assertThat(bootJar.manifestAttributes().get("Manifest-Version")).as("Manifest-Version")
+                    .isEqualTo("1.0");
+            softly.assertThat(bootJar.manifestAttributes().get("Main-Class")).as("Main-Class").endsWith("JarLauncher");
+            softly.assertThat(bootJar.manifestAttributes().get("Start-Class")).as("Start-Class").isEqualTo(MAIN_CLASS);
+            softly.assertThat(bootJar.manifestAttribute("Manifest-Test", "tsst")
+                    .manifestAttributes().get("Manifest-Test")).as("Manifest-Test").isEqualTo("tsst");
+            softly.assertThat(bootJar.destinationDirectory()).as("destinationDirectory").isDirectory();
+            softly.assertThat(bootJar.destinationDirectory()).isEqualTo(project.buildDistDirectory());
+            softly.assertThat(bootJar.infLibs()).as("infoLibs").isEmpty();
+            softly.assertThat(bootJar.launcherLibs()).as("launcherJars").isEmpty();
+            softly.assertThat(bootJar.destinationFileName()).isEqualTo("test_project-0.0.1-boot.jar");
+        }
 
         FileUtils.deleteDirectory(tmp_dir);
     }
