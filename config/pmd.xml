@@ -7,9 +7,9 @@
     <!-- BEST PRACTICES -->
     <rule ref="category/java/bestpractices.xml">
         <exclude name="AvoidPrintStackTrace"/>
-        <exclude name="JUnit4TestShouldUseTestAnnotation"/>
-        <exclude name="JUnitTestContainsTooManyAsserts"/>
         <exclude name="GuardLogStatement"/>
+        <exclude name="UnitTestContainsTooManyAsserts"/>
+        <exclude name="UnitTestShouldUseTestAnnotation"/>
     </rule>
 
     <rule ref="category/java/bestpractices.xml/MissingOverride">
