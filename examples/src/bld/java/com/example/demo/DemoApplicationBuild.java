@@ -27,15 +27,15 @@ public class DemoApplicationBuild extends WebProject {
         repositories = List.of(MAVEN_CENTRAL);
 
         scope(compile)
-                .include(dependency("org.springframework.boot:spring-boot-starter:3.3.6"))
-                .include(dependency("org.springframework.boot:spring-boot-starter-actuator:3.3.6"))
-                .include(dependency("org.springframework.boot:spring-boot-starter-web:3.3.6"));
+                .include(dependency("org.springframework.boot:spring-boot-starter:3.4.0"))
+                .include(dependency("org.springframework.boot:spring-boot-starter-actuator:3.4.0"))
+                .include(dependency("org.springframework.boot:spring-boot-starter-web:3.4.0"));
         scope(test)
-                .include(dependency("org.springframework.boot:spring-boot-starter-test:3.3.6"))
+                .include(dependency("org.springframework.boot:spring-boot-starter-test:3.4.0"))
                 .include(dependency("org.junit.jupiter:junit-jupiter:5.11.3"))
                 .include(dependency("org.junit.platform:junit-platform-console-standalone:1.11.3"));
         scope(standalone)
-                .include(dependency("org.springframework.boot:spring-boot-loader:3.3.6"));
+                .include(dependency("org.springframework.boot:spring-boot-loader:3.4.0"));
     }
 
     public static void main(String[] args) {
