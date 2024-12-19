@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 class BootJarOperationTest {
     private static final String BLD = "bld-2.1.0.jar";
-    private static final String BOOT_VERSION = "3.4.0";
+    private static final String BOOT_VERSION = "3.4.1";
     private static final String EXAMPLES_LIB_COMPILE = "examples/lib/compile/";
     private static final String EXAMPLES_LIB_RUNTIME = "examples/lib/runtime/";
     private static final String EXAMPLES_LIB_STANDALONE = "examples/lib/standalone/";
@@ -62,6 +62,7 @@ class BootJarOperationTest {
             org/springframework/boot/loader/jar/ZipInflaterInputStream.class
             org/springframework/boot/loader/jarmode/
             org/springframework/boot/loader/jarmode/JarMode.class
+            org/springframework/boot/loader/jarmode/JarModeErrorException.class
             org/springframework/boot/loader/launch/
             org/springframework/boot/loader/launch/Archive$Entry.class
             org/springframework/boot/loader/launch/Archive.class
