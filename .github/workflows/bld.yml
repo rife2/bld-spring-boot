@@ -1,6 +1,6 @@
 name: bld-ci
 
-on: [push, pull_request, workflow_dispatch]
+on: [ push, pull_request, workflow_dispatch ]
 
 jobs:
   build-bld-project:
@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        java-version: [17, 21, 23]
+        java-version: [ 17, 21, 23 ]
 
     steps:
       - name: Checkout source repository
