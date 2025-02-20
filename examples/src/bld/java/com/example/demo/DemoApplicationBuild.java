@@ -26,7 +26,7 @@ public class DemoApplicationBuild extends WebProject {
 
         repositories = List.of(MAVEN_CENTRAL);
 
-        var boot = version(3, 4, 2);
+        var boot = version(3, 4, 3);
         scope(compile)
                 .include(dependency("org.springframework.boot", "spring-boot-starter", boot))
                 .include(dependency("org.springframework.boot", "spring-boot-starter-actuator", boot))
