@@ -33,8 +33,8 @@ public class DemoApplicationBuild extends WebProject {
                 .include(dependency("org.springframework.boot", "spring-boot-starter-web", boot));
         scope(test)
                 .include(dependency("org.springframework.boot", "spring-boot-starter-test", boot))
-                .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 11, 4)))
-                .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 11, 4)));
+                .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 12, 0)))
+                .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 12, 0)));
         scope(standalone)
                 .include(dependency("org.springframework.boot", "spring-boot-loader", boot));
     }
