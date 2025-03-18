@@ -7,7 +7,15 @@
 [![Snapshot](https://flat.badgen.net/maven/v/metadata-url/repo.rife2.com/snapshots/com/uwyn/rife2/bld-spring-boot/maven-metadata.xml?label=snapshot)](https://repo.rife2.com/#/snapshots/com/uwyn/rife2/bld-spring-boot)
 [![GitHub CI](https://github.com/rife2/bld-spring-boot/actions/workflows/bld.yml/badge.svg)](https://github.com/rife2/bld-spring-boot/actions/workflows/bld.yml)
 
-To install, please refer to the [extensions documentation](https://github.com/rife2/bld/wiki/Extensions).
+To install the latest version, add the following to the `lib/bld/bld-wrapper.properties` file:
+
+```properties
+bld.extension-spring-boot=com.uwyn.rife2:bld-spring-boot
+```
+
+For more information, please refer to the [extensions](https://github.com/rife2/bld/wiki/Extensions) documentation.
+
+## Create an Executable JAR
 
 To create a [Spring Boot executable Java Archive](https://docs.spring.io/spring-boot/docs/current/reference/html/executable-jar.html)
 (JAR) from the current project:
@@ -26,6 +34,8 @@ public void bootjar() throws Exception {
 ```
 
 - [View Examples Project](https://github.com/rife2/bld-spring-boot/tree/main/examples)
+
+## Create an Executable WAR
 
 To create a [Spring Boot executable Web Archive](https://docs.spring.io/spring-boot/docs/current/reference/html/executable-jar.html#appendix.executable-jar.nested-jars.war-structure)
 (WAR) from the current project:
