@@ -30,7 +30,8 @@ public class DemoApplicationBuild extends WebProject {
         scope(compile)
                 .include(dependency("org.springframework.boot", "spring-boot-starter", boot))
                 .include(dependency("org.springframework.boot", "spring-boot-starter-actuator", boot))
-                .include(dependency("org.springframework.boot", "spring-boot-starter-web", boot));
+                .include(dependency("org.springframework.boot", "spring-boot-starter-web", boot))
+                .include(dependency("org.mockito:mockito-core:5.16.1"));
         scope(test)
                 .include(dependency("org.springframework.boot", "spring-boot-starter-test", boot))
                 .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 12, 1)))
