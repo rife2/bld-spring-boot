@@ -55,6 +55,8 @@ public void bootwar() throws Exception {
 
 - [View Examples Project](https://github.com/rife2/bld-spring-boot/tree/main/examples)
 
+## Required Dependency
+
 Don't forget to include the _Spring Boot Loader_ dependency to your project:
 
 ```java
