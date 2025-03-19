@@ -38,6 +38,9 @@ public class DemoApplicationBuild extends WebProject {
                 .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 12, 1)));
         scope(standalone)
                 .include(dependency("org.springframework.boot", "spring-boot-loader", boot));
+
+        testOperation().javaOptions(List.of("-XX:+EnableDynamicAgentLoading"))
+                .javaOptions().enableNativeAccess("ALL-UNNAMED");
     }
 
     public static void main(String[] args) {
