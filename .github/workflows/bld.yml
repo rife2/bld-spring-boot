@@ -4,11 +4,13 @@ on: [ push, pull_request, workflow_dispatch ]
 
 jobs:
   build-bld-project:
-    runs-on: ubuntu-latest
-
     strategy:
       matrix:
         java-version: [ 17, 21, 24 ]
+        kotlin-version: [ 1.9.25, 2.0.21, 2.1.20 ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout source repository
@@ -22,11 +24,15 @@ jobs:
           distribution: "zulu"
           java-version: ${{ matrix.java-version }}
 
-      - name: Download dependencies
-        run: ./bld download
-
       - name: Download dependencies [examples]
         working-directory: examples
+        run: ./bld download
+
+      - name: Run tests [examples]
+        working-directory: examples
+        run: ./bld compile test
+
+      - name: Download dependencies
         run: ./bld download
 
       - name: Run tests
