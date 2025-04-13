@@ -45,8 +45,8 @@ public class SpringBootBuild extends Project {
         scope(compile)
                 .include(dependency("com.uwyn.rife2", "bld", version(2, 2, 1)));
         scope(test)
-                .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 12, 1)))
-                .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 12, 1)))
+                .include(dependency("org.junit.jupiter", "junit-jupiter", version(5, 12, 2)))
+                .include(dependency("org.junit.platform", "junit-platform-console-standalone", version(1, 12, 2)))
                 .include(dependency("org.assertj", "assertj-core", version(3, 27, 3)));
 
         javadocOperation()
