@@ -37,7 +37,7 @@ public final class BootUtils {
     }
 
     /**
-     * Calculates the given file size in bytes, kilobytes, megabytes, gigabytes or terabytes.
+     * Calculates the given file size in bytes, kilobytes, megabytes, gigabytes, or terabytes.
      *
      * @param file the file
      * @return the file size in B, KB, MB, GB, or TB.
