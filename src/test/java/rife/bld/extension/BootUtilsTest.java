@@ -19,6 +19,8 @@ package rife.bld.extension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import rife.bld.blueprints.BaseProjectBlueprint;
 import rife.tools.FileUtils;
 
@@ -121,6 +123,7 @@ class BootUtilsTest {
         }
 
         @Test
+        @DisabledOnOs(OS.WINDOWS)
         void mkDirsThrowsIOException() {
             var tmpFile = new File("/foo/bar.txt");
             tmpFile.deleteOnExit();
