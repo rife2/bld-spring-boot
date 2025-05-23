@@ -37,9 +37,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-class BootOperationTest {
+class BootOperationTests {
     private static final String BLD = "bld-2.2.1.jar";
-    private static final String BOOT_VERSION = "3.4.6";
+    private static final String BOOT_VERSION = "3.5.0";
     private static final String EXAMPLES_LIB_COMPILE = "examples/lib/compile/";
     private static final String EXAMPLES_LIB_RUNTIME = "examples/lib/runtime/";
     private static final String EXAMPLES_LIB_STANDALONE = "examples/lib/standalone/";
@@ -193,6 +193,14 @@ class BootOperationTest {
     @DisplayName("Errors Tests")
     class ErrorsTests {
         @Test
+        void invalidMainClass() {
+            var bootWar = new BootWarOperation().mainClass(MAIN_CLASS);
+            assertThatCode(bootWar::execute)
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("class required");
+        }
+
+        @Test
         void launcherClass() throws IOException {
             var bootWar = new BootJarOperation().mainClass(MAIN_CLASS)
                     .launcherClass("org.springframework.boot.loader.launch.WarLauncher")
@@ -202,13 +210,16 @@ class BootOperationTest {
 
         @Test
         void misingLauncherLibs() {
-            assertThatCode(() -> new BootWarOperation().launcherLibs(new File("foo")))
-                    .as("foo")
-                    .isInstanceOf(IOException.class)
-                    .hasMessageContaining("not found");
-
             assertThatCode(() -> new BootWarOperation().launcherLibs("bar"))
                     .as("bar")
+                    .isInstanceOf(IOException.class)
+                    .hasMessageContaining("not found");
+        }
+
+        @Test
+        void misingLauncherLibsAsFile() {
+            assertThatCode(() -> new BootWarOperation().launcherLibs(new File("foo")))
+                    .as("foo")
                     .isInstanceOf(IOException.class)
                     .hasMessageContaining("not found");
         }
@@ -223,15 +234,10 @@ class BootOperationTest {
         }
 
         @Test
-        void missingOrInvalidMainClass() {
+        void missingMainClass() {
             var bootWar = new BootWarOperation();
             assertThatCode(bootWar::execute).isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("mainClass");
-
-            bootWar = bootWar.mainClass(MAIN_CLASS);
-            assertThatCode(bootWar::execute)
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("class required");
         }
     }
 
@@ -315,10 +321,6 @@ class BootOperationTest {
                 op.launcherLibs().clear();
                 op.launcherLibs(launcher.toPath());
                 assertThat(op.launcherLibs()).as("Path...").containsExactly(launcher);
-
-                op.launcherLibs().clear();
-                op.launcherLibsStrings(List.of(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER));
-                assertThat(op.launcherLibs()).as("List(String...)").containsExactly(launcher);
             }
 
             @Test
@@ -333,6 +335,13 @@ class BootOperationTest {
                 op.launcherLibs().clear();
                 op.launcherLibs(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER);
                 assertThat(op.launcherLibs()).as("String...").containsExactly(launcher);
+            }
+
+            @Test
+            void launcherLibsAsStringList() throws IOException {
+                op.launcherLibs().clear();
+                op.launcherLibsStrings(List.of(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER));
+                assertThat(op.launcherLibs()).as("List(String...)").containsExactly(launcher);
             }
         }
 

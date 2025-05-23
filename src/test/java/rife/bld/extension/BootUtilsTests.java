@@ -30,7 +30,7 @@ import java.nio.file.Files;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class BootUtilsTest {
+class BootUtilsTests {
     @Nested
     @DisplayName("FileSize Tests")
     class FileSizeTests {
