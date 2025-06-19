@@ -36,10 +36,9 @@ import java.util.jar.JarFile;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 class BootOperationTests {
     private static final String BLD = "bld-2.2.1.jar";
-    private static final String BOOT_VERSION = "3.5.0";
+    private static final String BOOT_VERSION = "3.5.1";
     private static final String EXAMPLES_LIB_COMPILE = "examples/lib/compile/";
     private static final String EXAMPLES_LIB_RUNTIME = "examples/lib/runtime/";
     private static final String EXAMPLES_LIB_STANDALONE = "examples/lib/standalone/";
