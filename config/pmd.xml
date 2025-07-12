@@ -28,7 +28,6 @@
         <exclude name="ConfusingTernary"/>
         <exclude name="FieldNamingConventions"/>
         <exclude name="LocalVariableCouldBeFinal"/>
-        <exclude name="LocalVariableNamingConventions"/>
         <exclude name="LongVariable"/>
         <exclude name="MethodArgumentCouldBeFinal"/>
         <exclude name="OnlyOneReturn"/>
@@ -81,6 +80,7 @@
         <exclude name="AvoidFieldNameMatchingTypeName"/>
         <exclude name="AvoidLiteralsInIfCondition"/>
         <exclude name="NullAssignment"/>
+        <exclude name="UseLocaleWithCaseConversions"/>
     </rule>
 
     <rule ref="category/java/errorprone.xml/AssignmentInOperand">
