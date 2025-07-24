@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.io.TempDir;
 import rife.bld.blueprints.BaseProjectBlueprint;
 import rife.tools.FileUtils;
 
@@ -110,16 +111,16 @@ class BootUtilsTests {
     @Nested
     @DisplayName("MkDirs Tests")
     class MkDirsTests {
+        @TempDir
+        private File tmpDir;
+
         @Test
         void mkDirsCreatesDirectories() throws IOException {
-            var tmpDir = File.createTempFile("mkdirs-tmp-", null);
             FileUtils.deleteDirectory(tmpDir);
             assertFalse(tmpDir.exists());
 
             BootUtils.mkDirs(tmpDir);
             assertTrue(tmpDir.exists());
-
-            FileUtils.deleteDirectory(tmpDir);
         }
 
         @Test

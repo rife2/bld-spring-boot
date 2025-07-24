@@ -20,13 +20,13 @@ import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import rife.bld.Project;
 import rife.bld.dependencies.VersionNumber;
 import rife.tools.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.List;
@@ -37,8 +37,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 class BootOperationTests {
-    private static final String BLD = "bld-2.2.1.jar";
-    private static final String BOOT_VERSION = "3.5.3";
+    private static final String BLD = "bld-2.3.0.jar";
+    private static final String BOOT_VERSION = "3.5.4";
     private static final String EXAMPLES_LIB_COMPILE = "examples/lib/compile/";
     private static final String EXAMPLES_LIB_RUNTIME = "examples/lib/runtime/";
     private static final String EXAMPLES_LIB_STANDALONE = "examples/lib/standalone/";
@@ -376,9 +376,11 @@ class BootOperationTests {
     @Nested
     @DisplayName("Project Tests")
     class ProjectTests {
+        @TempDir
+        private File tmpDir;
+
         @Test
         void customProject() throws IOException {
-            var tmpDir = Files.createTempDirectory("boot-prj-tmp-").toFile();
             var project = new CustomProject(tmpDir);
             var bootJar = new BootJarOperation().fromProject(project).sourceDirectories(SRC_MAIN_JAVA);
 
@@ -400,14 +402,11 @@ class BootOperationTests {
                 softly.assertThat(bootJar.launcherLibs()).as("launcherJars").isEmpty();
                 softly.assertThat(bootJar.destinationFileName()).isEqualTo("test_project-0.0.1-boot.jar");
             }
-
-            FileUtils.deleteDirectory(tmpDir);
         }
 
         @Test
         @SuppressWarnings("PMD.AvoidDuplicateLiterals")
         void jarExecute() throws Exception {
-            var tmpDir = Files.createTempDirectory("bootjartmp").toFile();
             var jar = "foo-1.1.1.jar";
             new BootJarOperation()
                     .launcherClass("org.springframework.boot.loader.launch.JarLauncher")
@@ -439,13 +438,10 @@ class BootOperationTests {
                             "BOOT-INF/lib/" + SPRING_BOOT_ACTUATOR + '\n' +
                             "META-INF/\n" +
                             "META-INF/MANIFEST.MF\n" + LAUNCHER_JARS);
-
-            FileUtils.deleteDirectory(tmpDir);
         }
 
         @Test
         void jarProjectExecute() throws Exception {
-            var tmpDir = Files.createTempDirectory("boot-war-tmp-").toFile();
             new BootJarOperation()
                     .fromProject(new CustomProject(new File(".")))
                     .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)))
@@ -474,13 +470,10 @@ class BootOperationTests {
                             "BOOT-INF/lib/" + SPRING_BOOT_ACTUATOR + '\n' +
                             "META-INF/\n" +
                             "META-INF/MANIFEST.MF\n" + LAUNCHER_JARS);
-
-            FileUtils.deleteDirectory(tmpDir);
         }
 
         @Test
         void warProjectExecute() throws Exception {
-            var tmpDir = Files.createTempDirectory("bootjartmp").toFile();
             var project = new CustomProject(new File("."));
             new BootWarOperation()
                     .fromProject(project)
