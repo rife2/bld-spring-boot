@@ -43,22 +43,22 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
     public void execute() throws Exception {
         verifyExecute();
 
-        var staging_dir = Files.createTempDirectory("bootjar").toFile();
+        var stagingDir = Files.createTempDirectory("bootjar").toFile();
 
         try {
-            var boot_inf_dir = executeCreateBootInfDirectory(staging_dir);
-            executeCopyInfClassesFiles(boot_inf_dir);
-            executeCopyInfLibs(boot_inf_dir);
-            executeCopyBootLoader(staging_dir);
+            var bootInfDir = executeCreateBootInfDirectory(stagingDir);
+            executeCopyInfClassesFiles(bootInfDir);
+            executeCopyInfLibs(bootInfDir);
+            executeCopyBootLoader(stagingDir);
 
-            var archive = executeCreateArchive(staging_dir);
+            var archive = executeCreateArchive(stagingDir);
 
             if (!silent() && LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.info(String.format("The executable JAR was created: %s (%s)", archive.getAbsolutePath(),
                         BootUtils.fileSize(archive)));
             }
         } finally {
-            FileUtils.deleteDirectory(staging_dir);
+            FileUtils.deleteDirectory(stagingDir);
         }
     }
 
@@ -70,9 +70,9 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
      * @throws IOException if an error occurs
      */
     protected File executeCreateBootInfDirectory(File stagingDirectory) throws IOException {
-        var boot_inf = new File(stagingDirectory, "BOOT-INF");
-        BootUtils.mkDirs(boot_inf);
-        return boot_inf;
+        var bootInf = new File(stagingDirectory, "BOOT-INF");
+        BootUtils.mkDirs(bootInf);
+        return bootInf;
     }
 
     /**

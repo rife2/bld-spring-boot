@@ -47,23 +47,23 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     public void execute() throws Exception {
         verifyExecute();
 
-        var staging_dir = Files.createTempDirectory("bootwar").toFile();
+        var stagingDir = Files.createTempDirectory("bootwar").toFile();
 
         try {
-            var web_inf_dir = executeCreateWebInfDirectory(staging_dir);
-            executeCopyInfClassesFiles(web_inf_dir);
-            executeCopyInfLibs(web_inf_dir);
-            executeCopyWebInfProvidedLib(web_inf_dir);
-            executeCopyBootLoader(staging_dir);
+            var webInfDir = executeCreateWebInfDirectory(stagingDir);
+            executeCopyInfClassesFiles(webInfDir);
+            executeCopyInfLibs(webInfDir);
+            executeCopyWebInfProvidedLib(webInfDir);
+            executeCopyBootLoader(stagingDir);
 
-            var archive = executeCreateArchive(staging_dir);
+            var archive = executeCreateArchive(stagingDir);
 
             if (!silent() && LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.info(String.format("The executable WAR was created: %s (%s)", archive.getAbsolutePath(),
                         BootUtils.fileSize(archive)));
             }
         } finally {
-            FileUtils.deleteDirectory(staging_dir);
+            FileUtils.deleteDirectory(stagingDir);
         }
     }
 
@@ -74,12 +74,12 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * @throws IOException if an error occurs
      */
     protected void executeCopyWebInfProvidedLib(File stagingWebInfDirectory) throws IOException {
-        var lib_provided_dir = new File(stagingWebInfDirectory, "lib-provided");
-        BootUtils.mkDirs(lib_provided_dir);
+        var libProvidedDir = new File(stagingWebInfDirectory, "lib-provided");
+        BootUtils.mkDirs(libProvidedDir);
 
         for (var jar : providedLibs_) {
             if (jar.exists()) {
-                Files.copy(jar.toPath(), lib_provided_dir.toPath().resolve(jar.getName()));
+                Files.copy(jar.toPath(), libProvidedDir.toPath().resolve(jar.getName()));
             } else if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning("File not found: " + jar);
             }
@@ -94,9 +94,9 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * @throws IOException if an error occurs
      */
     protected File executeCreateWebInfDirectory(File stagingDirectory) throws IOException {
-        var boot_inf = new File(stagingDirectory, "WEB-INF");
-        BootUtils.mkDirs(boot_inf);
-        return boot_inf;
+        var bootInf = new File(stagingDirectory, "WEB-INF");
+        BootUtils.mkDirs(bootInf);
+        return bootInf;
     }
 
     /**

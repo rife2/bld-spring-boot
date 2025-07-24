@@ -138,12 +138,12 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
             }
             throw new ExitStatusException(ExitStatusException.EXIT_FAILURE);
         } else {
-            var meta_inf_dir = new File(stagingDirectory, "META-INF");
+            var metaInfDir = new File(stagingDirectory, "META-INF");
             for (var jar : launcherLibs()) {
                 if (jar.exists()) {
                     FileUtils.unzipFile(jar, stagingDirectory);
-                    if (meta_inf_dir.exists()) {
-                        FileUtils.deleteDirectory(meta_inf_dir);
+                    if (metaInfDir.exists()) {
+                        FileUtils.deleteDirectory(metaInfDir);
                     }
                 } else if (LOGGER.isLoggable(Level.WARNING) && !silent()) {
                     LOGGER.warning("File not found: " + jar.getAbsolutePath());
@@ -159,12 +159,12 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @throws IOException if an error occurs
      */
     protected void executeCopyInfClassesFiles(File stagingInfDirectory) throws IOException {
-        var inf_classes_dir = new File(stagingInfDirectory, "classes");
-        BootUtils.mkDirs(inf_classes_dir);
+        var infClassesDir = new File(stagingInfDirectory, "classes");
+        BootUtils.mkDirs(infClassesDir);
 
         for (var dir : sourceDirectories_) {
             if (dir.exists()) {
-                FileUtils.copyDirectory(dir, inf_classes_dir);
+                FileUtils.copyDirectory(dir, infClassesDir);
             } else if (LOGGER.isLoggable(Level.WARNING) && !silent()) {
                 LOGGER.warning("Directory not found: " + dir.getAbsolutePath());
             }
@@ -178,12 +178,12 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @throws IOException if an error occurs
      */
     protected void executeCopyInfLibs(File stagingInfDirectory) throws IOException {
-        var inf_lib_dir = new File(stagingInfDirectory, "lib");
-        BootUtils.mkDirs(inf_lib_dir);
+        var infLibDir = new File(stagingInfDirectory, "lib");
+        BootUtils.mkDirs(infLibDir);
 
         for (var jar : infLibs_) {
             if (jar.exists()) {
-                Files.copy(jar.toPath(), inf_lib_dir.toPath().resolve(jar.getName()));
+                Files.copy(jar.toPath(), infLibDir.toPath().resolve(jar.getName()));
             } else if (LOGGER.isLoggable(Level.WARNING) && !silent()) {
                 LOGGER.warning("File not found: " + jar.getAbsolutePath());
             }
@@ -249,10 +249,10 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @throws IOException if an error occurs
      */
     protected void executeCreateManifest(File stagingDirectory) throws IOException {
-        var meta_inf_dir = new File(stagingDirectory, "META-INF");
-        BootUtils.mkDirs(meta_inf_dir);
+        var metaInfDir = new File(stagingDirectory, "META-INF");
+        BootUtils.mkDirs(metaInfDir);
 
-        var manifest = new File(meta_inf_dir, "MANIFEST.MF").toPath();
+        var manifest = new File(metaInfDir, "MANIFEST.MF").toPath();
 
         try (var fileWriter = Files.newBufferedWriter(manifest)) {
             for (var set : manifestAttributes_.entrySet()) {
