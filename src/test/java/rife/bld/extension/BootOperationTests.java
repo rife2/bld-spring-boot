@@ -17,12 +17,11 @@
 package rife.bld.extension;
 
 import org.assertj.core.api.AutoCloseableSoftAssertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 import rife.bld.Project;
 import rife.bld.dependencies.VersionNumber;
+import rife.bld.extension.testing.TestLogHandler;
 import rife.tools.FileUtils;
 
 import java.io.File;
@@ -32,6 +31,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -166,6 +167,8 @@ class BootOperationTests {
     private static final String SPRING_BOOT_LOADER = "spring-boot-loader-" + BOOT_VERSION + ".jar";
     private static final String SRC_MAIN_JAVA = "src/main/java";
     private static final String SRC_TEST_JAVA = "src/test/java";
+    private final Logger logger = Logger.getLogger("BootOperation");
+    private TestLogHandler logHandler;
 
     private StringBuilder readJarEntries(File jar) throws IOException {
         var jarEntries = new StringBuilder();
@@ -175,6 +178,21 @@ class BootOperationTests {
             }
         }
         return jarEntries;
+    }
+
+    @BeforeEach
+    void setupLogging() {
+        logHandler = new TestLogHandler();
+        logger.addHandler(logHandler);
+        logger.setLevel(Level.ALL);
+        logHandler.setLevel(Level.ALL);
+    }
+
+    @AfterEach
+    void teardownLogging() {
+        if (logHandler != null) {
+            logger.removeHandler(logHandler);
+        }
     }
 
     static class CustomProject extends Project {
@@ -473,6 +491,26 @@ class BootOperationTests {
         }
 
         @Test
+        void jarProjectExecuteWithLoggingDisabled() throws Exception {
+            logger.setLevel(Level.OFF);
+            jarProjectExecute();
+            assertThat(logHandler.getLogMessages()).isEmpty();
+        }
+
+        @Test
+        void jarProjectExecuteWithSilent() throws Exception {
+            new BootJarOperation()
+                    .fromProject(new CustomProject(new File(".")))
+                    .silent(true)
+                    .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)))
+                    .destinationDirectory(tmpDir.getAbsolutePath())
+                    .infLibs(new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT).getAbsolutePath(),
+                            new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR).getAbsolutePath())
+                    .execute();
+            assertThat(logHandler.getLogMessages()).isEmpty();
+        }
+
+        @Test
         void warProjectExecute() throws Exception {
             var project = new CustomProject(new File("."));
             new BootWarOperation()
@@ -509,6 +547,13 @@ class BootOperationTests {
                             "WEB-INF/lib-provided/" + PROVIDED_LIB + '\n' + LAUNCHER_JARS);
 
             FileUtils.deleteDirectory(tmpDir);
+        }
+
+        @Test
+        void warProjectExecuteWithLoggingDisabled() throws Exception {
+            logger.setLevel(Level.OFF);
+            warProjectExecute();
+            assertThat(logHandler.getLogMessages()).isEmpty();
         }
     }
 
