@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+@SuppressWarnings({"PMD.TestClassWithoutTestCases", "PMD.SignatureDeclareThrowsException"})
 class BootOperationTests {
     private static final String BLD = "bld-2.3.0.jar";
     private static final String BOOT_VERSION = "3.5.4";
@@ -317,47 +318,40 @@ class BootOperationTests {
         @DisplayName("Launcher Libs Tests")
         class LauncherLibTests {
             private final File launcher = new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER);
-            private final BootJarOperation op = new BootJarOperation();
 
             @Test
             void launcherLibsAsFileArray() throws IOException {
-                op.launcherLibs().clear();
-                op.launcherLibs(launcher);
+                var op = new BootJarOperation().launcherLibs(launcher);
                 assertThat(op.launcherLibs()).as("File...").containsExactly(launcher);
             }
 
             @Test
             void launcherLibsAsFileList() throws IOException {
-                op.launcherLibs().clear();
-                op.launcherLibs(List.of(launcher));
+                var op = new BootJarOperation().launcherLibs(List.of(launcher));
                 assertThat(op.launcherLibs()).as("List(File...)").containsExactly(launcher);
             }
 
             @Test
             void launcherLibsAsPathArray() throws IOException {
-                op.launcherLibs().clear();
-                op.launcherLibs(launcher.toPath());
+                var op = new BootJarOperation().launcherLibs(launcher.toPath());
                 assertThat(op.launcherLibs()).as("Path...").containsExactly(launcher);
             }
 
             @Test
             void launcherLibsAsPathList() throws IOException {
-                op.launcherLibs().clear();
-                op.launcherLibsPaths(List.of(launcher.toPath()));
+                var op = new BootJarOperation().launcherLibsPaths(List.of(launcher.toPath()));
                 assertThat(op.launcherLibs()).as("List(Path...)").containsExactly(launcher);
             }
 
             @Test
             void launcherLibsAsStringArray() throws IOException {
-                op.launcherLibs().clear();
-                op.launcherLibs(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER);
+                var op = new BootJarOperation().launcherLibs(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER);
                 assertThat(op.launcherLibs()).as("String...").containsExactly(launcher);
             }
 
             @Test
             void launcherLibsAsStringList() throws IOException {
-                op.launcherLibs().clear();
-                op.launcherLibsStrings(List.of(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER));
+                var op = new BootJarOperation().launcherLibsStrings(List.of(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER));
                 assertThat(op.launcherLibs()).as("List(String...)").containsExactly(launcher);
             }
         }

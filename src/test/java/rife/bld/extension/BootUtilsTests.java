@@ -22,15 +22,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
+import rife.bld.Project;
 import rife.bld.blueprints.BaseProjectBlueprint;
 import rife.tools.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals"})
 class BootUtilsTests {
     @Nested
     @DisplayName("FileSize Tests")
@@ -106,6 +109,65 @@ class BootUtilsTests {
                     examplesProjectDir, "com.example", "examples", "Examples"), "WarLauncher");
             assertEquals("org.springframework.boot.loader.WarLauncher", launcher);
         }
+    }
+
+    @Nested
+    @DisplayName("LauncherClass Version Tests")
+    @SuppressWarnings("PMD.MethodNamingConventions")
+    class LauncherClassVersionTests {
+        @Test
+        void launcherClassWithVersion3_2OrHigher() {
+            var project = new Project() {
+                @Override
+                public List<File> standaloneClasspathJars() {
+                    return List.of(new File("spring-boot-loader-3.2.0.jar"));
+                }
+            };
+
+            assertEquals("org.springframework.boot.loader.launch.JarLauncher",
+                    BootUtils.launcherClass(project, "JarLauncher"));
+        }
+
+        @Test
+        void launcherClassWithVersion4() {
+            var project = new Project() {
+                @Override
+                public List<File> standaloneClasspathJars() {
+                    return List.of(new File("spring-boot-loader-4.0.0.jar"));
+                }
+            };
+
+            assertEquals("org.springframework.boot.loader.launch.JarLauncher",
+                    BootUtils.launcherClass(project, "JarLauncher"));
+        }
+
+        @Test
+        void launcherClassWithVersionLowerThan3_2() {
+            var project = new Project() {
+                @Override
+                public List<File> standaloneClasspathJars() {
+                    return List.of(new File("spring-boot-loader-2.0.0.jar"));
+                }
+            };
+
+            assertEquals("org.springframework.boot.loader.JarLauncher",
+                    BootUtils.launcherClass(project, "JarLauncher"));
+        }
+
+        @Test
+        void launcherClassWithoutMatchingJar() {
+            var project = new Project() {
+                @Override
+                public List<File> standaloneClasspathJars() {
+                    return List.of(new File("foo-1.0.0.jar"));
+                }
+            };
+
+            assertEquals("org.springframework.boot.loader.JarLauncher",
+                    BootUtils.launcherClass(project, "JarLauncher"));
+        }
+
+
     }
 
     @Nested
