@@ -48,7 +48,7 @@ import java.util.spi.ToolProvider;
  */
 public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         extends AbstractOperation<AbstractBootOperation<T>> {
-    private static final Logger LOGGER = Logger.getLogger(AbstractBootOperation.class.getName());
+    protected static final Logger LOGGER = Logger.getLogger("BootOperation");
     private final Collection<File> infLibs_ = new ArrayList<>();
     private final Collection<File> launcherLibs_ = new ArrayList<>();
     private final Map<String, String> manifestAttributes_ = new ConcurrentHashMap<>();
@@ -348,7 +348,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Provides the Spring Boot loader launcher fully-qualified class name.
+     * Provides the Spring Boot loader launcher fully qualified class name.
      * <p>
      * For examples:
      * <ul>
@@ -367,7 +367,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Retrieves the Spring Boot loader launcher fully-qualified class name.
+     * Retrieves the Spring Boot loader launcher fully qualified class name.
      *
      * @return the launcher class name
      */
@@ -468,7 +468,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Provides the fully-qualified main class name.
+     * Provides the fully qualified main class name.
      *
      * @param className the class name
      * @return this operation instance

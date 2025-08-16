@@ -25,7 +25,6 @@ import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Builds and creates a Spring Boot executable Java archive (JAR).
@@ -34,8 +33,6 @@ import java.util.logging.Logger;
  * @since 1.0
  */
 public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
-    private static final Logger LOGGER = Logger.getLogger(BootJarOperation.class.getName());
-
     /**
      * Performs the BootJar operation.
      */

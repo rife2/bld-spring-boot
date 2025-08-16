@@ -28,16 +28,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Builds and creates a Spring Boot executable web archive (WAR).
  *
- * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a>
- * @since 1.0
+ * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a> @since 1.0
  */
 public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
-    private static final Logger LOGGER = Logger.getLogger(BootWarOperation.class.getName());
     private final List<File> providedLibs_ = new ArrayList<>();
 
     /**
