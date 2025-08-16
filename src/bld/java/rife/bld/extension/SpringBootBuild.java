@@ -69,7 +69,7 @@ public class SpringBootBuild extends Project {
                 .info()
                 .groupId("com.uwyn.rife2")
                 .artifactId("bld-spring-boot")
-                .description("bld Extension for Spring Boot")
+                .description("Spring Boot Extension for bld")
                 .url("https://github.com/rife2/bld-spring-boot")
                 .developer(new PublishDeveloper()
                         .id("ethauvin")
