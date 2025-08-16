@@ -116,16 +116,19 @@ public class SpringBootBuild extends Project {
             ex = e;
         }
 
-        var xunitViewer = new File("/usr/bin/xunit-viewer");
-        if (xunitViewer.exists() && xunitViewer.canExecute()) {
-            var reportsDir = "build/reports/tests/test/";
+        var npmPackagesEnv = System.getenv("NPM_PACKAGES");
+        if (npmPackagesEnv != null && !npmPackagesEnv.isEmpty()) {
+            var xunitViewer = Path.of(npmPackagesEnv, "bin", "xunit-viewer").toFile();
+            if (xunitViewer.exists() && xunitViewer.canExecute()) {
+                var reportsDir = "build/reports/tests/test/";
 
-            Files.createDirectories(Path.of(reportsDir));
+                Files.createDirectories(Path.of(reportsDir));
 
-            new ExecOperation()
-                    .fromProject(this)
-                    .command(xunitViewer.getPath(), "-r", testResultsDir, "-o", reportsDir + "index.html")
-                    .execute();
+                new ExecOperation()
+                        .fromProject(this)
+                        .command(xunitViewer.getPath(), "-r", testResultsDir, "-o", reportsDir + "index.html")
+                        .execute();
+            }
         }
 
         if (ex != null) {
