@@ -18,9 +18,11 @@ package rife.bld.extension;
 
 import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import rife.bld.Project;
 import rife.bld.dependencies.VersionNumber;
+import rife.bld.extension.testing.LoggingExtension;
 import rife.bld.extension.testing.TestLogHandler;
 import rife.tools.FileUtils;
 
@@ -37,6 +39,7 @@ import java.util.logging.Logger;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+@ExtendWith(LoggingExtension.class)
 @SuppressWarnings({"PMD.TestClassWithoutTestCases", "PMD.SignatureDeclareThrowsException"})
 class BootOperationTests {
     private static final String BLD = "bld-2.3.0.jar";
@@ -168,8 +171,23 @@ class BootOperationTests {
     private static final String SPRING_BOOT_LOADER = "spring-boot-loader-" + BOOT_VERSION + ".jar";
     private static final String SRC_MAIN_JAVA = "src/main/java";
     private static final String SRC_TEST_JAVA = "src/test/java";
+
     private final Logger logger = Logger.getLogger("BootOperation");
     private TestLogHandler logHandler;
+
+    @AfterEach
+    void afterEach() {
+        if (logHandler != null) {
+            logger.removeHandler(logHandler);
+        }
+    }
+
+    @BeforeEach
+    void beforeEach() {
+        logHandler = new TestLogHandler();
+        logger.addHandler(logHandler);
+        logger.setLevel(Level.ALL);
+    }
 
     private StringBuilder readJarEntries(File jar) throws IOException {
         var jarEntries = new StringBuilder();
@@ -179,21 +197,6 @@ class BootOperationTests {
             }
         }
         return jarEntries;
-    }
-
-    @BeforeEach
-    void setupLogging() {
-        logHandler = new TestLogHandler();
-        logger.addHandler(logHandler);
-        logger.setLevel(Level.ALL);
-        logHandler.setLevel(Level.ALL);
-    }
-
-    @AfterEach
-    void teardownLogging() {
-        if (logHandler != null) {
-            logger.removeHandler(logHandler);
-        }
     }
 
     static class CustomProject extends Project {
