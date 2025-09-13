@@ -4,6 +4,7 @@
     <pattern value="rife.bld.extension.SpringBootBuild" method="pmd" />
     <pattern value="rife.bld.extension.SpringBootBuild" />
     <pattern value="rife.bld.extension.AbstractBootOperation" method="fromProject" />
+    <pattern value="rife.bld.extension.SpringBootBuild" method="reporter" />
   </component>
   <component name="PDMPlugin">
     <option name="customRuleSets">

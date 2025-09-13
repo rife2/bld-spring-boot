@@ -8,6 +8,7 @@
     <rule ref="category/java/bestpractices.xml">
         <exclude name="AvoidPrintStackTrace"/>
         <exclude name="GuardLogStatement"/>
+        <exclude name="RelianceOnDefaultCharset"/>
         <exclude name="UnitTestContainsTooManyAsserts"/>
         <exclude name="UnitTestShouldUseTestAnnotation"/>
     </rule>

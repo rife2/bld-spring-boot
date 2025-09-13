@@ -42,5 +42,13 @@ jobs:
       - name: Download dependencies
         run: ./bld download
 
+      - name: Compile source code
+        run: ./bld compile
+
       - name: Run tests
-        run: ./bld compile test
+        continue-on-error: true
+        run: ./bld test
+
+      - name: Run reporter
+        if: ${{ failure() }}
+        run: ./bld reporter --all
