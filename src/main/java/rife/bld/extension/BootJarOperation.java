@@ -29,6 +29,17 @@ import java.util.logging.Level;
 /**
  * Builds and creates a Spring Boot executable Java archive (JAR).
  *
+ * <h4>Usage:</h4>
+ *
+ * <blockquote><pre>
+ * &#64;BuildCommand(summary = "Creates an executable JAR for the project")
+ * public void bootjar() throws Exception {
+ *     new BootJarOperation()
+ *             .fromProject(this)
+ *             .execute();
+ * }
+ * </pre></blockquote>
+ *
  * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a>
  * @since 1.0
  */

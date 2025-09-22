@@ -32,6 +32,17 @@ import java.util.logging.Level;
 /**
  * Builds and creates a Spring Boot executable web archive (WAR).
  *
+ * <h4>Usage:</h4>
+ *
+ * <blockquote><pre>
+ * &#64;BuildCommand(summary = "Creates an executable WAR for the project")
+ * public void bootwar() throws Exception {
+ *     new BootWarOperation()
+ *             .fromProject(this)
+ *             .execute();
+ * }
+ * </pre></blockquote>
+ *
  * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a> @since 1.0
  */
 public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
