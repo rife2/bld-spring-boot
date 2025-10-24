@@ -46,9 +46,9 @@ jobs:
         run: ./bld compile
 
       - name: Run tests
-        continue-on-error: true
+        id: tests
         run: ./bld test
 
       - name: Run reporter
-        if: ${{ failure() }}
+        if: ${{ failure() && steps.tests.outcome == 'failure' }}
         run: ./bld reporter --all
