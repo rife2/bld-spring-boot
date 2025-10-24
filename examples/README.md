@@ -15,3 +15,8 @@
 ```console
 ./bld compile bootwar
 ```
+
+# Explore
+
+- [View Build File](https://github.com/rife2/bld-spring-boot/blob/master/examples/src/bld/java/com/example/demo/DemoApplicationBuild.java)
+- [View Wrapper Properties](https://github.com/rife2/bld-spring-boot/blob/master/examples/lib/bld/bld-wrapper.properties)
