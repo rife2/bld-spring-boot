@@ -165,7 +165,11 @@ class BootOperationTests {
             org/springframework/boot/loader/zip/ZipString.class
             """;
     private static final String MAIN_CLASS = "com.example.Foo";
-    private static final String PROVIDED_LIB = "LatencyUtils-2.0.3.jar";
+    private static final List<String> PROVIDED_LIBS = List.of(
+            "LatencyUtils-2.0.3.jar",
+            "jsr305-3.0.2.jar",
+            "spotbugs-annotations-4.9.8.jar"
+    );
     private static final String SPRING_BOOT = "spring-boot-" + BOOT_VERSION + ".jar";
     private static final String SPRING_BOOT_ACTUATOR = "spring-boot-actuator-" + BOOT_VERSION + ".jar";
     private static final String SPRING_BOOT_LOADER = "spring-boot-loader-" + BOOT_VERSION + ".jar";
@@ -362,7 +366,7 @@ class BootOperationTests {
         @Nested
         @DisplayName("War Libs Tests")
         class WarLibTest {
-            private final File foo = new File(EXAMPLES_LIB_RUNTIME + PROVIDED_LIB);
+            private final File foo = new File(EXAMPLES_LIB_RUNTIME + "foo.jar");
             private final BootWarOperation op = new BootWarOperation();
 
             @Test
@@ -382,7 +386,7 @@ class BootOperationTests {
             @Test
             void warProvidedLibsAsString() {
                 op.providedLibs().clear();
-                op.providedLibs(EXAMPLES_LIB_RUNTIME + PROVIDED_LIB);
+                op.providedLibs(EXAMPLES_LIB_RUNTIME + "foo.jar");
                 assertThat(op.providedLibs()).containsExactly(foo);
             }
         }
@@ -456,6 +460,13 @@ class BootOperationTests {
         }
 
         @Test
+        void jarProjectExecuteWithLoggingDisabled() throws Exception {
+            logger.setLevel(Level.OFF);
+            jarProjectExecute();
+            assertThat(logHandler.getLogMessages()).isEmpty();
+        }
+
+        @Test
         void jarProjectExecute() throws Exception {
             new BootJarOperation()
                     .fromProject(new CustomProject(new File(".")))
@@ -488,13 +499,6 @@ class BootOperationTests {
         }
 
         @Test
-        void jarProjectExecuteWithLoggingDisabled() throws Exception {
-            logger.setLevel(Level.OFF);
-            jarProjectExecute();
-            assertThat(logHandler.getLogMessages()).isEmpty();
-        }
-
-        @Test
         void jarProjectExecuteWithSilent() throws Exception {
             new BootJarOperation()
                     .fromProject(new CustomProject(new File(".")))
@@ -508,6 +512,13 @@ class BootOperationTests {
         }
 
         @Test
+        void warProjectExecuteWithLoggingDisabled() throws Exception {
+            logger.setLevel(Level.OFF);
+            warProjectExecute();
+            assertThat(logHandler.getLogMessages()).isEmpty();
+        }
+
+        @Test
         void warProjectExecute() throws Exception {
             var project = new CustomProject(new File("."));
             new BootWarOperation()
@@ -516,7 +527,7 @@ class BootOperationTests {
                     .destinationDirectory(tmpDir.toPath())
                     .infLibs(Path.of(EXAMPLES_LIB_COMPILE + SPRING_BOOT),
                             Path.of(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR))
-                    .providedLibs(new File(EXAMPLES_LIB_RUNTIME + PROVIDED_LIB))
+                    .providedLibs(new File(EXAMPLES_LIB_RUNTIME + PROVIDED_LIBS.get(0)))
                     .execute();
 
             var warFile = new File(tmpDir, project.name() + '-' + project.version().toString() + "-boot.war");
@@ -541,16 +552,12 @@ class BootOperationTests {
                             "WEB-INF/lib/" + SPRING_BOOT + '\n' +
                             "WEB-INF/lib/" + SPRING_BOOT_ACTUATOR + '\n' +
                             "WEB-INF/lib-provided/\n" +
-                            "WEB-INF/lib-provided/" + PROVIDED_LIB + '\n' + LAUNCHER_JARS);
+                            "WEB-INF/lib-provided/" + PROVIDED_LIBS.get(0) + '\n' +
+                            "WEB-INF/lib-provided/" + PROVIDED_LIBS.get(1) + '\n' +
+                            "WEB-INF/lib-provided/" + PROVIDED_LIBS.get(2) + '\n' +
+                            LAUNCHER_JARS);
 
             FileUtils.deleteDirectory(tmpDir);
-        }
-
-        @Test
-        void warProjectExecuteWithLoggingDisabled() throws Exception {
-            logger.setLevel(Level.OFF);
-            warProjectExecute();
-            assertThat(logHandler.getLogMessages()).isEmpty();
         }
     }
 

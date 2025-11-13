@@ -16,6 +16,7 @@
 
 package rife.bld.extension;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import rife.bld.Project;
 import rife.tools.FileUtils;
 
@@ -76,6 +77,19 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     }
 
     /**
+     * Part of the {@link #execute execute} operation, creates the {@code WEB-INF} staging directory.
+     *
+     * @param stagingDirectory the staging directory
+     * @return the {@code WEB-INF} directory location
+     * @throws IOException if an error occurs
+     */
+    protected File executeCreateWebInfDirectory(File stagingDirectory) throws IOException {
+        var bootInf = new File(stagingDirectory, "WEB-INF");
+        BootUtils.mkDirs(bootInf);
+        return bootInf;
+    }
+
+    /**
      * Part of the {@link #execute execute} operation, copies the {@code WEB-INF/lib-provided} libraries.
      *
      * @param stagingWebInfDirectory the staging {@code WEB-INF/lib-provided} directory
@@ -92,19 +106,6 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
                 LOGGER.warning("File not found: " + jar);
             }
         }
-    }
-
-    /**
-     * Part of the {@link #execute execute} operation, creates the {@code WEB-INF} staging directory.
-     *
-     * @param stagingDirectory the staging directory
-     * @return the {@code WEB-INF} directory location
-     * @throws IOException if an error occurs
-     */
-    protected File executeCreateWebInfDirectory(File stagingDirectory) throws IOException {
-        var bootInf = new File(stagingDirectory, "WEB-INF");
-        BootUtils.mkDirs(bootInf);
-        return bootInf;
     }
 
     /**
@@ -177,6 +178,17 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
+     * @see #providedLibs(String...)
+     */
+    public BootWarOperation providedLibsStrings(Collection<String> jars) {
+        return providedLibs(jars.stream().map(File::new).toList());
+    }
+
+    /**
+     * Provides the libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
+     *
+     * @param jars one or more Java archive files
+     * @return this operation instance
      * @see #providedLibs(Collection)
      */
     public BootWarOperation providedLibs(File... jars) {
@@ -195,15 +207,6 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     }
 
     /**
-     * Retrieves the libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
-     *
-     * @return the list of Java archive files.
-     */
-    public List<File> providedLibs() {
-        return providedLibs_;
-    }
-
-    /**
      * Provides the libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
      *
      * @param jars one or more Java archive files
@@ -215,13 +218,12 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     }
 
     /**
-     * Provides the libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
+     * Retrieves the libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
      *
-     * @param jars one or more Java archive files
-     * @return this operation instance
-     * @see #providedLibs(String...)
+     * @return the list of Java archive files.
      */
-    public BootWarOperation providedLibsStrings(Collection<String> jars) {
-        return providedLibs(jars.stream().map(File::new).toList());
+    @SuppressFBWarnings("EI_EXPOSE_REP")
+    public List<File> providedLibs() {
+        return providedLibs_;
     }
 }

@@ -16,6 +16,7 @@
 
 package rife.bld.extension;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import rife.bld.Project;
 import rife.bld.operations.AbstractOperation;
 import rife.bld.operations.exceptions.ExitStatusException;
@@ -59,12 +60,14 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     private String mainClass_;
 
     /**
-     * Retrieves the destination directory in which the archive will be created.
+     * Provides the destination directory in which the archive will be created.
      *
-     * @return the destination directory
+     * @param directory the destination directory
+     * @return this operation instance
+     * @throws IOException if an error occurs
      */
-    public File destinationDirectory() {
-        return destinationDirectory_;
+    public T destinationDirectory(String directory) throws IOException {
+        return destinationDirectory(new File(directory));
     }
 
     /**
@@ -79,17 +82,6 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         BootUtils.mkDirs(destinationDirectory_);
         //noinspection unchecked
         return (T) this;
-    }
-
-    /**
-     * Provides the destination directory in which the archive will be created.
-     *
-     * @param directory the destination directory
-     * @return this operation instance
-     * @throws IOException if an error occurs
-     */
-    public T destinationDirectory(String directory) throws IOException {
-        return destinationDirectory(new File(directory));
     }
 
     /**
@@ -116,12 +108,303 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Retrieves the file name that will be used for the archive creation.
+     * Configures the operation from a {@link Project}.
      *
-     * @return the archive file name
+     * @param project the project
+     * @return this operation instance
+     * @throws IOException if an error occurs
      */
-    public String destinationFileName() {
-        return destinationFileName_;
+    public abstract T fromProject(Project project) throws IOException;
+
+    /**
+     * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
+     *
+     * @param jars one or more Java archive files
+     * @return this operation instance
+     * @see #infLibs(Collection)
+     */
+    public T infLibs(File... jars) {
+        return infLibs(List.of(jars));
+    }
+
+    /**
+     * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
+     *
+     * @param jars a collection of Java archive files
+     * @return this operation instance
+     * @see #infLibs(File...)
+     */
+    public T infLibs(Collection<File> jars) {
+        infLibs_.addAll(jars);
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
+     *
+     * @param jars one or more Java archive files
+     * @return this operation instance
+     * @see #infLibsPaths(Collection)
+     */
+    public T infLibs(Path... jars) {
+        return infLibsPaths(List.of(jars));
+    }
+
+    /**
+     * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
+     *
+     * @param jars one or more Java archive files
+     * @return this operation instance
+     * @see #infLibs(Path...)
+     */
+    public T infLibsPaths(Collection<Path> jars) {
+        return infLibs(jars.stream().map(Path::toFile).toList());
+    }
+
+    /**
+     * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
+     *
+     * @param jars one or more Java archive files
+     * @return this operation instance
+     * @see #infLibsStrings(Collection)
+     */
+    public T infLibs(String... jars) {
+        return infLibsStrings(List.of(jars));
+    }
+
+    /**
+     * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
+     *
+     * @param jars one or more Java archive files
+     * @return this operation instance
+     * @see #infLibs(String...)
+     */
+    public T infLibsStrings(Collection<String> jars) {
+        return infLibs(jars.stream().map(File::new).toList());
+    }
+
+    /**
+     * Retrieves the libraries in {@code BOOT-INF} or {@code WEB-INF}.
+     *
+     * @return the Java archives
+     */
+    @SuppressFBWarnings("EI_EXPOSE_REP")
+    public Collection<File> infLibs() {
+        return infLibs_;
+    }
+
+    /**
+     * Provides the Spring Boot loader launcher fully qualified class name.
+     * <p>
+     * For examples:
+     * <ul>
+     *     <li>{@code org.springframework.boot.loader.JarLauncher}</li>
+     *     <li>{@code org.springframework.boot.loader.PropertiesLauncher}</li>
+     *     <li>{@code org.springframework.boot.loader.WarLauncher}</li>
+     * </ul>
+     *
+     * @param className the launcher class name
+     * @return this operation instance
+     */
+    public T launcherClass(String className) {
+        launcherClass_ = className;
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Provides the libraries for the Spring Boot loader launcher.
+     *
+     * @param jars one or more Java archives
+     * @return this operation instance
+     * @throws IOException if a JAR could not be found
+     * @see #infLibs(Collection)
+     */
+    public T launcherLibs(File... jars) throws IOException {
+        return launcherLibs(List.of(jars));
+    }
+
+    /**
+     * Provides the libraries for the Spring Boot loader launcher.
+     *
+     * @param jars a collection of Java archives
+     * @return this operation instance
+     * @throws IOException if a JAR could not be found
+     * @see #infLibs(File...)
+     */
+    public T launcherLibs(Collection<File> jars) throws IOException {
+        for (var j : jars) {
+            if (j.exists()) {
+                launcherLibs_.add(j);
+            } else {
+                throw new IOException("Spring Boot loader launcher library not found: " + j);
+            }
+        }
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Provides the libraries for the Spring Boot loader launcher.
+     *
+     * @param jars one or more Java archives
+     * @return this operation instance
+     * @throws IOException if a JAR could not be found
+     * @see #launcherLibsStrings(Collection)
+     */
+    public T launcherLibs(String... jars) throws IOException {
+        return launcherLibsStrings(List.of(jars));
+    }
+
+    /**
+     * Provides the libraries for the Spring Boot loader launcher.
+     *
+     * @param jars one or more Java archives
+     * @return this operation instance
+     * @throws IOException if a JAR could not be found
+     * @see #launcherLibs(String...)
+     */
+    public T launcherLibsStrings(Collection<String> jars) throws IOException {
+        return launcherLibs(jars.stream().map(File::new).toList());
+    }
+
+    /**
+     * Provides the libraries for the Spring Boot loader launcher.
+     *
+     * @param jars one or more Java archives
+     * @return this operation instance
+     * @throws IOException if a JAR could not be found
+     * @see #launcherLibsPaths(Collection)
+     */
+    public T launcherLibs(Path... jars) throws IOException {
+        return launcherLibsPaths(List.of(jars));
+    }
+
+    /**
+     * Provides the libraries for the Spring Boot loader launcher.
+     *
+     * @param jars one or more Java archives
+     * @return this operation instance
+     * @throws IOException if a JAR could not be found
+     * @see #launcherLibs(Path...)
+     */
+    public T launcherLibsPaths(Collection<Path> jars) throws IOException {
+        return launcherLibs(jars.stream().map(Path::toFile).toList());
+    }
+
+    /**
+     * Provides an attribute to put in the archive manifest.
+     *
+     * @param name  the attribute name
+     * @param value the attribute value
+     * @return this operation instance
+     */
+    public T manifestAttribute(String name, String value) {
+        manifestAttributes_.put(name, value);
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Retrieves the attributes that will be put in the archive manifest.
+     *
+     * @return the manifest attributes
+     */
+    @SuppressFBWarnings("EI_EXPOSE_REP")
+    public Map<String, String> manifestAttributes() {
+        return manifestAttributes_;
+    }
+
+    /**
+     * Provides a map of attributes to put in the archive manifest.
+     *
+     * @param attributes the manifest attributes
+     * @return this operation instance
+     * @see #manifestAttribute(String, String)
+     */
+    public T manifestAttributes(Map<String, String> attributes) {
+        manifestAttributes_.putAll(attributes);
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Provides source directories that will be used for the archive creation.
+     *
+     * @param directories one or more source directories
+     * @return this operation instance
+     * @see #sourceDirectories(Collection)
+     */
+    public T sourceDirectories(File... directories) {
+        return sourceDirectories(List.of(directories));
+    }
+
+    /**
+     * Provides source directories that will be used for the archive creation.
+     *
+     * @param directories one or more source directories
+     * @return this operation instance
+     * @see #sourceDirectories(File...)
+     */
+    public T sourceDirectories(Collection<File> directories) {
+        sourceDirectories_.addAll(directories);
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    /**
+     * Provides source directories that will be used for the archive creation.
+     *
+     * @param directories one or more source directories
+     * @return this operation instance
+     * @see #sourceDirectoriesStrings(Collection)
+     */
+    public T sourceDirectories(String... directories) {
+        return sourceDirectoriesStrings(List.of(directories));
+    }
+
+    /**
+     * Provides source directories that will be used for the archive creation.
+     *
+     * @param directories one or more source directories
+     * @return this operation instance
+     * @see #sourceDirectories(String...)
+     */
+    public T sourceDirectoriesStrings(Collection<String> directories) {
+        return sourceDirectories(directories.stream().map(File::new).toList());
+    }
+
+    /**
+     * Provides source directories that will be used for the archive creation.
+     *
+     * @param directories one or more source directories
+     * @return this operation instance
+     * @see #sourceDirectoriesPaths(Collection)
+     */
+    public T sourceDirectories(Path... directories) {
+        return sourceDirectoriesPaths(List.of(directories));
+    }
+
+    /**
+     * Provides source directories that will be used for the archive creation.
+     *
+     * @param directories one or more source directories
+     * @return this operation instance
+     * @see #sourceDirectories(Path...)
+     */
+    public T sourceDirectoriesPaths(Collection<Path> directories) {
+        return sourceDirectories(directories.stream().map(Path::toFile).toList());
+    }
+
+    /**
+     * Retrieves the source directories that will be used for the archive creation.
+     *
+     * @return the source directories
+     */
+    @SuppressFBWarnings("EI_EXPOSE_REP")
+    public Collection<File> sourceDirectories() {
+        return sourceDirectories_;
     }
 
     /**
@@ -150,6 +433,16 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
                 }
             }
         }
+    }
+
+    /**
+     * Retrieves the Spring Boot loader launcher libraries.
+     *
+     * @return the Java archives
+     */
+    @SuppressFBWarnings("EI_EXPOSE_REP")
+    public Collection<File> launcherLibs() {
+        return launcherLibs_;
     }
 
     /**
@@ -262,108 +555,21 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Configures the operation from a {@link Project}.
+     * Retrieves the destination directory in which the archive will be created.
      *
-     * @param project the project
-     * @return this operation instance
-     * @throws IOException if an error occurs
+     * @return the destination directory
      */
-    public abstract T fromProject(Project project) throws IOException;
-
-    /**
-     * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
-     *
-     * @param jars a collection of Java archive files
-     * @return this operation instance
-     * @see #infLibs(File...)
-     */
-    public T infLibs(Collection<File> jars) {
-        infLibs_.addAll(jars);
-        //noinspection unchecked
-        return (T) this;
+    public File destinationDirectory() {
+        return destinationDirectory_;
     }
 
     /**
-     * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
+     * Retrieves the file name that will be used for the archive creation.
      *
-     * @param jars one or more Java archive files
-     * @return this operation instance
-     * @see #infLibs(Collection)
+     * @return the archive file name
      */
-    public T infLibs(File... jars) {
-        return infLibs(List.of(jars));
-    }
-
-    /**
-     * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
-     *
-     * @param jars one or more Java archive files
-     * @return this operation instance
-     * @see #infLibsPaths(Collection)
-     */
-    public T infLibs(Path... jars) {
-        return infLibsPaths(List.of(jars));
-    }
-
-    /**
-     * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
-     *
-     * @param jars one or more Java archive files
-     * @return this operation instance
-     * @see #infLibsStrings(Collection)
-     */
-    public T infLibs(String... jars) {
-        return infLibsStrings(List.of(jars));
-    }
-
-    /**
-     * Retrieves the libraries in {@code BOOT-INF} or {@code WEB-INF}.
-     *
-     * @return the Java archives
-     */
-    public Collection<File> infLibs() {
-        return infLibs_;
-    }
-
-    /**
-     * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
-     *
-     * @param jars one or more Java archive files
-     * @return this operation instance
-     * @see #infLibs(Path...)
-     */
-    public T infLibsPaths(Collection<Path> jars) {
-        return infLibs(jars.stream().map(Path::toFile).toList());
-    }
-
-    /**
-     * Provides the libraries that will be stored in {@code BOOT-INF} or {@code WEB-INF}.
-     *
-     * @param jars one or more Java archive files
-     * @return this operation instance
-     * @see #infLibs(String...)
-     */
-    public T infLibsStrings(Collection<String> jars) {
-        return infLibs(jars.stream().map(File::new).toList());
-    }
-
-    /**
-     * Provides the Spring Boot loader launcher fully qualified class name.
-     * <p>
-     * For examples:
-     * <ul>
-     *     <li>{@code org.springframework.boot.loader.JarLauncher}</li>
-     *     <li>{@code org.springframework.boot.loader.PropertiesLauncher}</li>
-     *     <li>{@code org.springframework.boot.loader.WarLauncher}</li>
-     * </ul>
-     *
-     * @param className the launcher class name
-     * @return this operation instance
-     */
-    public T launcherClass(String className) {
-        launcherClass_ = className;
-        //noinspection unchecked
-        return (T) this;
+    public String destinationFileName() {
+        return destinationFileName_;
     }
 
     /**
@@ -379,95 +585,6 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     }
 
     /**
-     * Retrieves the Spring Boot loader launcher libraries.
-     *
-     * @return the Java archives
-     */
-    public Collection<File> launcherLibs() {
-        return launcherLibs_;
-    }
-
-    /**
-     * Provides the libraries for the Spring Boot loader launcher.
-     *
-     * @param jars a collection of Java archives
-     * @return this operation instance
-     * @throws IOException if a JAR could not be found
-     * @see #infLibs(File...)
-     */
-    public T launcherLibs(Collection<File> jars) throws IOException {
-        for (var j : jars) {
-            if (j.exists()) {
-                launcherLibs_.add(j);
-            } else {
-                throw new IOException("Spring Boot loader launcher library not found: " + j);
-            }
-        }
-        //noinspection unchecked
-        return (T) this;
-    }
-
-    /**
-     * Provides the libraries for the Spring Boot loader launcher.
-     *
-     * @param jars one or more Java archives
-     * @return this operation instance
-     * @throws IOException if a JAR could not be found
-     * @see #infLibs(Collection)
-     */
-    public T launcherLibs(File... jars) throws IOException {
-        return launcherLibs(List.of(jars));
-    }
-
-    /**
-     * Provides the libraries for the Spring Boot loader launcher.
-     *
-     * @param jars one or more Java archives
-     * @return this operation instance
-     * @throws IOException if a JAR could not be found
-     * @see #launcherLibsStrings(Collection)
-     */
-    public T launcherLibs(String... jars) throws IOException {
-        return launcherLibsStrings(List.of(jars));
-    }
-
-    /**
-     * Provides the libraries for the Spring Boot loader launcher.
-     *
-     * @param jars one or more Java archives
-     * @return this operation instance
-     * @throws IOException if a JAR could not be found
-     * @see #launcherLibsPaths(Collection)
-     */
-    public T launcherLibs(Path... jars) throws IOException {
-        return launcherLibsPaths(List.of(jars));
-    }
-
-    /**
-     * Provides the libraries for the Spring Boot loader launcher.
-     *
-     * @param jars one or more Java archives
-     * @return this operation instance
-     * @throws IOException if a JAR could not be found
-     * @see #launcherLibs(Path...)
-     */
-    public T launcherLibsPaths(Collection<Path> jars) throws IOException {
-        return launcherLibs(jars.stream().map(Path::toFile).toList());
-    }
-
-    /**
-     * Provides the libraries for the Spring Boot loader launcher.
-     *
-     * @param jars one or more Java archives
-     * @return this operation instance
-     * @throws IOException if a JAR could not be found
-     * @see #launcherLibs(String...)
-     */
-    public T launcherLibsStrings(Collection<String> jars) throws IOException {
-        return launcherLibs(jars.stream().map(File::new).toList());
-    }
-
-    /**
      * Provides the fully qualified main class name.
      *
      * @param className the class name
@@ -477,127 +594,6 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         mainClass_ = className;
         //noinspection unchecked
         return (T) this;
-    }
-
-    /**
-     * Retrieves the main class name.
-     *
-     * @return the class name
-     */
-    public String mainClass() {
-        return mainClass_;
-    }
-
-    /**
-     * Provides an attribute to put in the archive manifest.
-     *
-     * @param name  the attribute name
-     * @param value the attribute value
-     * @return this operation instance
-     */
-    public T manifestAttribute(String name, String value) {
-        manifestAttributes_.put(name, value);
-        //noinspection unchecked
-        return (T) this;
-    }
-
-    /**
-     * Retrieves the attributes that will be put in the archive manifest.
-     *
-     * @return the manifest attributes
-     */
-    public Map<String, String> manifestAttributes() {
-        return manifestAttributes_;
-    }
-
-    /**
-     * Provides a map of attributes to put in the archive manifest.
-     *
-     * @param attributes the manifest attributes
-     * @return this operation instance
-     * @see #manifestAttribute(String, String)
-     */
-    public T manifestAttributes(Map<String, String> attributes) {
-        manifestAttributes_.putAll(attributes);
-        //noinspection unchecked
-        return (T) this;
-    }
-
-    /**
-     * Provides source directories that will be used for the archive creation.
-     *
-     * @param directories one or more source directories
-     * @return this operation instance
-     * @see #sourceDirectories(File...)
-     */
-    public T sourceDirectories(Collection<File> directories) {
-        sourceDirectories_.addAll(directories);
-        //noinspection unchecked
-        return (T) this;
-    }
-
-    /**
-     * Provides source directories that will be used for the archive creation.
-     *
-     * @param directories one or more source directories
-     * @return this operation instance
-     * @see #sourceDirectories(Collection)
-     */
-    public T sourceDirectories(File... directories) {
-        return sourceDirectories(List.of(directories));
-    }
-
-    /**
-     * Provides source directories that will be used for the archive creation.
-     *
-     * @param directories one or more source directories
-     * @return this operation instance
-     * @see #sourceDirectoriesStrings(Collection)
-     */
-    public T sourceDirectories(String... directories) {
-        return sourceDirectoriesStrings(List.of(directories));
-    }
-
-    /**
-     * Provides source directories that will be used for the archive creation.
-     *
-     * @param directories one or more source directories
-     * @return this operation instance
-     * @see #sourceDirectoriesPaths(Collection)
-     */
-    public T sourceDirectories(Path... directories) {
-        return sourceDirectoriesPaths(List.of(directories));
-    }
-
-    /**
-     * Retrieves the source directories that will be used for the archive creation.
-     *
-     * @return the source directories
-     */
-    public Collection<File> sourceDirectories() {
-        return sourceDirectories_;
-    }
-
-    /**
-     * Provides source directories that will be used for the archive creation.
-     *
-     * @param directories one or more source directories
-     * @return this operation instance
-     * @see #sourceDirectories(Path...)
-     */
-    public T sourceDirectoriesPaths(Collection<Path> directories) {
-        return sourceDirectories(directories.stream().map(Path::toFile).toList());
-    }
-
-    /**
-     * Provides source directories that will be used for the archive creation.
-     *
-     * @param directories one or more source directories
-     * @return this operation instance
-     * @see #sourceDirectories(String...)
-     */
-    public T sourceDirectoriesStrings(Collection<String> directories) {
-        return sourceDirectories(directories.stream().map(File::new).toList());
     }
 
     /**
@@ -618,5 +614,14 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
             throw new IllegalArgumentException(("Spring Boot loader launcher libraries required."));
         }
         return true;
+    }
+
+    /**
+     * Retrieves the main class name.
+     *
+     * @return the class name
+     */
+    public String mainClass() {
+        return mainClass_;
     }
 }
