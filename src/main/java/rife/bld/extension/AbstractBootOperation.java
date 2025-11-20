@@ -471,12 +471,12 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @throws IOException if an error occurs
      */
     protected void executeCopyInfLibs(File stagingInfDirectory) throws IOException {
-        var infLibDir = new File(stagingInfDirectory, "lib");
-        BootUtils.mkDirs(infLibDir);
+        var infLibDir = stagingInfDirectory.toPath().resolve("lib");
+        BootUtils.mkDirs(infLibDir.toFile());
 
         for (var jar : infLibs_) {
             if (jar.exists()) {
-                Files.copy(jar.toPath(), infLibDir.toPath().resolve(jar.getName()));
+                Files.copy(jar.toPath(), infLibDir.resolve(jar.getName()));
             } else if (LOGGER.isLoggable(Level.WARNING) && !silent()) {
                 LOGGER.warning("File not found: " + jar.getAbsolutePath());
             }

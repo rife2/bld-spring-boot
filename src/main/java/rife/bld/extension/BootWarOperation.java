@@ -96,12 +96,12 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * @throws IOException if an error occurs
      */
     protected void executeCopyWebInfProvidedLib(File stagingWebInfDirectory) throws IOException {
-        var libProvidedDir = new File(stagingWebInfDirectory, "lib-provided");
-        BootUtils.mkDirs(libProvidedDir);
+        var libProvidedPath = stagingWebInfDirectory.toPath().resolve("lib-provided");
+        BootUtils.mkDirs(libProvidedPath.toFile());
 
         for (var jar : providedLibs_) {
             if (jar.exists()) {
-                Files.copy(jar.toPath(), libProvidedDir.toPath().resolve(jar.getName()));
+                Files.copy(jar.toPath(), libProvidedPath.resolve(jar.getName()));
             } else if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning("File not found: " + jar);
             }
