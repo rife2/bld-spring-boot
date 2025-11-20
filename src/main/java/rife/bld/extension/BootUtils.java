@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
  * @since 1.0
  */
 public final class BootUtils {
+    private static final String[] FILE_SIZE_UNITS = {"B", "KB", "MB", "GB", "TB"};
     private static final Pattern LOADER_JAR = Pattern.compile("spring-boot-loader-(\\d+).(\\d+).(\\d+).jar");
 
     private BootUtils() {
@@ -47,10 +48,9 @@ public final class BootUtils {
         if (size <= 0) {
             return "0 B";
         }
-        var units = new String[]{"B", "KB", "MB", "GB", "TB"};
         var digitGroups = (int) (Math.log10(size) / Math.log10(1024));
         return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups))
-                + ' ' + units[digitGroups];
+                + ' ' + FILE_SIZE_UNITS[digitGroups];
     }
 
     /**
