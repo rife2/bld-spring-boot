@@ -50,10 +50,10 @@ import java.util.spi.ToolProvider;
 public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         extends AbstractOperation<AbstractBootOperation<T>> {
     protected static final Logger LOGGER = Logger.getLogger("BootOperation");
-    private final Collection<File> infLibs_ = new ArrayList<>();
-    private final Collection<File> launcherLibs_ = new ArrayList<>();
+    private final List<File> infLibs_ = new ArrayList<>();
+    private final List<File> launcherLibs_ = new ArrayList<>();
     private final Map<String, String> manifestAttributes_ = new ConcurrentHashMap<>();
-    private final Collection<File> sourceDirectories_ = new ArrayList<>();
+    private final List<File> sourceDirectories_ = new ArrayList<>();
     private File destinationDirectory_;
     private String destinationFileName_;
     private String launcherClass_;
@@ -190,7 +190,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @return the Java archives
      */
     @SuppressFBWarnings("EI_EXPOSE_REP")
-    public Collection<File> infLibs() {
+    public List<File> infLibs() {
         return infLibs_;
     }
 
@@ -403,7 +403,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @return the source directories
      */
     @SuppressFBWarnings("EI_EXPOSE_REP")
-    public Collection<File> sourceDirectories() {
+    public List<File> sourceDirectories() {
         return sourceDirectories_;
     }
 
@@ -441,7 +441,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @return the Java archives
      */
     @SuppressFBWarnings("EI_EXPOSE_REP")
-    public Collection<File> launcherLibs() {
+    public List<File> launcherLibs() {
         return launcherLibs_;
     }
 
