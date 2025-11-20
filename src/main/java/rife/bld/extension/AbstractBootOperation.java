@@ -542,14 +542,17 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @throws IOException if an error occurs
      */
     protected void executeCreateManifest(File stagingDirectory) throws IOException {
-        var metaInfDir = new File(stagingDirectory, "META-INF");
-        BootUtils.mkDirs(metaInfDir);
+        var metaInfDir = stagingDirectory.toPath().resolve("META-INF");
+        BootUtils.mkDirs(metaInfDir.toFile());
 
-        var manifest = new File(metaInfDir, "MANIFEST.MF").toPath();
+        var manifest = metaInfDir.resolve("MANIFEST.MF");
 
-        try (var fileWriter = Files.newBufferedWriter(manifest)) {
-            for (var set : manifestAttributes_.entrySet()) {
-                fileWriter.write(set.getKey() + ": " + set.getValue() + System.lineSeparator());
+        try (var writer = Files.newBufferedWriter(manifest)) {
+            for (var entry : manifestAttributes_.entrySet()) {
+                writer.write(entry.getKey());
+                writer.write(": ");
+                writer.write(entry.getValue());
+                writer.write(System.lineSeparator());
             }
         }
     }
@@ -605,6 +608,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @throws IllegalArgumentException if an error occurs
      */
     @SuppressWarnings("SameReturnValue")
+    @SuppressFBWarnings("DRE_DECLARED_RUNTIME_EXCEPTION")
     protected boolean verifyExecute() throws IllegalArgumentException {
         if (mainClass() == null) {
             throw new IllegalArgumentException("Project mainClass required.");
