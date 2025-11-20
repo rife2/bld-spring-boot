@@ -77,38 +77,6 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     }
 
     /**
-     * Part of the {@link #execute execute} operation, creates the {@code WEB-INF} staging directory.
-     *
-     * @param stagingDirectory the staging directory
-     * @return the {@code WEB-INF} directory location
-     * @throws IOException if an error occurs
-     */
-    protected File executeCreateWebInfDirectory(File stagingDirectory) throws IOException {
-        var bootInf = new File(stagingDirectory, "WEB-INF");
-        BootUtils.mkDirs(bootInf);
-        return bootInf;
-    }
-
-    /**
-     * Part of the {@link #execute execute} operation, copies the {@code WEB-INF/lib-provided} libraries.
-     *
-     * @param stagingWebInfDirectory the staging {@code WEB-INF/lib-provided} directory
-     * @throws IOException if an error occurs
-     */
-    protected void executeCopyWebInfProvidedLib(File stagingWebInfDirectory) throws IOException {
-        var libProvidedPath = stagingWebInfDirectory.toPath().resolve("lib-provided");
-        BootUtils.mkDirs(libProvidedPath.toFile());
-
-        for (var jar : providedLibs_) {
-            if (jar.exists()) {
-                Files.copy(jar.toPath(), libProvidedPath.resolve(jar.getName()));
-            } else if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning("File not found: " + jar);
-            }
-        }
-    }
-
-    /**
      * Configures the operation from a {@link Project}.
      * <p>
      * Sets the following:
@@ -178,17 +146,6 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
-     * @see #providedLibs(String...)
-     */
-    public BootWarOperation providedLibsStrings(Collection<String> jars) {
-        return providedLibs(jars.stream().map(File::new).toList());
-    }
-
-    /**
-     * Provides the libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
-     *
-     * @param jars one or more Java archive files
-     * @return this operation instance
      * @see #providedLibs(Collection)
      */
     public BootWarOperation providedLibs(File... jars) {
@@ -207,6 +164,16 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     }
 
     /**
+     * Retrieves the libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
+     *
+     * @return the list of Java archive files.
+     */
+    @SuppressFBWarnings("EI_EXPOSE_REP")
+    public List<File> providedLibs() {
+        return providedLibs_;
+    }
+
+    /**
      * Provides the libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
      *
      * @param jars one or more Java archive files
@@ -218,12 +185,45 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     }
 
     /**
-     * Retrieves the libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
+     * Provides the libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
      *
-     * @return the list of Java archive files.
+     * @param jars one or more Java archive files
+     * @return this operation instance
+     * @see #providedLibs(String...)
      */
-    @SuppressFBWarnings("EI_EXPOSE_REP")
-    public List<File> providedLibs() {
-        return providedLibs_;
+    public BootWarOperation providedLibsStrings(Collection<String> jars) {
+        return providedLibs(jars.stream().map(File::new).toList());
+    }
+
+    /**
+     * Part of the {@link #execute execute} operation, copies the {@code WEB-INF/lib-provided} libraries.
+     *
+     * @param stagingWebInfDirectory the staging {@code WEB-INF/lib-provided} directory
+     * @throws IOException if an error occurs
+     */
+    protected void executeCopyWebInfProvidedLib(File stagingWebInfDirectory) throws IOException {
+        var libProvidedPath = stagingWebInfDirectory.toPath().resolve("lib-provided");
+        BootUtils.mkDirs(libProvidedPath.toFile());
+
+        for (var jar : providedLibs_) {
+            if (jar.exists()) {
+                Files.copy(jar.toPath(), libProvidedPath.resolve(jar.getName()));
+            } else if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning("File not found: " + jar);
+            }
+        }
+    }
+
+    /**
+     * Part of the {@link #execute execute} operation, creates the {@code WEB-INF} staging directory.
+     *
+     * @param stagingDirectory the staging directory
+     * @return the {@code WEB-INF} directory location
+     * @throws IOException if an error occurs
+     */
+    protected File executeCreateWebInfDirectory(File stagingDirectory) throws IOException {
+        var bootInf = new File(stagingDirectory, "WEB-INF");
+        BootUtils.mkDirs(bootInf);
+        return bootInf;
     }
 }

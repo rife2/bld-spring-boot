@@ -460,13 +460,6 @@ class BootOperationTests {
         }
 
         @Test
-        void jarProjectExecuteWithLoggingDisabled() throws Exception {
-            logger.setLevel(Level.OFF);
-            jarProjectExecute();
-            assertThat(logHandler.getLogMessages()).isEmpty();
-        }
-
-        @Test
         void jarProjectExecute() throws Exception {
             new BootJarOperation()
                     .fromProject(new CustomProject(new File(".")))
@@ -499,6 +492,13 @@ class BootOperationTests {
         }
 
         @Test
+        void jarProjectExecuteWithLoggingDisabled() throws Exception {
+            logger.setLevel(Level.OFF);
+            jarProjectExecute();
+            assertThat(logHandler.getLogMessages()).isEmpty();
+        }
+
+        @Test
         void jarProjectExecuteWithSilent() throws Exception {
             new BootJarOperation()
                     .fromProject(new CustomProject(new File(".")))
@@ -508,13 +508,6 @@ class BootOperationTests {
                     .infLibs(new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT).getAbsolutePath(),
                             new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR).getAbsolutePath())
                     .execute();
-            assertThat(logHandler.getLogMessages()).isEmpty();
-        }
-
-        @Test
-        void warProjectExecuteWithLoggingDisabled() throws Exception {
-            logger.setLevel(Level.OFF);
-            warProjectExecute();
             assertThat(logHandler.getLogMessages()).isEmpty();
         }
 
@@ -558,6 +551,13 @@ class BootOperationTests {
                             LAUNCHER_JARS);
 
             FileUtils.deleteDirectory(tmpDir);
+        }
+
+        @Test
+        void warProjectExecuteWithLoggingDisabled() throws Exception {
+            logger.setLevel(Level.OFF);
+            warProjectExecute();
+            assertThat(logHandler.getLogMessages()).isEmpty();
         }
     }
 

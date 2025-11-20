@@ -71,19 +71,6 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
     }
 
     /**
-     * Part of the {@link #execute execute} operation, creates the {@code BOOT-INF} staging directory.
-     *
-     * @param stagingDirectory the staging directory
-     * @return the {@code BOOT-INF} directory location
-     * @throws IOException if an error occurs
-     */
-    protected File executeCreateBootInfDirectory(File stagingDirectory) throws IOException {
-        var bootInf = new File(stagingDirectory, "BOOT-INF");
-        BootUtils.mkDirs(bootInf);
-        return bootInf;
-    }
-
-    /**
      * Configures the operation from a {@link Project}.
      * <p>
      * Sets the following:
@@ -120,5 +107,18 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
                         "Main-Class", launcherClass(),
                         "Start-Class", mainClass()))
                 .sourceDirectories(project.buildMainDirectory(), project.srcMainResourcesDirectory());
+    }
+
+    /**
+     * Part of the {@link #execute execute} operation, creates the {@code BOOT-INF} staging directory.
+     *
+     * @param stagingDirectory the staging directory
+     * @return the {@code BOOT-INF} directory location
+     * @throws IOException if an error occurs
+     */
+    protected File executeCreateBootInfDirectory(File stagingDirectory) throws IOException {
+        var bootInf = new File(stagingDirectory, "BOOT-INF");
+        BootUtils.mkDirs(bootInf);
+        return bootInf;
     }
 }
