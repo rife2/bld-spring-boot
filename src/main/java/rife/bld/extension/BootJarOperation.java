@@ -48,6 +48,7 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
      * Performs the BootJar operation.
      */
     @Override
+    @SuppressWarnings("RedundantThrows")
     public void execute() throws Exception {
         verifyExecute();
 

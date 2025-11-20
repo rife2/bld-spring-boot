@@ -379,14 +379,16 @@ class BootOperationTests {
             @Test
             void warProvidedLibsAsPath() {
                 op.providedLibs().clear();
-                op.providedLibs(foo.toPath());
+                var tmp = op.providedLibs(foo.toPath());
+                assertThat(tmp).isEqualTo(op);
                 assertThat(op.providedLibs()).containsExactly(foo);
             }
 
             @Test
             void warProvidedLibsAsString() {
                 op.providedLibs().clear();
-                op.providedLibs(EXAMPLES_LIB_RUNTIME + "foo.jar");
+                var tmp = op.providedLibs(EXAMPLES_LIB_RUNTIME + "foo.jar");
+                assertThat(tmp).isEqualTo(op);
                 assertThat(op.providedLibs()).containsExactly(foo);
             }
         }
@@ -578,14 +580,16 @@ class BootOperationTests {
         @Test
         void sourceDirectoriesAsFileList() {
             op.sourceDirectories().clear();
-            op.sourceDirectories(List.of(src, test));
+            var tmp = op.sourceDirectories(List.of(src, test));
+            assertThat(tmp).isEqualTo(op);
             assertThat(op.sourceDirectories()).as("List(File...)").containsExactly(src, test);
         }
 
         @Test
         void sourceDirectoriesAsPathArray() {
             op.sourceDirectories().clear();
-            op.sourceDirectories(src.toPath(), test.toPath());
+            var tmp = op.sourceDirectories(src.toPath(), test.toPath());
+            assertThat(tmp).isEqualTo(op);
             assertThat(op.sourceDirectories()).as("Path...").containsExactly(src, test);
         }
 

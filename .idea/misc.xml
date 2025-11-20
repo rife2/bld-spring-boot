@@ -6,6 +6,7 @@
     <pattern value="rife.bld.extension.AbstractBootOperation" method="fromProject" />
     <pattern value="rife.bld.extension.SpringBootBuild" method="reporter" />
     <pattern value="rife.bld.extension.SpringBootBuild" method="spotbugs" />
+    <pattern value="rife.bld.extension.BootUtils" method="BootUtils" />
   </component>
   <component name="PDMPlugin">
     <option name="customRuleSets">
