@@ -44,9 +44,9 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 class BootOperationTests {
     private static final String BLD = "bld-2.3.0.jar";
     private static final String BOOT_VERSION = "3.5.8";
-    private static final String EXAMPLES_LIB_COMPILE = "examples/lib/compile/";
-    private static final String EXAMPLES_LIB_RUNTIME = "examples/lib/runtime/";
-    private static final String EXAMPLES_LIB_STANDALONE = "examples/lib/standalone/";
+    private static final String EXAMPLES_LIB_COMPILE = "examples/3.5.x/lib/compile/";
+    private static final String EXAMPLES_LIB_RUNTIME = "examples/3.5.x/lib/runtime/";
+    private static final String EXAMPLES_LIB_STANDALONE = "examples/3.5.x/lib/standalone/";
     private static final String LAUNCHER_JARS = """
             org/
             org/springframework/
@@ -170,9 +170,9 @@ class BootOperationTests {
             "jsr305-3.0.2.jar",
             "spotbugs-annotations-4.9.8.jar"
     );
-    private static final String SPRING_BOOT = "spring-boot-" + BOOT_VERSION + ".jar";
-    private static final String SPRING_BOOT_ACTUATOR = "spring-boot-actuator-" + BOOT_VERSION + ".jar";
-    private static final String SPRING_BOOT_LOADER = "spring-boot-loader-" + BOOT_VERSION + ".jar";
+    private static final String SPRING_BOOT_ACTUATOR_JAR = "spring-boot-actuator-" + BOOT_VERSION + ".jar";
+    private static final String SPRING_BOOT_JAR = "spring-boot-" + BOOT_VERSION + ".jar";
+    private static final String SPRING_BOOT_LOADER_JAR = "spring-boot-loader-" + BOOT_VERSION + ".jar";
     private static final String SRC_MAIN_JAVA = "src/main/java";
     private static final String SRC_TEST_JAVA = "src/test/java";
 
@@ -229,7 +229,7 @@ class BootOperationTests {
         void launcherClass() throws IOException {
             var bootWar = new BootJarOperation().mainClass(MAIN_CLASS)
                     .launcherClass("org.springframework.boot.loader.launch.WarLauncher")
-                    .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)));
+                    .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR)));
             assertThat(bootWar.verifyExecute()).isTrue();
         }
 
@@ -252,7 +252,7 @@ class BootOperationTests {
         @Test
         void missingLauncherClass() throws IOException {
             var bootWar = new BootWarOperation().mainClass(MAIN_CLASS)
-                    .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)));
+                    .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR)));
             assertThatCode(bootWar::execute)
                     .isInstanceOf((IllegalArgumentException.class))
                     .hasMessageContaining("class required");
@@ -272,8 +272,8 @@ class BootOperationTests {
         @Nested
         @DisplayName("Inf Lib Tests")
         class InfLibTest {
-            private final File bar = new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR);
-            private final File foo = new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT);
+            private final File bar = new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR_JAR);
+            private final File foo = new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_JAR);
             private final BootWarOperation op = new BootWarOperation();
 
             @Test
@@ -308,14 +308,14 @@ class BootOperationTests {
             @Test
             void infLibsAsStringArray() {
                 op.infLibs().clear();
-                op.infLibs(EXAMPLES_LIB_COMPILE + SPRING_BOOT, EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR);
+                op.infLibs(EXAMPLES_LIB_COMPILE + SPRING_BOOT_JAR, EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR_JAR);
                 assertThat(op.infLibs()).as("String...").containsExactly(foo, bar);
             }
 
             @Test
             void infLibsAsStringList() {
                 op.infLibs().clear();
-                op.infLibsStrings(List.of(EXAMPLES_LIB_COMPILE + SPRING_BOOT, EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR));
+                op.infLibsStrings(List.of(EXAMPLES_LIB_COMPILE + SPRING_BOOT_JAR, EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR_JAR));
                 assertThat(op.infLibs()).as("List(String...)").containsExactly(foo, bar);
 
             }
@@ -324,7 +324,7 @@ class BootOperationTests {
         @Nested
         @DisplayName("Launcher Libs Tests")
         class LauncherLibTests {
-            private final File launcher = new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER);
+            private final File launcher = new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR);
 
             @Test
             void launcherLibsAsFileArray() throws IOException {
@@ -352,13 +352,13 @@ class BootOperationTests {
 
             @Test
             void launcherLibsAsStringArray() throws IOException {
-                var op = new BootJarOperation().launcherLibs(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER);
+                var op = new BootJarOperation().launcherLibs(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR);
                 assertThat(op.launcherLibs()).as("String...").containsExactly(launcher);
             }
 
             @Test
             void launcherLibsAsStringList() throws IOException {
-                var op = new BootJarOperation().launcherLibsStrings(List.of(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER));
+                var op = new BootJarOperation().launcherLibsStrings(List.of(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR));
                 assertThat(op.launcherLibs()).as("List(String...)").containsExactly(launcher);
             }
         }
@@ -431,11 +431,11 @@ class BootOperationTests {
             var jar = "foo-1.1.1.jar";
             new BootJarOperation()
                     .launcherClass("org.springframework.boot.loader.launch.JarLauncher")
-                    .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)))
+                    .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR)))
                     .destinationDirectory(tmpDir)
                     .destinationFileName(jar)
-                    .infLibs(new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT),
-                            new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR))
+                    .infLibs(new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_JAR),
+                            new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR_JAR))
                     .mainClass(MAIN_CLASS)
                     .sourceDirectories(new File("build/main"))
                     .execute();
@@ -455,8 +455,8 @@ class BootOperationTests {
                             "BOOT-INF/classes/rife/bld/extension/BootUtils.class\n" +
                             "BOOT-INF/classes/rife/bld/extension/BootWarOperation.class\n" +
                             "BOOT-INF/lib/\n" +
-                            "BOOT-INF/lib/" + SPRING_BOOT + '\n' +
-                            "BOOT-INF/lib/" + SPRING_BOOT_ACTUATOR + '\n' +
+                            "BOOT-INF/lib/" + SPRING_BOOT_JAR + '\n' +
+                            "BOOT-INF/lib/" + SPRING_BOOT_ACTUATOR_JAR + '\n' +
                             "META-INF/\n" +
                             "META-INF/MANIFEST.MF\n" + LAUNCHER_JARS);
         }
@@ -465,10 +465,10 @@ class BootOperationTests {
         void jarProjectExecute() throws Exception {
             new BootJarOperation()
                     .fromProject(new CustomProject(new File(".")))
-                    .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)))
+                    .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR)))
                     .destinationDirectory(tmpDir.getAbsolutePath())
-                    .infLibs(new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT).getAbsolutePath(),
-                            new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR).getAbsolutePath())
+                    .infLibs(new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_JAR).getAbsolutePath(),
+                            new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR_JAR).getAbsolutePath())
                     .execute();
 
             var jarFile = new File(tmpDir, "test_project-0.0.1-boot.jar");
@@ -487,8 +487,8 @@ class BootOperationTests {
                             "BOOT-INF/classes/rife/bld/extension/BootWarOperation.class\n" +
                             "BOOT-INF/lib/\n" +
                             "BOOT-INF/lib/" + BLD + '\n' +
-                            "BOOT-INF/lib/" + SPRING_BOOT + '\n' +
-                            "BOOT-INF/lib/" + SPRING_BOOT_ACTUATOR + '\n' +
+                            "BOOT-INF/lib/" + SPRING_BOOT_JAR + '\n' +
+                            "BOOT-INF/lib/" + SPRING_BOOT_ACTUATOR_JAR + '\n' +
                             "META-INF/\n" +
                             "META-INF/MANIFEST.MF\n" + LAUNCHER_JARS);
         }
@@ -505,10 +505,10 @@ class BootOperationTests {
             new BootJarOperation()
                     .fromProject(new CustomProject(new File(".")))
                     .silent(true)
-                    .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)))
+                    .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR)))
                     .destinationDirectory(tmpDir.getAbsolutePath())
-                    .infLibs(new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT).getAbsolutePath(),
-                            new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR).getAbsolutePath())
+                    .infLibs(new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_JAR).getAbsolutePath(),
+                            new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR_JAR).getAbsolutePath())
                     .execute();
             assertThat(logHandler.getLogMessages()).isEmpty();
         }
@@ -518,10 +518,10 @@ class BootOperationTests {
             var project = new CustomProject(new File("."));
             new BootWarOperation()
                     .fromProject(project)
-                    .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER)))
+                    .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR)))
                     .destinationDirectory(tmpDir.toPath())
-                    .infLibs(Path.of(EXAMPLES_LIB_COMPILE + SPRING_BOOT),
-                            Path.of(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR))
+                    .infLibs(Path.of(EXAMPLES_LIB_COMPILE + SPRING_BOOT_JAR),
+                            Path.of(EXAMPLES_LIB_COMPILE + SPRING_BOOT_ACTUATOR_JAR))
                     .providedLibs(new File(EXAMPLES_LIB_RUNTIME + PROVIDED_LIBS.get(0)))
                     .execute();
 
@@ -544,8 +544,8 @@ class BootOperationTests {
                             "WEB-INF/lib/\n" +
                             "WEB-INF/lib/" + BLD + '\n' +
                             "WEB-INF/lib/dist/\n" +
-                            "WEB-INF/lib/" + SPRING_BOOT + '\n' +
-                            "WEB-INF/lib/" + SPRING_BOOT_ACTUATOR + '\n' +
+                            "WEB-INF/lib/" + SPRING_BOOT_JAR + '\n' +
+                            "WEB-INF/lib/" + SPRING_BOOT_ACTUATOR_JAR + '\n' +
                             "WEB-INF/lib-provided/\n" +
                             "WEB-INF/lib-provided/" + PROVIDED_LIBS.get(0) + '\n' +
                             "WEB-INF/lib-provided/" + PROVIDED_LIBS.get(1) + '\n' +

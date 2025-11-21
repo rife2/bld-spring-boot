@@ -33,7 +33,7 @@ public void bootjar() throws Exception {
 ./bld compile bootjar
 ```
 
-- [View Examples Project](https://github.com/rife2/bld-spring-boot/tree/main/examples)
+- [View Examples Projects](https://github.com/rife2/bld-spring-boot/tree/main/examples)
 
 ## Create an Executable WAR
 
@@ -62,6 +62,12 @@ Don't forget to include the _Spring Boot Loader_ dependency to your project:
 ```java
 scope(standalone)
     .include(dependency("org.springframework.boot:spring-boot-loader:3.5.8"));
+```
+or
+
+```java
+scope(standalone)
+    .include(dependency("org.springframework.boot:spring-boot-loader:4.0.0"));
 ```
 
 Please check the [BootJarOperation documentation](https://rife2.github.io/bld-spring-boot/rife/bld/extension/BootJarOperation.html#method-summary)
