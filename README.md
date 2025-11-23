@@ -33,7 +33,7 @@ public void bootjar() throws Exception {
 ./bld compile bootjar
 ```
 
-- [View Examples Projects](https://github.com/rife2/bld-spring-boot/tree/main/examples)
+- [View Example Projects](https://github.com/rife2/bld-spring-boot/tree/main/examples)
 
 ## Create an Executable WAR
 

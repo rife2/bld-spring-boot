@@ -23,43 +23,43 @@ jobs:
           distribution: "zulu"
           java-version: ${{ matrix.java-version }}
 
-      - name: Download dependencies [examples 3.5.x]
+      - name: Download dependencies [3.5.x example]
         working-directory: examples/3.5.x
         run: ./bld download
 
-      - name: Compile source [examples 3.5.x]
+      - name: Compile source [3.5.x example]
         working-directory: examples/3.5.x
         run: ./bld compile
 
-      - name: Run tests [examples 3.5.x]
+      - name: Run tests [3.5.x example]
         working-directory: examples/3.5.x
         run: ./bld test
 
-      - name: Compile and create the JAR [examples 3.5.x]
+      - name: Compile and create the JAR [3.5.x example]
         working-directory: examples/3.5.x
         run: ./bld bootjar
 
-      - name: Compile and create the WAR [examples 3.5.x]
+      - name: Compile and create the WAR [3.5.x example]
         working-directory: examples/3.5.x
         run: ./bld bootwar
 
-      - name: Download dependencies [examples 4.0.x]
+      - name: Download dependencies [4.0.x example]
         working-directory: examples/4.0.x
         run: ./bld download
 
-      - name: Compile source [examples 4.0.x]
+      - name: Compile source [4.0.x example]
         working-directory: examples/4.0.x
         run: ./bld compile
 
-      - name: Run tests [examples 4.0.x]
+      - name: Run tests [4.0.x example]
         working-directory: examples/4.0.x
         run: ./bld test
 
-      - name: Compile and create the JAR [examples 4.0.x]
+      - name: Compile and create the JAR [4.0.x example]
         working-directory: examples/4.0.x
         run: ./bld bootjar
 
-      - name: Compile and create the WAR [examples 4.0.x]
+      - name: Compile and create the WAR [4.0.x example]
         working-directory: examples/4.0.x
         run: ./bld bootwar
 
