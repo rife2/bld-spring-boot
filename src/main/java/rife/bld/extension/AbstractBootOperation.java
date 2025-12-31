@@ -66,6 +66,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @return this operation instance
      * @throws IOException if an error occurs
      */
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     public T destinationDirectory(String directory) throws IOException {
         return destinationDirectory(new File(directory));
     }
@@ -517,6 +518,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @return the archive
      * @throws IOException if an error occurs
      */
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     protected File executeCreateArchive(File stagingDirectory) throws IOException {
         executeCreateManifest(stagingDirectory);
 
