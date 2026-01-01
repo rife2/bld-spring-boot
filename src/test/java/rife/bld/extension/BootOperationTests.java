@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 @SuppressWarnings({"PMD.TestClassWithoutTestCases", "PMD.SignatureDeclareThrowsException"})
 class BootOperationTests {
     private static final String BLD = "bld-2.3.0.jar";
-    private static final String BOOT_VERSION = "4.0.0";
+    private static final String BOOT_VERSION = "4.0.1";
     private static final String EXAMPLES_DIR = "examples/4.0.x";
     private static final String EXAMPLES_LIB_COMPILE = EXAMPLES_DIR + "/lib/compile/";
     private static final String EXAMPLES_LIB_RUNTIME = EXAMPLES_DIR + "/lib/runtime/";
