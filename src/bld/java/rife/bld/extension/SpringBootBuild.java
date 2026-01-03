@@ -44,6 +44,8 @@ public class SpringBootBuild extends Project {
 
         var junit = version(6, 0, 1);
         scope(compile)
+                .include(dependency("com.uwyn.rife2", "bld-extensions-tools",
+                        version(0, 9, 0, "SNAPSHOT")))
                 .include(dependency("com.uwyn.rife2", "bld", version(2, 3, 0)));
         scope(provided)
                 .include(dependency("com.github.spotbugs", "spotbugs-annotations",

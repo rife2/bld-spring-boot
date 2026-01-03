@@ -41,9 +41,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 @ExtendWith(LoggingExtension.class)
-@SuppressWarnings({"PMD.TestClassWithoutTestCases", "PMD.SignatureDeclareThrowsException"})
+@SuppressWarnings({"PMD.TestClassWithoutTestCases", "PMD.SignatureDeclareThrowsException",
+        "PMD.AvoidDuplicateLiterals"})
 class BootOperationTests {
     private static final String BLD = "bld-2.3.0.jar";
+    private static final String BLD_EXTENSIONS_TOOLS = "bld-extensions-tools-0.9.0-SNAPSHOT.jar";
     private static final String BOOT_VERSION = "4.0.1";
     private static final String EXAMPLES_DIR = "examples/4.0.x";
     private static final String EXAMPLES_LIB_COMPILE = EXAMPLES_DIR + "/lib/compile/";
@@ -495,6 +497,7 @@ class BootOperationTests {
                             "BOOT-INF/classes/rife/bld/extension/BootWarOperation.class\n" +
                             "BOOT-INF/lib/\n" +
                             "BOOT-INF/lib/" + BLD + '\n' +
+                            "BOOT-INF/lib/" + BLD_EXTENSIONS_TOOLS + '\n' +
                             "BOOT-INF/lib/" + SPRING_BOOT_JAR + '\n' +
                             "META-INF/\n" +
                             "META-INF/MANIFEST.MF\n" + LAUNCHER_JARS);
@@ -550,6 +553,7 @@ class BootOperationTests {
                             "WEB-INF/classes/rife/bld/extension/BootWarOperation.class\n" +
                             "WEB-INF/lib/\n" +
                             "WEB-INF/lib/" + BLD + '\n' +
+                            "WEB-INF/lib/" + BLD_EXTENSIONS_TOOLS + '\n' +
                             "WEB-INF/lib/dist/\n" +
                             "WEB-INF/lib/" + SPRING_BOOT_JAR + '\n' +
                             "WEB-INF/lib-provided/\n" +
