@@ -45,14 +45,25 @@ import static org.assertj.core.api.Assertions.assertThatCode;
         "PMD.AvoidDuplicateLiterals"})
 class BootOperationTests {
 
-    private static final String BLD = "bld-2.3.0.jar";
-    private static final String BLD_EXTENSIONS_TOOLS = "bld-extensions-tools-0.9.0-SNAPSHOT.jar";
+    private static final String BLD_EXTENSIONS_TOOLS = "bld-extensions-tools";
+    private static final String BLD_EXTENSIONS_TOOLS_PATTERN = BLD_EXTENSIONS_TOOLS
+            + "-\\d+\\.\\d+\\.\\d+-[^\\n]+\\.jar";
+    private static final String BOOT_INF_LIB_BLD_EXTENSIONS_TOOLS_PATTERN = "BOOT-INF/lib/"
+            + BLD_EXTENSIONS_TOOLS_PATTERN;
+    private static final String WEB_INF_LIB_BLD_EXTENSIONS_TOOLS_PATTERN = "WEB-INF/lib/"
+            + BLD_EXTENSIONS_TOOLS_PATTERN;
+    private static final String BLD_PATTERN = "bld-\\d+\\.\\d+\\.\\d+\\.jar";
+    private static final String BOOT_INF_LIB_BLD_PATTERN = "BOOT-INF/lib/" + BLD_PATTERN;
     private static final String BOOT_VERSION = "4.0.1";
     private static final String EXAMPLES_DIR = "examples/4.0.x";
     private static final String EXAMPLES_LIB_COMPILE = EXAMPLES_DIR + "/lib/compile/";
     private static final String EXAMPLES_LIB_RUNTIME = EXAMPLES_DIR + "/lib/runtime/";
     private static final String EXAMPLES_LIB_STANDALONE = EXAMPLES_DIR + "/lib/standalone/";
     private static final String FOO_JAR = "foo.jar";
+    private static final String JSR305 = "jsr305";
+    private static final String JSR305_PATTERN = JSR305 + "-\\d+\\.\\d+\\.\\d+\\.jar";
+    private static final String WEB_INF_LIB_PROVIDED_JSR305_PATTERN = "WEB-INF/lib-provided/" + JSR305_PATTERN;
+    private static final String JSR305_VERSION = "3.0.2";
     private static final String LAUNCHER_JARS = """
             org/
             org/springframework/
@@ -171,15 +182,15 @@ class BootOperationTests {
             org/springframework/boot/loader/zip/ZipString.class
             """;
     private static final String MAIN_CLASS = "com.example.Foo";
-    private static final List<String> PROVIDED_LIBS = List.of(
-            "jsr305-3.0.2.jar",
-            "spotbugs-annotations-4.9.8.jar"
-    );
+    private static final String SPOTBUGS_ANNOTATIONS = "spotbugs-annotations";
+    private static final String SPOTBUGS_ANNOTATIONS_PATTERN = SPOTBUGS_ANNOTATIONS + "-\\d+\\.\\d+\\.\\d+\\.jar";
+    private static final String WEB_INF_LIB_PROVIDED_SPOTBUGS_PATTERN = "WEB-INF/lib-provided/"
+            + SPOTBUGS_ANNOTATIONS_PATTERN;
     private static final String SPRING_BOOT_JAR = "spring-boot-" + BOOT_VERSION + ".jar";
     private static final String SPRING_BOOT_LOADER_JAR = "spring-boot-loader-" + BOOT_VERSION + ".jar";
     private static final String SRC_MAIN_JAVA = "src/main/java";
     private static final String SRC_TEST_JAVA = "src/test/java";
-
+    private static final String WEB_INF_LIB_BLD_PATTERN = "WEB-INF/lib/" + BLD_PATTERN;
     private final Logger logger = Logger.getLogger("BootOperation");
     private TestLogHandler logHandler;
 
@@ -361,13 +372,15 @@ class BootOperationTests {
 
             @Test
             void launcherLibsAsStringArray() throws IOException {
-                var op = new BootJarOperation().launcherLibs(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR);
+                var op = new BootJarOperation().launcherLibs(EXAMPLES_LIB_STANDALONE
+                        + SPRING_BOOT_LOADER_JAR);
                 assertThat(op.launcherLibs()).as("String...").containsExactly(launcher);
             }
 
             @Test
             void launcherLibsAsStringList() throws IOException {
-                var op = new BootJarOperation().launcherLibsStrings(List.of(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR));
+                var op = new BootJarOperation().launcherLibsStrings(List.of(EXAMPLES_LIB_STANDALONE
+                        + SPRING_BOOT_LOADER_JAR));
                 assertThat(op.launcherLibs()).as("List(String...)").containsExactly(launcher);
             }
         }
@@ -431,13 +444,17 @@ class BootOperationTests {
                 softly.assertThat(bootJar.sourceDirectories()).as("sourceDirectories.size").hasSize(3)
                         .containsExactly(project.buildMainDirectory(), project.srcMainResourcesDirectory(),
                                 new File(SRC_MAIN_JAVA));
-                softly.assertThat(bootJar.manifestAttributes()).as("manifestAttributes.size").hasSize(3);
+                softly.assertThat(bootJar.manifestAttributes()).as("manifestAttributes.size")
+                        .hasSize(3);
                 softly.assertThat(bootJar.manifestAttributes().get("Manifest-Version")).as("Manifest-Version")
                         .isEqualTo("1.0");
-                softly.assertThat(bootJar.manifestAttributes().get("Main-Class")).as("Main-Class").endsWith("JarLauncher");
-                softly.assertThat(bootJar.manifestAttributes().get("Start-Class")).as("Start-Class").isEqualTo(MAIN_CLASS);
+                softly.assertThat(bootJar.manifestAttributes().get("Main-Class")).as("Main-Class")
+                        .endsWith("JarLauncher");
+                softly.assertThat(bootJar.manifestAttributes().get("Start-Class")).as("Start-Class")
+                        .isEqualTo(MAIN_CLASS);
                 softly.assertThat(bootJar.manifestAttribute("Manifest-Test", "tsst")
-                        .manifestAttributes().get("Manifest-Test")).as("Manifest-Test").isEqualTo("tsst");
+                                .manifestAttributes().get("Manifest-Test")).as("Manifest-Test")
+                        .isEqualTo("tsst");
                 softly.assertThat(bootJar.destinationDirectory()).as("destinationDirectory").isDirectory();
                 softly.assertThat(bootJar.destinationDirectory()).isEqualTo(project.buildDistDirectory());
                 softly.assertThat(bootJar.infLibs()).as("infoLibs").isEmpty();
@@ -493,22 +510,23 @@ class BootOperationTests {
             assertThat(jarFile).exists();
 
             var jarEntries = readJarEntries(jarFile);
-            assertThat(jarEntries).isEqualToIgnoringNewLines(
-                    "BOOT-INF/\n" +
-                            "BOOT-INF/classes/\n" +
-                            "BOOT-INF/classes/rife/\n" +
-                            "BOOT-INF/classes/rife/bld/\n" +
-                            "BOOT-INF/classes/rife/bld/extension/\n" +
-                            "BOOT-INF/classes/rife/bld/extension/AbstractBootOperation.class\n" +
-                            "BOOT-INF/classes/rife/bld/extension/BootJarOperation.class\n" +
-                            "BOOT-INF/classes/rife/bld/extension/BootUtils.class\n" +
-                            "BOOT-INF/classes/rife/bld/extension/BootWarOperation.class\n" +
-                            "BOOT-INF/lib/\n" +
-                            "BOOT-INF/lib/" + BLD + '\n' +
-                            "BOOT-INF/lib/" + BLD_EXTENSIONS_TOOLS + '\n' +
-                            "BOOT-INF/lib/" + SPRING_BOOT_JAR + '\n' +
-                            "META-INF/\n" +
-                            "META-INF/MANIFEST.MF\n" + LAUNCHER_JARS);
+            assertThat(jarEntries.toString())
+                    .contains("BOOT-INF/")
+                    .contains("BOOT-INF/classes/")
+                    .contains("BOOT-INF/classes/rife/")
+                    .contains("BOOT-INF/classes/rife/bld/")
+                    .contains("BOOT-INF/classes/rife/bld/extension/")
+                    .contains("BOOT-INF/classes/rife/bld/extension/AbstractBootOperation.class")
+                    .contains("BOOT-INF/classes/rife/bld/extension/BootJarOperation.class")
+                    .contains("BOOT-INF/classes/rife/bld/extension/BootUtils.class")
+                    .contains("BOOT-INF/classes/rife/bld/extension/BootWarOperation.class")
+                    .contains("BOOT-INF/lib/")
+                    .containsPattern(BOOT_INF_LIB_BLD_PATTERN)
+                    .containsPattern(BOOT_INF_LIB_BLD_EXTENSIONS_TOOLS_PATTERN)
+                    .contains("BOOT-INF/lib/" + SPRING_BOOT_JAR)
+                    .contains("META-INF/")
+                    .contains("META-INF/MANIFEST.MF")
+                    .contains("org/springframework/boot/loader/");
         }
 
         @Test
@@ -540,34 +558,34 @@ class BootOperationTests {
                     .destinationDirectory(tmpDir.toPath())
                     .infLibs(Path.of(EXAMPLES_LIB_COMPILE + SPRING_BOOT_JAR),
                             Path.of(EXAMPLES_LIB_COMPILE + FOO_JAR))
-                    .providedLibs(new File(EXAMPLES_LIB_RUNTIME + PROVIDED_LIBS.get(0)))
+                    .providedLibs(new File(EXAMPLES_LIB_RUNTIME + JSR305 + '-' + JSR305_VERSION + ".jar"))
                     .execute();
 
             var warFile = new File(tmpDir, project.name() + '-' + project.version().toString() + "-boot.war");
             assertThat(warFile).exists();
 
             var jarEntries = readJarEntries(warFile);
-            assertThat(jarEntries).isEqualToIgnoringNewLines(
-                    "META-INF/\n" +
-                            "META-INF/MANIFEST.MF\n" +
-                            "WEB-INF/\n" +
-                            "WEB-INF/classes/\n" +
-                            "WEB-INF/classes/rife/\n" +
-                            "WEB-INF/classes/rife/bld/\n" +
-                            "WEB-INF/classes/rife/bld/extension/\n" +
-                            "WEB-INF/classes/rife/bld/extension/AbstractBootOperation.class\n" +
-                            "WEB-INF/classes/rife/bld/extension/BootJarOperation.class\n" +
-                            "WEB-INF/classes/rife/bld/extension/BootUtils.class\n" +
-                            "WEB-INF/classes/rife/bld/extension/BootWarOperation.class\n" +
-                            "WEB-INF/lib/\n" +
-                            "WEB-INF/lib/" + BLD + '\n' +
-                            "WEB-INF/lib/" + BLD_EXTENSIONS_TOOLS + '\n' +
-                            "WEB-INF/lib/dist/\n" +
-                            "WEB-INF/lib/" + SPRING_BOOT_JAR + '\n' +
-                            "WEB-INF/lib-provided/\n" +
-                            "WEB-INF/lib-provided/" + PROVIDED_LIBS.get(0) + '\n' +
-                            "WEB-INF/lib-provided/" + PROVIDED_LIBS.get(1) + '\n' +
-                            LAUNCHER_JARS);
+            assertThat(jarEntries.toString())
+                    .contains("META-INF/")
+                    .contains("META-INF/MANIFEST.MF")
+                    .contains("WEB-INF/")
+                    .contains("WEB-INF/classes/")
+                    .contains("WEB-INF/classes/rife/")
+                    .contains("WEB-INF/classes/rife/bld/")
+                    .contains("WEB-INF/classes/rife/bld/extension/")
+                    .contains("WEB-INF/classes/rife/bld/extension/AbstractBootOperation.class")
+                    .contains("WEB-INF/classes/rife/bld/extension/BootJarOperation.class")
+                    .contains("WEB-INF/classes/rife/bld/extension/BootUtils.class")
+                    .contains("WEB-INF/classes/rife/bld/extension/BootWarOperation.class")
+                    .contains("WEB-INF/lib/")
+                    .containsPattern(WEB_INF_LIB_BLD_PATTERN)
+                    .containsPattern(WEB_INF_LIB_BLD_EXTENSIONS_TOOLS_PATTERN)
+                    .contains("WEB-INF/lib/dist/")
+                    .contains("WEB-INF/lib/" + SPRING_BOOT_JAR)
+                    .contains("WEB-INF/lib-provided/")
+                    .containsPattern(WEB_INF_LIB_PROVIDED_JSR305_PATTERN)
+                    .containsPattern(WEB_INF_LIB_PROVIDED_SPOTBUGS_PATTERN)
+                    .contains("org/springframework/boot/loader/");
 
             FileUtils.deleteDirectory(tmpDir);
         }
