@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
  * @since 1.0
  */
 public final class BootUtils {
+
     private static final String[] FILE_SIZE_UNITS = {"B", "KB", "MB", "GB", "TB"};
     private static final Pattern LOADER_JAR = Pattern.compile("spring-boot-loader-(\\d+).(\\d+).(\\d+).jar");
 

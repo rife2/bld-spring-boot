@@ -49,6 +49,7 @@ import java.util.spi.ToolProvider;
  */
 public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         extends AbstractOperation<AbstractBootOperation<T>> {
+
     protected static final Logger LOGGER = Logger.getLogger("BootOperation");
     private final List<File> infLibs_ = new ArrayList<>();
     private final List<File> launcherLibs_ = new ArrayList<>();

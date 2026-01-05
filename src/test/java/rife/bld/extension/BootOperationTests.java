@@ -44,6 +44,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 @SuppressWarnings({"PMD.TestClassWithoutTestCases", "PMD.SignatureDeclareThrowsException",
         "PMD.AvoidDuplicateLiterals"})
 class BootOperationTests {
+
     private static final String BLD = "bld-2.3.0.jar";
     private static final String BLD_EXTENSIONS_TOOLS = "bld-extensions-tools-0.9.0-SNAPSHOT.jar";
     private static final String BOOT_VERSION = "4.0.1";
@@ -207,6 +208,7 @@ class BootOperationTests {
     }
 
     static class CustomProject extends Project {
+
         CustomProject(File tmp) {
             super();
             workDirectory = tmp;
@@ -220,6 +222,7 @@ class BootOperationTests {
     @Nested
     @DisplayName("Errors Tests")
     class ErrorsTests {
+
         @Test
         void invalidMainClass() {
             var bootWar = new BootWarOperation().mainClass(MAIN_CLASS);
@@ -272,9 +275,11 @@ class BootOperationTests {
     @Nested
     @DisplayName("Libs Tests")
     class LibsTests {
+
         @Nested
         @DisplayName("Inf Lib Tests")
         class InfLibTest {
+
             private final File bar = new File(EXAMPLES_LIB_COMPILE + FOO_JAR);
             private final File foo = new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_JAR);
             private final BootWarOperation op = new BootWarOperation();
@@ -327,6 +332,7 @@ class BootOperationTests {
         @Nested
         @DisplayName("Launcher Libs Tests")
         class LauncherLibTests {
+
             private final File launcher = new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR);
 
             @Test
@@ -369,6 +375,7 @@ class BootOperationTests {
         @Nested
         @DisplayName("War Libs Tests")
         class WarLibTest {
+
             private final File foo = new File(EXAMPLES_LIB_RUNTIME + "foo.jar");
             private final BootWarOperation op = new BootWarOperation();
 
@@ -400,6 +407,7 @@ class BootOperationTests {
     @Nested
     @DisplayName("Project Tests")
     class ProjectTests {
+
         @TempDir
         private File tmpDir;
 
@@ -575,6 +583,7 @@ class BootOperationTests {
     @Nested
     @DisplayName("Source Directories Tests")
     class SourceDirectoriesTests {
+
         public final BootJarOperation op = new BootJarOperation();
         public final File src = new File(SRC_MAIN_JAVA);
         public final File test = new File(SRC_TEST_JAVA);

@@ -35,9 +35,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals"})
 class BootUtilsTests {
+
     @Nested
     @DisplayName("FileSize Tests")
     class FileSizeTests {
+
         private static final String TMP_FILE_PREFIX = "filesize-tmp-";
 
         @Test
@@ -94,6 +96,7 @@ class BootUtilsTests {
     @Nested
     @DisplayName("LauncherClass Tests")
     class LauncherClassTests {
+
         private final File examplesProjectDir = new File("examples");
 
         @Test
@@ -115,6 +118,7 @@ class BootUtilsTests {
     @DisplayName("LauncherClass Version Tests")
     @SuppressWarnings("PMD.MethodNamingConventions")
     class LauncherClassVersionTests {
+
         @Test
         void launcherClassWithVersion3_2OrHigher() {
             var project = new Project() {
@@ -173,6 +177,7 @@ class BootUtilsTests {
     @Nested
     @DisplayName("MkDirs Tests")
     class MkDirsTests {
+
         @TempDir
         private File tmpDir;
 

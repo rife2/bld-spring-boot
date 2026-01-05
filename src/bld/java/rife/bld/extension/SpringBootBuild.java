@@ -30,6 +30,7 @@ import static rife.bld.dependencies.Scope.*;
 import static rife.bld.operations.JavadocOptions.DocLinkOption.NO_MISSING;
 
 public class SpringBootBuild extends Project {
+
     public SpringBootBuild() {
         pkg = "rife.bld.extension";
         name = "bld-spring-boot";
@@ -91,16 +92,16 @@ public class SpringBootBuild extends Project {
                 .signPassphrase(property("sign.passphrase"));
     }
 
-    public static void main(String[] args) {
-        new SpringBootBuild().start(args);
-    }
-
     @Override
     public void test() throws Exception {
         var testResultsDir = "build/test-results/test/";
         var op = testOperation().fromProject(this);
         op.testToolOptions().reportsDir(new File(testResultsDir));
         op.execute();
+    }
+
+    public static void main(String[] args) {
+        new SpringBootBuild().start(args);
     }
 
     @BuildCommand(summary = "Runs PMD analysis")

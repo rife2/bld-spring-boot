@@ -44,6 +44,7 @@ import java.util.logging.Level;
  * @since 1.0
  */
 public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
+
     /**
      * Performs the BootJar operation.
      */
