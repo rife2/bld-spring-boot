@@ -18,6 +18,7 @@ package rife.bld.extension;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import rife.bld.Project;
+import rife.bld.extension.tools.ObjectTools;
 import rife.tools.FileUtils;
 
 import java.io.File;
@@ -127,7 +128,9 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * @see #providedLibs(File...)
      */
     public BootWarOperation providedLibs(Collection<File> jars) {
-        providedLibs_.addAll(jars);
+        if (ObjectTools.isNotEmpty(jars)) {
+            providedLibs_.addAll(jars);
+        }
         return this;
     }
 
@@ -139,7 +142,10 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * @see #providedLibsStrings(Collection)
      */
     public BootWarOperation providedLibs(String... jars) {
-        return providedLibsStrings(List.of(jars));
+        if (ObjectTools.isNotEmpty(jars)) {
+            return providedLibsStrings(List.of(jars));
+        }
+        return this;
     }
 
     /**
@@ -150,7 +156,10 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * @see #providedLibs(Collection)
      */
     public BootWarOperation providedLibs(File... jars) {
-        return providedLibs(List.of(jars));
+        if (ObjectTools.isNotEmpty(jars)) {
+            return providedLibs(List.of(jars));
+        }
+        return this;
     }
 
     /**
@@ -161,7 +170,10 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * @see #providedLibsPaths(Collection)
      */
     public BootWarOperation providedLibs(Path... jars) {
-        return providedLibsPaths(List.of(jars));
+        if (ObjectTools.isNotEmpty(jars)) {
+            return providedLibsPaths(List.of(jars));
+        }
+        return this;
     }
 
     /**
@@ -182,7 +194,10 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * @see #providedLibs(Path...)
      */
     public BootWarOperation providedLibsPaths(Collection<Path> jars) {
-        return providedLibs(jars.stream().map(Path::toFile).toList());
+        if (ObjectTools.isNotEmpty(jars)) {
+            return providedLibs(jars.stream().map(Path::toFile).toList());
+        }
+        return this;
     }
 
     /**
@@ -193,7 +208,10 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * @see #providedLibs(String...)
      */
     public BootWarOperation providedLibsStrings(Collection<String> jars) {
-        return providedLibs(jars.stream().map(File::new).toList());
+        if (ObjectTools.isNotEmpty(jars)) {
+            return providedLibs(jars.stream().map(File::new).toList());
+        }
+        return this;
     }
 
     /**

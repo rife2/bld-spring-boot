@@ -18,6 +18,8 @@ package rife.bld.extension;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import rife.bld.Project;
+import rife.bld.extension.tools.ObjectTools;
+import rife.bld.extension.tools.TextTools;
 import rife.bld.operations.AbstractOperation;
 import rife.bld.operations.exceptions.ExitStatusException;
 import rife.tools.FileUtils;
@@ -144,7 +146,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #infLibs(Collection)
      */
     public T infLibs(File... jars) {
-        return infLibs(List.of(jars));
+        if (ObjectTools.isNotEmpty(jars)) {
+            return infLibs(List.of(jars));
+        }
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -155,7 +161,9 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #infLibs(File...)
      */
     public T infLibs(Collection<File> jars) {
-        infLibs_.addAll(jars);
+        if (ObjectTools.isNotEmpty(jars)) {
+            infLibs_.addAll(jars);
+        }
         //noinspection unchecked
         return (T) this;
     }
@@ -168,7 +176,12 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #infLibsPaths(Collection)
      */
     public T infLibs(Path... jars) {
-        return infLibsPaths(List.of(jars));
+        if (ObjectTools.isNotEmpty(jars)) {
+            return infLibsPaths(List.of(jars));
+        }
+        //noinspection unchecked
+        return (T) this;
+
     }
 
     /**
@@ -179,7 +192,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #infLibsStrings(Collection)
      */
     public T infLibs(String... jars) {
-        return infLibsStrings(List.of(jars));
+        if (ObjectTools.isNotEmpty(jars)) {
+            return infLibsStrings(List.of(jars));
+        }
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -200,7 +217,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #infLibs(Path...)
      */
     public T infLibsPaths(Collection<Path> jars) {
-        return infLibs(jars.stream().map(Path::toFile).toList());
+        if (ObjectTools.isNotEmpty(jars)) {
+            return infLibs(jars.stream().map(Path::toFile).toList());
+        }
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -211,7 +232,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #infLibs(String...)
      */
     public T infLibsStrings(Collection<String> jars) {
-        return infLibs(jars.stream().map(File::new).toList());
+        if (ObjectTools.isNotEmpty(jars)) {
+            return infLibs(jars.stream().map(File::new).toList());
+        }
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -242,7 +267,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #infLibs(Collection)
      */
     public T launcherLibs(File... jars) throws IOException {
-        return launcherLibs(List.of(jars));
+        if (ObjectTools.isNotEmpty(jars)) {
+            return launcherLibs(List.of(jars));
+        }
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -274,7 +303,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #launcherLibsStrings(Collection)
      */
     public T launcherLibs(String... jars) throws IOException {
-        return launcherLibsStrings(List.of(jars));
+        if (ObjectTools.isNotEmpty(jars)) {
+            return launcherLibsStrings(List.of(jars));
+        }
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -286,7 +319,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #launcherLibsPaths(Collection)
      */
     public T launcherLibs(Path... jars) throws IOException {
-        return launcherLibsPaths(List.of(jars));
+        if (ObjectTools.isNotEmpty(jars)) {
+            return launcherLibsPaths(List.of(jars));
+        }
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -308,7 +345,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #launcherLibs(Path...)
      */
     public T launcherLibsPaths(Collection<Path> jars) throws IOException {
-        return launcherLibs(jars.stream().map(Path::toFile).toList());
+        if (ObjectTools.isNotEmpty(jars)) {
+            return launcherLibs(jars.stream().map(Path::toFile).toList());
+        }
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -320,7 +361,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #launcherLibs(String...)
      */
     public T launcherLibsStrings(Collection<String> jars) throws IOException {
-        return launcherLibs(jars.stream().map(File::new).toList());
+        if (ObjectTools.isNotEmpty(jars)) {
+            return launcherLibs(jars.stream().map(File::new).toList());
+        }
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -340,7 +385,9 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @return this operation instance
      */
     public T manifestAttribute(String name, String value) {
-        manifestAttributes_.put(name, value);
+        if (TextTools.isNotBlank(name, value)) {
+            manifestAttributes_.put(name, value);
+        }
         //noinspection unchecked
         return (T) this;
     }
@@ -363,7 +410,9 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #manifestAttribute(String, String)
      */
     public T manifestAttributes(Map<String, String> attributes) {
-        manifestAttributes_.putAll(attributes);
+        if (ObjectTools.isNotEmpty(attributes)) {
+            manifestAttributes_.putAll(attributes);
+        }
         //noinspection unchecked
         return (T) this;
     }
@@ -376,7 +425,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #sourceDirectories(Collection)
      */
     public T sourceDirectories(File... directories) {
-        return sourceDirectories(List.of(directories));
+        if (ObjectTools.isNotEmpty(directories)) {
+            return sourceDirectories(List.of(directories));
+        }
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -387,7 +440,9 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #sourceDirectories(File...)
      */
     public T sourceDirectories(Collection<File> directories) {
-        sourceDirectories_.addAll(directories);
+        if (ObjectTools.isNotEmpty(directories)) {
+            sourceDirectories_.addAll(directories);
+        }
         //noinspection unchecked
         return (T) this;
     }
@@ -400,7 +455,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #sourceDirectoriesStrings(Collection)
      */
     public T sourceDirectories(String... directories) {
-        return sourceDirectoriesStrings(List.of(directories));
+        if (ObjectTools.isNotEmpty(directories)) {
+            return sourceDirectoriesStrings(List.of(directories));
+        }
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -411,7 +470,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #sourceDirectoriesPaths(Collection)
      */
     public T sourceDirectories(Path... directories) {
-        return sourceDirectoriesPaths(List.of(directories));
+        if (ObjectTools.isNotEmpty(directories)) {
+            return sourceDirectoriesPaths(List.of(directories));
+        }
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -432,7 +495,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #sourceDirectories(Path...)
      */
     public T sourceDirectoriesPaths(Collection<Path> directories) {
-        return sourceDirectories(directories.stream().map(Path::toFile).toList());
+        if (ObjectTools.isNotEmpty(directories)) {
+            return sourceDirectories(directories.stream().map(Path::toFile).toList());
+        }
+        //noinspection unchecked
+        return (T) this;
     }
 
     /**
@@ -443,7 +510,12 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @see #sourceDirectories(String...)
      */
     public T sourceDirectoriesStrings(Collection<String> directories) {
-        return sourceDirectories(directories.stream().map(File::new).toList());
+        if (ObjectTools.isNotEmpty(directories)) {
+            return sourceDirectories(directories.stream().map(File::new).toList());
+        }
+        //noinspection unchecked
+        return (T) this;
+
     }
 
     /**

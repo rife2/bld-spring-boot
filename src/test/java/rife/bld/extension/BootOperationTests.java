@@ -47,12 +47,12 @@ class BootOperationTests {
 
     private static final String BLD_EXTENSIONS_TOOLS = "bld-extensions-tools";
     private static final String BLD_EXTENSIONS_TOOLS_PATTERN = BLD_EXTENSIONS_TOOLS
-            + "-\\d+\\.\\d+\\.\\d+-[^\\n]+\\.jar";
+            + "-\\d+\\.\\d+\\.\\d+(-SNAPSHOT)?\\.jar";
     private static final String BOOT_INF_LIB_BLD_EXTENSIONS_TOOLS_PATTERN = "BOOT-INF/lib/"
             + BLD_EXTENSIONS_TOOLS_PATTERN;
     private static final String WEB_INF_LIB_BLD_EXTENSIONS_TOOLS_PATTERN = "WEB-INF/lib/"
             + BLD_EXTENSIONS_TOOLS_PATTERN;
-    private static final String BLD_PATTERN = "bld-\\d+\\.\\d+\\.\\d+\\.jar";
+    private static final String BLD_PATTERN = "bld-\\d+\\.\\d+\\.\\d+(-SNAPSHOT)?\\.jar";
     private static final String BOOT_INF_LIB_BLD_PATTERN = "BOOT-INF/lib/" + BLD_PATTERN;
     private static final String BOOT_VERSION = "4.0.1";
     private static final String EXAMPLES_DIR = "examples/4.0.x";

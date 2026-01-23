@@ -17,7 +17,7 @@
 package rife.bld.extension;
 
 import rife.bld.Project;
-import rife.bld.extension.tools.IOUtils;
+import rife.bld.extension.tools.IOTools;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,7 +84,7 @@ public final class BootUtils {
      * @throws IOException if an error occurs
      */
     public static void mkDirs(File path) throws IOException {
-        if (!IOUtils.mkdirs(path)) {
+        if (!IOTools.mkdirs(path)) {
             throw new IOException("Unable to create: " + path.getAbsolutePath());
         }
     }
