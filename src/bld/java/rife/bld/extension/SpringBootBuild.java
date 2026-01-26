@@ -58,7 +58,7 @@ public class SpringBootBuild extends Project {
                 .include(dependency("org.junit.jupiter", "junit-jupiter", junit))
                 .include(dependency("org.junit.platform", "junit-platform-console-standalone", junit))
                 .include(dependency("org.assertj", "assertj-core",
-                        version(3, 27, 6)));
+                        version(3, 27, 7)));
 
         javadocOperation()
                 .javadocOptions()
