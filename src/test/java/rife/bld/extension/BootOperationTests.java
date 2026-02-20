@@ -52,9 +52,9 @@ class BootOperationTests {
             + BLD_EXTENSIONS_TOOLS_PATTERN;
     private static final String WEB_INF_LIB_BLD_EXTENSIONS_TOOLS_PATTERN = "WEB-INF/lib/"
             + BLD_EXTENSIONS_TOOLS_PATTERN;
-    private static final String BLD_PATTERN = "bld-\\d+\\.\\d+\\.\\d+(-SNAPSHOT)?\\.jar";
+    private static final String BLD_PATTERN = "bld-\\d+\\.\\d+\\.\\d+(-SNAPSHOT|-\\d{8}\\.\\d{6}-\\d+)?\\.jar";
     private static final String BOOT_INF_LIB_BLD_PATTERN = "BOOT-INF/lib/" + BLD_PATTERN;
-    private static final String BOOT_VERSION = "4.0.2";
+    private static final String BOOT_VERSION = "4.0.3";
     private static final String EXAMPLES_DIR = "examples/4.0.x";
     private static final String EXAMPLES_LIB_COMPILE = EXAMPLES_DIR + "/lib/compile/";
     private static final String EXAMPLES_LIB_RUNTIME = EXAMPLES_DIR + "/lib/runtime/";
@@ -602,9 +602,9 @@ class BootOperationTests {
     @DisplayName("Source Directories Tests")
     class SourceDirectoriesTests {
 
-        public final BootJarOperation op = new BootJarOperation();
-        public final File src = new File(SRC_MAIN_JAVA);
-        public final File test = new File(SRC_TEST_JAVA);
+        final BootJarOperation op = new BootJarOperation();
+        final File src = new File(SRC_MAIN_JAVA);
+        final File test = new File(SRC_TEST_JAVA);
 
         @Test
         void sourceDirectoriesAsFileArray() {
