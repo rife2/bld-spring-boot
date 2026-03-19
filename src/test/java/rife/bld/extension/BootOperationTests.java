@@ -46,23 +46,13 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 class BootOperationTests {
 
     private static final String BLD_EXTENSIONS_TOOLS = "bld-extensions-tools";
-    private static final String BLD_EXTENSIONS_TOOLS_PATTERN = BLD_EXTENSIONS_TOOLS
-            + "-\\d+\\.\\d+\\.\\d+(-SNAPSHOT)?\\.jar";
-    private static final String BOOT_INF_LIB_BLD_EXTENSIONS_TOOLS_PATTERN = "BOOT-INF/lib/"
-            + BLD_EXTENSIONS_TOOLS_PATTERN;
-    private static final String WEB_INF_LIB_BLD_EXTENSIONS_TOOLS_PATTERN = "WEB-INF/lib/"
-            + BLD_EXTENSIONS_TOOLS_PATTERN;
-    private static final String BLD_PATTERN = "bld-\\d+\\.\\d+\\.\\d+(-SNAPSHOT|-\\d{8}\\.\\d{6}-\\d+)?\\.jar";
-    private static final String BOOT_INF_LIB_BLD_PATTERN = "BOOT-INF/lib/" + BLD_PATTERN;
-    private static final String BOOT_VERSION = "4.0.3";
+    private static final String BOOT_VERSION = "4.0.4";
     private static final String EXAMPLES_DIR = "examples/4.0.x";
     private static final String EXAMPLES_LIB_COMPILE = EXAMPLES_DIR + "/lib/compile/";
     private static final String EXAMPLES_LIB_RUNTIME = EXAMPLES_DIR + "/lib/runtime/";
     private static final String EXAMPLES_LIB_STANDALONE = EXAMPLES_DIR + "/lib/standalone/";
     private static final String FOO_JAR = "foo.jar";
     private static final String JSR305 = "jsr305";
-    private static final String JSR305_PATTERN = JSR305 + "-\\d+\\.\\d+\\.\\d+\\.jar";
-    private static final String WEB_INF_LIB_PROVIDED_JSR305_PATTERN = "WEB-INF/lib-provided/" + JSR305_PATTERN;
     private static final String JSR305_VERSION = "3.0.2";
     private static final String LAUNCHER_JARS = """
             org/
@@ -190,7 +180,18 @@ class BootOperationTests {
     private static final String SPRING_BOOT_LOADER_JAR = "spring-boot-loader-" + BOOT_VERSION + ".jar";
     private static final String SRC_MAIN_JAVA = "src/main/java";
     private static final String SRC_TEST_JAVA = "src/test/java";
+    private static final String VERSION_PATTERN = "-\\d+\\.\\d+\\.\\d+(-SNAPSHOT|-\\d{8}\\.\\d{6}-\\d+)?";
+    private static final String BLD_EXTENSIONS_TOOLS_PATTERN = BLD_EXTENSIONS_TOOLS
+            + VERSION_PATTERN + "\\.jar";
+    private static final String BOOT_INF_LIB_BLD_EXTENSIONS_TOOLS_PATTERN = "BOOT-INF/lib/"
+            + BLD_EXTENSIONS_TOOLS_PATTERN;
+    private static final String WEB_INF_LIB_BLD_EXTENSIONS_TOOLS_PATTERN = "WEB-INF/lib/"
+            + BLD_EXTENSIONS_TOOLS_PATTERN;
+    private static final String BLD_PATTERN = "bld" + VERSION_PATTERN + "\\.jar";
+    private static final String BOOT_INF_LIB_BLD_PATTERN = "BOOT-INF/lib/" + BLD_PATTERN;
     private static final String WEB_INF_LIB_BLD_PATTERN = "WEB-INF/lib/" + BLD_PATTERN;
+    private static final String JSR305_PATTERN = JSR305 + VERSION_PATTERN + "\\.jar";
+    private static final String WEB_INF_LIB_PROVIDED_JSR305_PATTERN = "WEB-INF/lib-provided/" + JSR305_PATTERN;
     private final Logger logger = Logger.getLogger("BootOperation");
     private TestLogHandler logHandler;
 

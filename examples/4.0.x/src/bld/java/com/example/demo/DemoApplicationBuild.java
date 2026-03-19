@@ -20,9 +20,9 @@ public class DemoApplicationBuild extends WebProject {
         autoDownloadPurge = true;
         downloadSources = true;
 
-        repositories = List.of(MAVEN_CENTRAL, RIFE2_RELEASES);
+        repositories = List.of(MAVEN_CENTRAL, RIFE2_RELEASES, RIFE2_SNAPSHOTS);
 
-        var boot = version(4, 0, 3);
+        var boot = version(4, 0, 4);
         var junit = version(6, 0, 3);
         scope(compile)
                 .include(dependency("org.springframework.boot", "spring-boot-starter", boot))
