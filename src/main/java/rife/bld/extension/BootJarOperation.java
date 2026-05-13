@@ -16,11 +16,12 @@
 
 package rife.bld.extension;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import rife.bld.Project;
+import rife.bld.extension.tools.ObjectTools;
 import rife.tools.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Map;
@@ -56,16 +57,18 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
         var stagingDir = Files.createTempDirectory("bootjar").toFile();
 
         try {
-            var bootInfDir = executeCreateBootInfDirectory(stagingDir);
+            var bootInfDir = new File(stagingDir, "BOOT-INF");
+            BootUtils.mkDirs(bootInfDir);
+
             executeCopyInfClassesFiles(bootInfDir);
             executeCopyInfLibs(bootInfDir);
             executeCopyBootLoader(stagingDir);
 
             var archive = executeCreateArchive(stagingDir);
 
-            if (!silent() && LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info(String.format("The executable JAR was created: %s (%s)", archive.getAbsolutePath(),
-                        BootUtils.fileSize(archive)));
+            if (!silent() && logger.isLoggable(Level.INFO)) {
+                logger.info("The executable JAR was created: %s (%s)".formatted(
+                        archive.getAbsolutePath(), BootUtils.fileSize(archive)));
             }
         } finally {
             FileUtils.deleteDirectory(stagingDir);
@@ -91,36 +94,42 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
      *     {@link Project#buildMainDirectory() buildMainDirectory} and
      *     {@link Project#srcMainResourcesDirectory() srcMainResourcesDirectory}</li>
      * </ul>
+     * <p>
+     * The project {@link Project#mainClass() main class} and {@link Project#version() version} must be defined.
      *
      * @param project the project
      * @return this operation instance
      */
     @Override
-    public BootJarOperation fromProject(Project project) throws IOException {
-        return destinationDirectory(project.buildDistDirectory())
-                .destinationFileName(project.archiveBaseName() + "-" + project.version() + "-boot.jar")
-                .infLibs(project.compileClasspathJars())
-                .infLibs(project.runtimeClasspathJars())
-                .launcherClass(BootUtils.launcherClass(project, "JarLauncher"))
-                .launcherLibs(project.standaloneClasspathJars())
-                .mainClass(project.mainClass())
-                .manifestAttributes(Map.of(
-                        "Manifest-Version", "1.0",
-                        "Main-Class", launcherClass(),
-                        "Start-Class", mainClass()))
-                .sourceDirectories(project.buildMainDirectory(), project.srcMainResourcesDirectory());
-    }
+    public BootJarOperation fromProject(@NonNull Project project) {
+        ObjectTools.requireNonNull(project, "fromProject");
+        ObjectTools.requireNotEmpty(project.mainClass(), "project main class");
+        ObjectTools.requireNonNull(project.version(), "project version");
 
-    /**
-     * Part of the {@link #execute execute} operation, creates the {@code BOOT-INF} staging directory.
-     *
-     * @param stagingDirectory the staging directory
-     * @return the {@code BOOT-INF} directory location
-     * @throws IOException if an error occurs
-     */
-    protected File executeCreateBootInfDirectory(File stagingDirectory) throws IOException {
-        var bootInf = new File(stagingDirectory, "BOOT-INF");
-        BootUtils.mkDirs(bootInf);
-        return bootInf;
+        // Resolve launcher and main class first to avoid referencing an unset state
+        // when building the manifest attributes map.
+        var launcher = BootUtils.launcherClass(project, "JarLauncher");
+        var main = project.mainClass();
+
+        destinationDirectory(project.buildDistDirectory());
+        destinationFileName(project.archiveBaseName() + "-" + project.version() + "-boot.jar");
+        if (!project.compileClasspathJars().isEmpty()) {
+            infLibs(project.compileClasspathJars());
+        }
+        if (!project.runtimeClasspathJars().isEmpty()) {
+            infLibs(project.runtimeClasspathJars());
+        }
+        launcherClass(launcher);
+        if (!project.standaloneClasspathJars().isEmpty()) {
+            launcherLibs(project.standaloneClasspathJars());
+        }
+        mainClass(main);
+        manifestAttributes(Map.of(
+                "Manifest-Version", "1.0",
+                "Main-Class", launcher,
+                "Start-Class", main));
+        sourceDirectories(project.buildMainDirectory(), project.srcMainResourcesDirectory());
+
+        return this;
     }
 }

@@ -16,8 +16,10 @@
 
 package rife.bld.extension;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import rife.bld.Project;
+import rife.bld.extension.tools.CollectionTools;
 import rife.bld.extension.tools.ObjectTools;
 import rife.tools.FileUtils;
 
@@ -25,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -45,14 +48,16 @@ import java.util.logging.Level;
  * }
  * </pre></blockquote>
  *
- * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a> @since 1.0
+ * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a>
+ * @since 1.0
  */
 public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
 
+    private static final String PROVIDED_LIBS = "providedLibs";
     private final List<File> providedLibs_ = new ArrayList<>();
 
     /**
-     * Performs the BootJar operation.
+     * Performs the BootWar operation.
      */
     @Override
     public void execute() throws Exception {
@@ -61,7 +66,9 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
         var stagingDir = Files.createTempDirectory("bootwar").toFile();
 
         try {
-            var webInfDir = executeCreateWebInfDirectory(stagingDir);
+            var webInfDir = new File(stagingDir, "WEB-INF");
+            BootUtils.mkDirs(webInfDir);
+
             executeCopyInfClassesFiles(webInfDir);
             executeCopyInfLibs(webInfDir);
             executeCopyWebInfProvidedLib(webInfDir);
@@ -69,9 +76,9 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
 
             var archive = executeCreateArchive(stagingDir);
 
-            if (!silent() && LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info(String.format("The executable WAR was created: %s (%s)", archive.getAbsolutePath(),
-                        BootUtils.fileSize(archive)));
+            if (!silent() && logger.isLoggable(Level.INFO)) {
+                logger.info("The executable WAR was created: %s (%s)".formatted(
+                        archive.getAbsolutePath(), BootUtils.fileSize(archive)));
             }
         } finally {
             FileUtils.deleteDirectory(stagingDir);
@@ -85,7 +92,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * <ul>
      *     <li>The {@link #destinationFileName(String) destination file name} to
      *     {@link Project#archiveBaseName() archiveBaseName} and {@link Project#version() version}</li>
-     *     <li>The {@link #infLibs(File...) INF libs} to {@link Project#compileClasspathJars() compileClasspathJars},
+     *     <li>The {@link #infLibs(Collection) INF libs} to {@link Project#compileClasspathJars() compileClasspathJars},
      *     {@link Project#runtimeClasspathJars() runtimeClasspathJars} and
      *     {@link Project#buildDistDirectory() buildDistDirectory}</li>
      *     <li>The {@link #launcherClass(String) launcher class} to {@code WarLauncher}</li>
@@ -98,26 +105,51 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *     {@link Project#buildMainDirectory() buildMainDirectory} and
      *     {@link Project#srcMainResourcesDirectory() srcMainResourcesDirectory}</li>
      * </ul>
+     * <p>
+     * The project {@link Project#mainClass() main class} and {@link Project#version() version} must be defined.
      *
      * @param project the project
      * @return this operation instance
+     * @throws NullPointerException     if the {@code project}, {@link Project#version() version} or
+     *                                  {@link Project#mainClass() main class} are {@code null}
+     * @throws IllegalArgumentException if the {@link Project#mainClass() main class} is blank or empty.
      */
     @Override
-    public BootWarOperation fromProject(Project project) throws IOException {
-        return destinationDirectory(project.buildDistDirectory())
-                .destinationFileName(project.archiveBaseName() + "-" + project.version() + "-boot.war")
-                .infLibs(project.compileClasspathJars())
-                .infLibs(project.runtimeClasspathJars())
-                .infLibs(project.buildDistDirectory())
-                .launcherClass(BootUtils.launcherClass(project, "WarLauncher"))
-                .launcherLibs(project.standaloneClasspathJars())
-                .mainClass(project.mainClass())
-                .manifestAttributes(Map.of(
-                        "Manifest-Version", "1.0",
-                        "Main-Class", launcherClass(),
-                        "Start-Class", mainClass()))
-                .providedLibs(project.providedClasspathJars())
-                .sourceDirectories(project.buildMainDirectory(), project.srcMainResourcesDirectory());
+    public BootWarOperation fromProject(@NonNull Project project) {
+        ObjectTools.requireNonNull(project, "fromProject");
+        ObjectTools.requireNotEmpty(project.mainClass(), "project main class");
+        ObjectTools.requireNonNull(project.version(), "project version");
+
+        // Resolve launcher and main class first to avoid referencing an unset state
+        // when building the manifest attributes map.
+        var launcher = BootUtils.launcherClass(project, "WarLauncher");
+        var main = project.mainClass();
+
+        destinationDirectory(project.buildDistDirectory());
+        destinationFileName(project.archiveBaseName() + "-" + project.version() + "-boot.war");
+        if (!project.compileClasspathJars().isEmpty()) {
+            infLibs(project.compileClasspathJars());
+        }
+        if (!project.runtimeClasspathJars().isEmpty()) {
+            infLibs(project.runtimeClasspathJars());
+        }
+        infLibs(project.buildDistDirectory());
+        launcherClass(launcher);
+        if (!project.standaloneClasspathJars().isEmpty()) {
+            launcherLibs(project.standaloneClasspathJars());
+        }
+        mainClass(main);
+        manifestAttributes(Map.of(
+                "Manifest-Version", "1.0",
+                "Main-Class", launcher,
+                "Start-Class", main)
+        );
+        if (!project.providedClasspathJars().isEmpty()) {
+            providedLibs(project.providedClasspathJars());
+        }
+        sourceDirectories(project.buildMainDirectory(), project.srcMainResourcesDirectory());
+
+        return this;
     }
 
     /**
@@ -125,12 +157,13 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars a collection of Java archive files
      * @return this operation instance
+     * @throws NullPointerException     if {@code jars} is null
+     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
      * @see #providedLibs(File...)
      */
-    public BootWarOperation providedLibs(Collection<File> jars) {
-        if (ObjectTools.isNotEmpty(jars)) {
-            providedLibs_.addAll(jars);
-        }
+    public final BootWarOperation providedLibs(@NonNull Collection<File> jars) {
+        ObjectTools.requireNotEmpty(jars, PROVIDED_LIBS);
+        providedLibs_.addAll(jars);
         return this;
     }
 
@@ -139,12 +172,13 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
+     * @throws NullPointerException     if {@code jars} is null
+     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
      * @see #providedLibsStrings(Collection)
      */
-    public BootWarOperation providedLibs(String... jars) {
-        if (ObjectTools.isNotEmpty(jars)) {
-            return providedLibsStrings(List.of(jars));
-        }
+    public BootWarOperation providedLibs(@NonNull String... jars) {
+        ObjectTools.requireNotEmpty(jars, PROVIDED_LIBS);
+        providedLibs_.addAll(CollectionTools.combineStringsToFiles(jars));
         return this;
     }
 
@@ -153,12 +187,13 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
+     * @throws NullPointerException     if {@code jars} is null
+     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
      * @see #providedLibs(Collection)
      */
-    public BootWarOperation providedLibs(File... jars) {
-        if (ObjectTools.isNotEmpty(jars)) {
-            return providedLibs(List.of(jars));
-        }
+    public BootWarOperation providedLibs(@NonNull File... jars) {
+        ObjectTools.requireNotEmpty(jars, PROVIDED_LIBS);
+        providedLibs_.addAll(List.of(jars));
         return this;
     }
 
@@ -167,12 +202,13 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
+     * @throws NullPointerException     if {@code jars} is null
+     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
      * @see #providedLibsPaths(Collection)
      */
-    public BootWarOperation providedLibs(Path... jars) {
-        if (ObjectTools.isNotEmpty(jars)) {
-            return providedLibsPaths(List.of(jars));
-        }
+    public BootWarOperation providedLibs(@NonNull Path... jars) {
+        ObjectTools.requireNotEmpty(jars, PROVIDED_LIBS);
+        providedLibs_.addAll(CollectionTools.combinePathsToFiles(jars));
         return this;
     }
 
@@ -191,12 +227,13 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
+     * @throws NullPointerException     if {@code jars} is null
+     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
      * @see #providedLibs(Path...)
      */
-    public BootWarOperation providedLibsPaths(Collection<Path> jars) {
-        if (ObjectTools.isNotEmpty(jars)) {
-            return providedLibs(jars.stream().map(Path::toFile).toList());
-        }
+    public final BootWarOperation providedLibsPaths(@NonNull Collection<Path> jars) {
+        ObjectTools.requireNotEmpty(jars, "providedLibsPaths");
+        providedLibs_.addAll(CollectionTools.combinePathsToFiles(jars));
         return this;
     }
 
@@ -205,44 +242,32 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
+     * @throws NullPointerException     if {@code jars} is null
+     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
      * @see #providedLibs(String...)
      */
-    public BootWarOperation providedLibsStrings(Collection<String> jars) {
-        if (ObjectTools.isNotEmpty(jars)) {
-            return providedLibs(jars.stream().map(File::new).toList());
-        }
+    public final BootWarOperation providedLibsStrings(@NonNull Collection<String> jars) {
+        ObjectTools.requireNotEmpty(jars, "providedLibsStrings");
+        providedLibs_.addAll(CollectionTools.combineStringsToFiles(jars));
         return this;
     }
 
     /**
      * Part of the {@link #execute execute} operation, copies the {@code WEB-INF/lib-provided} libraries.
      *
-     * @param stagingWebInfDirectory the staging {@code WEB-INF/lib-provided} directory
+     * @param stagingWebInfDirectory the staging {@code WEB-INF} directory
      * @throws IOException if an error occurs
      */
     protected void executeCopyWebInfProvidedLib(File stagingWebInfDirectory) throws IOException {
         var libProvidedPath = stagingWebInfDirectory.toPath().resolve("lib-provided");
         BootUtils.mkDirs(libProvidedPath.toFile());
 
-        for (var jar : providedLibs_) {
-            if (jar.exists()) {
-                Files.copy(jar.toPath(), libProvidedPath.resolve(jar.getName()));
-            } else if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning("File not found: " + jar);
+        for (var lib : providedLibs_) {
+            if (lib.exists()) {
+                Files.copy(lib.toPath(), libProvidedPath.resolve(lib.getName()), StandardCopyOption.REPLACE_EXISTING);
+            } else if (!silent() && logger.isLoggable(Level.WARNING)) {
+                logger.warning("File not found: " + lib);
             }
         }
-    }
-
-    /**
-     * Part of the {@link #execute execute} operation, creates the {@code WEB-INF} staging directory.
-     *
-     * @param stagingDirectory the staging directory
-     * @return the {@code WEB-INF} directory location
-     * @throws IOException if an error occurs
-     */
-    protected File executeCreateWebInfDirectory(File stagingDirectory) throws IOException {
-        var bootInf = new File(stagingDirectory, "WEB-INF");
-        BootUtils.mkDirs(bootInf);
-        return bootInf;
     }
 }

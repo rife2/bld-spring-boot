@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
@@ -46,7 +47,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 class BootOperationTests {
 
     private static final String BLD_EXTENSIONS_TOOLS = "bld-extensions-tools";
-    private static final String BOOT_VERSION = "4.0.4";
+    private static final String BOOT_VERSION = "4.0.6";
     private static final String EXAMPLES_DIR = "examples/4.0.x";
     private static final String EXAMPLES_LIB_COMPILE = EXAMPLES_DIR + "/lib/compile/";
     private static final String EXAMPLES_LIB_RUNTIME = EXAMPLES_DIR + "/lib/runtime/";
@@ -244,31 +245,43 @@ class BootOperationTests {
         }
 
         @Test
-        void launcherClass() throws IOException {
-            var bootWar = new BootJarOperation().mainClass(MAIN_CLASS)
+        void launcherClass() {
+            var bootWar = new BootJarOperation()
+                    .fromProject(new CustomProject(new File(".")))
+                    .mainClass(MAIN_CLASS)
                     .launcherClass("org.springframework.boot.loader.launch.WarLauncher")
                     .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR)));
-            assertThat(bootWar.verifyExecute()).isTrue();
+
+            assertThatCode(bootWar::verifyExecute).doesNotThrowAnyException();
+        }
+
+        @Test
+        void misingDestinationDirectory() {
+            assertThatCode(() ->
+                    new BootWarOperation()
+                            .mainClass(MAIN_CLASS)
+                            .launcherClass("org.springframework.boot.loader.launch.WarLauncher")
+                            .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR)))
+                            .execute()
+            )
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Destination directory required.");
         }
 
         @Test
         void misingLauncherLibs() {
-            assertThatCode(() -> new BootWarOperation().launcherLibs("bar"))
-                    .as("bar")
-                    .isInstanceOf(IOException.class)
-                    .hasMessageContaining("not found");
+            assertThatCode(() ->
+                    new BootWarOperation()
+                            .mainClass(MAIN_CLASS)
+                            .launcherClass("org.springframework.boot.loader.launch.WarLauncher")
+                            .execute()
+            )
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Spring Boot loader launcher libraries required.");
         }
 
         @Test
-        void misingLauncherLibsAsFile() {
-            assertThatCode(() -> new BootWarOperation().launcherLibs(new File("foo")))
-                    .as("foo")
-                    .isInstanceOf(IOException.class)
-                    .hasMessageContaining("not found");
-        }
-
-        @Test
-        void missingLauncherClass() throws IOException {
+        void missingLauncherClass() {
             var bootWar = new BootWarOperation().mainClass(MAIN_CLASS)
                     .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR)));
             assertThatCode(bootWar::execute)
@@ -348,38 +361,38 @@ class BootOperationTests {
             private final File launcher = new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR);
 
             @Test
-            void launcherLibsAsFileArray() throws IOException {
+            void launcherLibsAsFileArray() {
                 var op = new BootJarOperation().launcherLibs(launcher);
                 assertThat(op.launcherLibs()).as("File...").containsExactly(launcher);
             }
 
             @Test
-            void launcherLibsAsFileList() throws IOException {
+            void launcherLibsAsFileList() {
                 var op = new BootJarOperation().launcherLibs(List.of(launcher));
                 assertThat(op.launcherLibs()).as("List(File...)").containsExactly(launcher);
             }
 
             @Test
-            void launcherLibsAsPathArray() throws IOException {
+            void launcherLibsAsPathArray() {
                 var op = new BootJarOperation().launcherLibs(launcher.toPath());
                 assertThat(op.launcherLibs()).as("Path...").containsExactly(launcher);
             }
 
             @Test
-            void launcherLibsAsPathList() throws IOException {
+            void launcherLibsAsPathList() {
                 var op = new BootJarOperation().launcherLibsPaths(List.of(launcher.toPath()));
                 assertThat(op.launcherLibs()).as("List(Path...)").containsExactly(launcher);
             }
 
             @Test
-            void launcherLibsAsStringArray() throws IOException {
+            void launcherLibsAsStringArray() {
                 var op = new BootJarOperation().launcherLibs(EXAMPLES_LIB_STANDALONE
                         + SPRING_BOOT_LOADER_JAR);
                 assertThat(op.launcherLibs()).as("String...").containsExactly(launcher);
             }
 
             @Test
-            void launcherLibsAsStringList() throws IOException {
+            void launcherLibsAsStringList() {
                 var op = new BootJarOperation().launcherLibsStrings(List.of(EXAMPLES_LIB_STANDALONE
                         + SPRING_BOOT_LOADER_JAR));
                 assertThat(op.launcherLibs()).as("List(String...)").containsExactly(launcher);
@@ -409,9 +422,25 @@ class BootOperationTests {
             }
 
             @Test
+            void warProvidedLibsAsPaths() {
+                op.providedLibs().clear();
+                var tmp = op.providedLibsPaths(List.of(foo.toPath()));
+                assertThat(tmp).isEqualTo(op);
+                assertThat(op.providedLibs()).containsExactly(foo);
+            }
+
+            @Test
             void warProvidedLibsAsString() {
                 op.providedLibs().clear();
                 var tmp = op.providedLibs(EXAMPLES_LIB_RUNTIME + "foo.jar");
+                assertThat(tmp).isEqualTo(op);
+                assertThat(op.providedLibs()).containsExactly(foo);
+            }
+
+            @Test
+            void warProvidedLibsAsStrings() {
+                op.providedLibs().clear();
+                var tmp = op.providedLibsStrings(List.of(EXAMPLES_LIB_RUNTIME + "foo.jar"));
                 assertThat(tmp).isEqualTo(op);
                 assertThat(op.providedLibs()).containsExactly(foo);
             }
@@ -436,9 +465,10 @@ class BootOperationTests {
         }
 
         @Test
-        void customProject() throws IOException {
+        void customProject() {
             var project = new CustomProject(tmpDir);
             var bootJar = new BootJarOperation().fromProject(project).sourceDirectories(SRC_MAIN_JAVA);
+            var map = Map.of("foo", "bar", "baz", "foz");
 
             try (var softly = new AutoCloseableSoftAssertions()) {
                 softly.assertThat(bootJar.mainClass()).as("mainClass").isEqualTo(MAIN_CLASS);
@@ -453,10 +483,12 @@ class BootOperationTests {
                         .endsWith("JarLauncher");
                 softly.assertThat(bootJar.manifestAttributes().get("Start-Class")).as("Start-Class")
                         .isEqualTo(MAIN_CLASS);
-                softly.assertThat(bootJar.manifestAttribute("Manifest-Test", "tsst")
+                softly.assertThat(bootJar.manifestAttribute("Manifest-Test", "test")
                                 .manifestAttributes().get("Manifest-Test")).as("Manifest-Test")
-                        .isEqualTo("tsst");
-                softly.assertThat(bootJar.destinationDirectory()).as("destinationDirectory").isDirectory();
+                        .isEqualTo("test");
+                softly.assertThat(bootJar.manifestAttributes(map).manifestAttributes().get("foo"))
+                        .as("food").isEqualTo("bar");
+                softly.assertThat(bootJar.manifestAttributes().get("baz")).as("baz").isEqualTo("foz");
                 softly.assertThat(bootJar.destinationDirectory()).isEqualTo(project.buildDistDirectory());
                 softly.assertThat(bootJar.infLibs()).as("infoLibs").isEmpty();
                 softly.assertThat(bootJar.launcherLibs()).as("launcherJars").isEmpty();

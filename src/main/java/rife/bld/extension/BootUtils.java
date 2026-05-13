@@ -32,8 +32,12 @@ import java.util.regex.Pattern;
  */
 public final class BootUtils {
 
+    // DecimalFormat is not thread-safe, so use ThreadLocal.
+    private static final ThreadLocal<DecimalFormat> FILE_SIZE_FORMAT =
+            ThreadLocal.withInitial(() -> new DecimalFormat("#,##0.#"));
     private static final String[] FILE_SIZE_UNITS = {"B", "KB", "MB", "GB", "TB"};
-    private static final Pattern LOADER_JAR = Pattern.compile("spring-boot-loader-(\\d+).(\\d+).(\\d+).jar");
+    private static final Pattern LOADER_JAR =
+            Pattern.compile("spring-boot-loader-(\\d+)\\.(\\d+)\\.(\\d+)\\.jar");
 
     private BootUtils() {
         // no-op
@@ -50,9 +54,17 @@ public final class BootUtils {
         if (size <= 0) {
             return "0 B";
         }
-        var digitGroups = (int) (Math.log10(size) / Math.log10(1024));
-        return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups))
+
+        var digitGroups = (int) (Math.log(size) / Math.log(1024));
+
+        digitGroups = Math.min(digitGroups, FILE_SIZE_UNITS.length - 1);
+
+        return FILE_SIZE_FORMAT.get().format(size / Math.pow(1024, digitGroups))
                 + ' ' + FILE_SIZE_UNITS[digitGroups];
+    }
+
+    private static boolean isModernLoader(int major, int minor) {
+        return major > 3 || (major == 3 && minor >= 2);
     }
 
     /**
@@ -63,18 +75,7 @@ public final class BootUtils {
      * @return the fully qualified class name
      */
     public static String launcherClass(Project project, String name) {
-        for (var jar : project.standaloneClasspathJars()) {
-            var matcher = LOADER_JAR.matcher(jar.getName());
-            if (matcher.find()) {
-                var major = Integer.parseInt(matcher.group(1));
-                var minor = Integer.parseInt(matcher.group(2));
-                if (major == 3 && minor >= 2 || major > 3) {
-                    return "org.springframework.boot.loader.launch." + name;
-                }
-            }
-        }
-
-        return "org.springframework.boot.loader." + name;
+        return resolveLauncherPrefix(project) + name;
     }
 
     /**
@@ -87,5 +88,19 @@ public final class BootUtils {
         if (!IOTools.mkdirs(path)) {
             throw new IOException("Unable to create: " + path.getAbsolutePath());
         }
+    }
+
+    private static String resolveLauncherPrefix(Project project) {
+        for (var jar : project.standaloneClasspathJars()) {
+            var matcher = LOADER_JAR.matcher(jar.getName());
+            if (matcher.find()) {
+                var major = Integer.parseInt(matcher.group(1));
+                var minor = Integer.parseInt(matcher.group(2));
+                if (isModernLoader(major, minor)) {
+                    return "org.springframework.boot.loader.launch.";
+                }
+            }
+        }
+        return "org.springframework.boot.loader.";
     }
 }

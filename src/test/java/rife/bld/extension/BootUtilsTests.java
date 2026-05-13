@@ -170,8 +170,6 @@ class BootUtilsTests {
             assertEquals("org.springframework.boot.loader.JarLauncher",
                     BootUtils.launcherClass(project, "JarLauncher"));
         }
-
-
     }
 
     @Nested
