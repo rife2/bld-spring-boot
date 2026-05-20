@@ -58,7 +58,7 @@ import java.util.spi.ToolProvider;
 public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         extends AbstractOperation<AbstractBootOperation<T>> {
 
-    protected static final Logger logger = Logger.getLogger("BootOperation");
+    protected final Logger logger = Logger.getLogger(getClass().getName());
     private static final String INF_LIBS = "infLibs";
     private static final String LAUNCHER_LIBS = "launcherLibs";
     private static final String SOURCE_DIRECTORIES = "sourceDirectories";

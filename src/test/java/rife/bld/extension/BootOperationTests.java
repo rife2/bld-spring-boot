@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 @ExtendWith(LoggingExtension.class)
 @SuppressWarnings({"PMD.TestClassWithoutTestCases", "PMD.SignatureDeclareThrowsException",
-        "PMD.AvoidDuplicateLiterals"})
+        "PMD.AvoidDuplicateLiterals", "PMD.MoreThanOneLogger"})
 class BootOperationTests {
 
     private static final String BLD_EXTENSIONS_TOOLS = "bld-extensions-tools";
@@ -193,21 +193,35 @@ class BootOperationTests {
     private static final String WEB_INF_LIB_BLD_PATTERN = "WEB-INF/lib/" + BLD_PATTERN;
     private static final String JSR305_PATTERN = JSR305 + VERSION_PATTERN + "\\.jar";
     private static final String WEB_INF_LIB_PROVIDED_JSR305_PATTERN = "WEB-INF/lib-provided/" + JSR305_PATTERN;
-    private final Logger logger = Logger.getLogger("BootOperation");
-    private TestLogHandler logHandler;
+
+    @SuppressWarnings({"LoggerInitializedWithForeignClass"})
+    private final Logger bootJarLogger = Logger.getLogger(BootJarOperation.class.getName());
+    @SuppressWarnings({"LoggerInitializedWithForeignClass"})
+    private final Logger bootWarLogger = Logger.getLogger(BootWarOperation.class.getName());
+
+    private TestLogHandler jarLogHandler;
+    private TestLogHandler warLogHandler;
+
 
     @AfterEach
     void afterEach() {
-        if (logHandler != null) {
-            logger.removeHandler(logHandler);
+        if (jarLogHandler != null) {
+            bootJarLogger.removeHandler(jarLogHandler);
+        }
+        if (warLogHandler != null) {
+            bootWarLogger.removeHandler(warLogHandler);
         }
     }
 
     @BeforeEach
     void beforeEach() {
-        logHandler = new TestLogHandler();
-        logger.addHandler(logHandler);
-        logger.setLevel(Level.ALL);
+        jarLogHandler = new TestLogHandler();
+        bootJarLogger.addHandler(jarLogHandler);
+        bootJarLogger.setLevel(Level.ALL);
+
+        warLogHandler = new TestLogHandler();
+        bootWarLogger.addHandler(warLogHandler);
+        bootWarLogger.setLevel(Level.ALL);
     }
 
     private StringBuilder readJarEntries(File jar) throws IOException {
@@ -563,10 +577,17 @@ class BootOperationTests {
         }
 
         @Test
-        void jarProjectExecuteWithLoggingDisabled() throws Exception {
-            logger.setLevel(Level.OFF);
+        void jarProjectExecuteWithLogging() throws Exception {
             jarProjectExecute();
-            assertThat(logHandler.getLogMessages()).isEmpty();
+            assertThat(jarLogHandler.getLogMessages()).isNotEmpty();
+            assertThat(jarLogHandler.containsMessage("The executable JAR was created"));
+        }
+
+        @Test
+        void jarProjectExecuteWithLoggingDisabled() throws Exception {
+            bootJarLogger.setLevel(Level.OFF);
+            jarProjectExecute();
+            assertThat(jarLogHandler.getLogMessages()).isEmpty();
         }
 
         @Test
@@ -579,7 +600,7 @@ class BootOperationTests {
                     .infLibs(new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_JAR).getAbsolutePath(),
                             new File(EXAMPLES_LIB_COMPILE + FOO_JAR).getAbsolutePath())
                     .execute();
-            assertThat(logHandler.getLogMessages()).isEmpty();
+            assertThat(jarLogHandler.getLogMessages()).isEmpty();
         }
 
         @Test
@@ -624,10 +645,18 @@ class BootOperationTests {
         }
 
         @Test
-        void warProjectExecuteWithLoggingDisabled() throws Exception {
-            logger.setLevel(Level.OFF);
+        void warProjectExecuteWithLogging() throws Exception {
             warProjectExecute();
-            assertThat(logHandler.getLogMessages()).isEmpty();
+            assertThat(warLogHandler.getLogMessages()).isNotEmpty();
+            assertThat(warLogHandler.containsMessage("The executable WAR was created")).isTrue();
+        }
+
+        @Test
+        void warProjectExecuteWithLoggingDisabled() throws Exception {
+            bootWarLogger.setLevel(Level.OFF);
+            warProjectExecute();
+            bootWarLogger.setLevel(Level.ALL);
+            assertThat(warLogHandler.getLogMessages()).isEmpty();
         }
     }
 
