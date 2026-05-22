@@ -17,10 +17,8 @@
 package rife.bld.extension;
 
 import rife.bld.Project;
-import rife.bld.extension.tools.IOTools;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.regex.Pattern;
 
@@ -76,18 +74,6 @@ public final class BootUtils {
      */
     public static String launcherClass(Project project, String name) {
         return resolveLauncherPrefix(project) + name;
-    }
-
-    /**
-     * Makes a directory for the given path, including any necessary but nonexistent parent directories.
-     *
-     * @param path the directory path
-     * @throws IOException if an error occurs
-     */
-    public static void mkDirs(File path) throws IOException {
-        if (!IOTools.mkdirs(path)) {
-            throw new IOException("Unable to create: " + path.getAbsolutePath());
-        }
     }
 
     private static String resolveLauncherPrefix(Project project) {

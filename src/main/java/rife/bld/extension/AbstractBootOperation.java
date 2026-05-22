@@ -58,10 +58,10 @@ import java.util.spi.ToolProvider;
 public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         extends AbstractOperation<AbstractBootOperation<T>> {
 
-    protected final Logger logger = Logger.getLogger(getClass().getName());
     private static final String INF_LIBS = "infLibs";
     private static final String LAUNCHER_LIBS = "launcherLibs";
     private static final String SOURCE_DIRECTORIES = "sourceDirectories";
+    protected final Logger logger = Logger.getLogger(getClass().getName());
     private final List<File> infLibs_ = new ArrayList<>();
     private final List<File> launcherLibs_ = new ArrayList<>();
     private final Map<String, String> manifestAttributes_ = new HashMap<>();
@@ -580,7 +580,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      */
     protected void executeCopyInfClassesFiles(File stagingInfDirectory) throws IOException {
         var infClassesDir = new File(stagingInfDirectory, "classes");
-        BootUtils.mkDirs(infClassesDir);
+        IOTools.createDirs(infClassesDir);
 
         for (var dir : sourceDirectories_) {
             if (dir.exists()) {
@@ -599,7 +599,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      */
     protected void executeCopyInfLibs(File stagingInfDirectory) throws IOException {
         var infLibDir = stagingInfDirectory.toPath().resolve("lib");
-        BootUtils.mkDirs(infLibDir.toFile());
+        IOTools.createDirs(infLibDir.toFile());
 
         for (var jar : infLibs_) {
             if (jar.exists()) {
@@ -674,7 +674,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      */
     protected void executeCreateManifest(File stagingDirectory) throws IOException {
         var metaInfDir = stagingDirectory.toPath().resolve("META-INF");
-        BootUtils.mkDirs(metaInfDir.toFile());
+        IOTools.createDirs(metaInfDir.toFile());
 
         var manifestFile = metaInfDir.resolve("MANIFEST.MF");
 
@@ -722,10 +722,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * {@link #launcherLibs() launcherLibs}) required to create the archive have been provided, throws an
      * {@link IllegalArgumentException} otherwise.
      *
+     * @throws IOException              if the {@link #destinationDirectory() destination directory} could not be created
      * @throws IllegalArgumentException if a required element is missing or invalid
      */
-    @SuppressFBWarnings({"DRE_DECLARED_RUNTIME_EXCEPTION", "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS"})
-    protected void verifyExecute() throws IllegalArgumentException {
+    @SuppressFBWarnings("DRE_DECLARED_RUNTIME_EXCEPTION")
+    protected void verifyExecute() throws IllegalArgumentException, IOException {
         if (TextTools.isBlank(mainClass_)) {
             throw new IllegalArgumentException("Project mainClass required.");
         } else if (TextTools.isBlank(launcherClass_)) {
@@ -737,10 +738,9 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
                 throw new IllegalArgumentException("Destination directory required.");
             }
             try {
-                BootUtils.mkDirs(destinationDirectory_);
+                IOTools.createDirs(destinationDirectory_);
             } catch (IOException e) {
-                throw new IllegalArgumentException(
-                        MessageFormat.format("Cannot create directory {0}.", destinationDirectory_), e);
+                throw new IOException("Cannot create destination directory: " + destinationDirectory_, e);
             }
         }
         for (var jar : launcherLibs_) {

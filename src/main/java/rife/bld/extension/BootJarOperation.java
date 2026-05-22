@@ -18,6 +18,7 @@ package rife.bld.extension;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import rife.bld.Project;
+import rife.bld.extension.tools.IOTools;
 import rife.bld.extension.tools.ObjectTools;
 import rife.tools.FileUtils;
 
@@ -58,7 +59,7 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
 
         try {
             var bootInfDir = new File(stagingDir, "BOOT-INF");
-            BootUtils.mkDirs(bootInfDir);
+            IOTools.createDirs(bootInfDir);
 
             executeCopyInfClassesFiles(bootInfDir);
             executeCopyInfLibs(bootInfDir);

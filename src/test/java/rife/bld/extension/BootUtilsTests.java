@@ -19,19 +19,15 @@ package rife.bld.extension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
-import org.junit.jupiter.api.io.TempDir;
 import rife.bld.Project;
 import rife.bld.blueprints.BaseProjectBlueprint;
-import rife.tools.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals"})
 class BootUtilsTests {
@@ -169,33 +165,6 @@ class BootUtilsTests {
 
             assertEquals("org.springframework.boot.loader.JarLauncher",
                     BootUtils.launcherClass(project, "JarLauncher"));
-        }
-    }
-
-    @Nested
-    @DisplayName("MkDirs Tests")
-    class MkDirsTests {
-
-        @TempDir
-        private File tmpDir;
-
-        @Test
-        void mkDirsCreatesDirectories() throws IOException {
-            FileUtils.deleteDirectory(tmpDir);
-            assertFalse(tmpDir.exists());
-
-            BootUtils.mkDirs(tmpDir);
-            assertTrue(tmpDir.exists());
-        }
-
-        @Test
-        @DisabledOnOs(OS.WINDOWS)
-        void mkDirsThrowsIOException() {
-            var tmpFile = new File("/foo/bar.txt");
-            tmpFile.deleteOnExit();
-
-            var exception = assertThrows(IOException.class, () -> BootUtils.mkDirs(tmpFile));
-            assertEquals("Unable to create: " + tmpFile.getAbsolutePath(), exception.getMessage());
         }
     }
 }

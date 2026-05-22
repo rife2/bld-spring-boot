@@ -20,6 +20,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import rife.bld.Project;
 import rife.bld.extension.tools.CollectionTools;
+import rife.bld.extension.tools.IOTools;
 import rife.bld.extension.tools.ObjectTools;
 import rife.tools.FileUtils;
 
@@ -67,7 +68,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
 
         try {
             var webInfDir = new File(stagingDir, "WEB-INF");
-            BootUtils.mkDirs(webInfDir);
+            IOTools.createDirs(webInfDir);
 
             executeCopyInfClassesFiles(webInfDir);
             executeCopyInfLibs(webInfDir);
@@ -260,7 +261,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      */
     protected void executeCopyWebInfProvidedLib(File stagingWebInfDirectory) throws IOException {
         var libProvidedPath = stagingWebInfDirectory.toPath().resolve("lib-provided");
-        BootUtils.mkDirs(libProvidedPath.toFile());
+        IOTools.createDirs(libProvidedPath.toFile());
 
         for (var lib : providedLibs_) {
             if (lib.exists()) {
