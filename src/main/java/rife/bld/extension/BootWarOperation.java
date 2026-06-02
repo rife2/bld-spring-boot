@@ -154,12 +154,12 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     }
 
     /**
-     * Provides libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
+     * Provides the libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
      *
      * @param jars a collection of Java archive files
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty
      * @see #providedLibs(File...)
      */
     public final BootWarOperation providedLibs(@NonNull Collection<File> jars) {
@@ -173,8 +173,8 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty, or contains empty elements
      * @see #providedLibsStrings(Collection)
      */
     public BootWarOperation providedLibs(@NonNull String... jars) {
@@ -188,8 +188,8 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty
      * @see #providedLibs(Collection)
      */
     public BootWarOperation providedLibs(@NonNull File... jars) {
@@ -203,8 +203,8 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty
      * @see #providedLibsPaths(Collection)
      */
     public BootWarOperation providedLibs(@NonNull Path... jars) {
@@ -228,8 +228,8 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty
      * @see #providedLibs(Path...)
      */
     public final BootWarOperation providedLibsPaths(@NonNull Collection<Path> jars) {
@@ -243,8 +243,8 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      *
      * @param jars one or more Java archive files
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty, or contains empty elements
      * @see #providedLibs(String...)
      */
     public final BootWarOperation providedLibsStrings(@NonNull Collection<String> jars) {

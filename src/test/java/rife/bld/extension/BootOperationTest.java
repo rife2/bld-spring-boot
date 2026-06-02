@@ -39,20 +39,25 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 
 @ExtendWith(LoggingExtension.class)
 @SuppressWarnings({"PMD.TestClassWithoutTestCases", "PMD.SignatureDeclareThrowsException",
         "PMD.AvoidDuplicateLiterals", "PMD.MoreThanOneLogger"})
-class BootOperationTests {
+class BootOperationTest {
+
+    static final String BOOT_VERSION = "4.0.6";
+    static final String EXAMPLES_DIR = "examples/4.0.x";
+    static final String EXAMPLES_LIB_COMPILE = EXAMPLES_DIR + "/lib/compile/";
+    static final String EXAMPLES_LIB_RUNTIME = EXAMPLES_DIR + "/lib/runtime/";
+    static final String EXAMPLES_LIB_STANDALONE = EXAMPLES_DIR + "/lib/standalone/";
+    static final String FOO_JAR = "foo.jar";
+    static final String MAIN_CLASS = "com.example.Foo";
+    static final String SPRING_BOOT_JAR = "spring-boot-" + BOOT_VERSION + ".jar";
+    static final String SPRING_BOOT_LOADER_JAR = "spring-boot-loader-" + BOOT_VERSION + ".jar";
+    static final String SRC_MAIN_JAVA = "src/main/java";
+    static final String SRC_TEST_JAVA = "src/test/java";
 
     private static final String BLD_EXTENSIONS_TOOLS = "bld-extensions-tools";
-    private static final String BOOT_VERSION = "4.0.6";
-    private static final String EXAMPLES_DIR = "examples/4.0.x";
-    private static final String EXAMPLES_LIB_COMPILE = EXAMPLES_DIR + "/lib/compile/";
-    private static final String EXAMPLES_LIB_RUNTIME = EXAMPLES_DIR + "/lib/runtime/";
-    private static final String EXAMPLES_LIB_STANDALONE = EXAMPLES_DIR + "/lib/standalone/";
-    private static final String FOO_JAR = "foo.jar";
     private static final String JSR305 = "jsr305";
     private static final String JSR305_VERSION = "3.0.2";
     private static final String LAUNCHER_JARS = """
@@ -172,15 +177,10 @@ class BootOperationTests {
             org/springframework/boot/loader/zip/ZipString$CompareType.class
             org/springframework/boot/loader/zip/ZipString.class
             """;
-    private static final String MAIN_CLASS = "com.example.Foo";
     private static final String SPOTBUGS_ANNOTATIONS = "spotbugs-annotations";
     private static final String SPOTBUGS_ANNOTATIONS_PATTERN = SPOTBUGS_ANNOTATIONS + "-\\d+\\.\\d+\\.\\d+\\.jar";
     private static final String WEB_INF_LIB_PROVIDED_SPOTBUGS_PATTERN = "WEB-INF/lib-provided/"
             + SPOTBUGS_ANNOTATIONS_PATTERN;
-    private static final String SPRING_BOOT_JAR = "spring-boot-" + BOOT_VERSION + ".jar";
-    private static final String SPRING_BOOT_LOADER_JAR = "spring-boot-loader-" + BOOT_VERSION + ".jar";
-    private static final String SRC_MAIN_JAVA = "src/main/java";
-    private static final String SRC_TEST_JAVA = "src/test/java";
     private static final String VERSION_PATTERN = "-\\d+\\.\\d+\\.\\d+(-SNAPSHOT|-\\d{8}\\.\\d{6}-\\d+)?";
     private static final String BLD_EXTENSIONS_TOOLS_PATTERN = BLD_EXTENSIONS_TOOLS
             + VERSION_PATTERN + "\\.jar";
@@ -243,221 +243,6 @@ class BootOperationTests {
             name = "test_project";
             version = new VersionNumber(0, 0, 1);
             mainClass = MAIN_CLASS;
-        }
-    }
-
-    @Nested
-    @DisplayName("Errors Tests")
-    class ErrorsTests {
-
-        @Test
-        void invalidMainClass() {
-            var bootWar = new BootWarOperation().mainClass(MAIN_CLASS);
-            assertThatCode(bootWar::execute)
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("class required");
-        }
-
-        @Test
-        void launcherClass() {
-            var bootWar = new BootJarOperation()
-                    .fromProject(new CustomProject(new File(".")))
-                    .mainClass(MAIN_CLASS)
-                    .launcherClass("org.springframework.boot.loader.launch.WarLauncher")
-                    .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR)));
-
-            assertThatCode(bootWar::verifyExecute).doesNotThrowAnyException();
-        }
-
-        @Test
-        void misingDestinationDirectory() {
-            assertThatCode(() ->
-                    new BootWarOperation()
-                            .mainClass(MAIN_CLASS)
-                            .launcherClass("org.springframework.boot.loader.launch.WarLauncher")
-                            .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR)))
-                            .execute()
-            )
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("Destination directory required.");
-        }
-
-        @Test
-        void misingLauncherLibs() {
-            assertThatCode(() ->
-                    new BootWarOperation()
-                            .mainClass(MAIN_CLASS)
-                            .launcherClass("org.springframework.boot.loader.launch.WarLauncher")
-                            .execute()
-            )
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("Spring Boot loader launcher libraries required.");
-        }
-
-        @Test
-        void missingLauncherClass() {
-            var bootWar = new BootWarOperation().mainClass(MAIN_CLASS)
-                    .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR)));
-            assertThatCode(bootWar::execute)
-                    .isInstanceOf((IllegalArgumentException.class))
-                    .hasMessageContaining("class required");
-        }
-
-        @Test
-        void missingMainClass() {
-            var bootWar = new BootWarOperation();
-            assertThatCode(bootWar::execute).isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("mainClass");
-        }
-    }
-
-    @Nested
-    @DisplayName("Libs Tests")
-    class LibsTests {
-
-        @Nested
-        @DisplayName("Inf Lib Tests")
-        class InfLibTest {
-
-            private final File bar = new File(EXAMPLES_LIB_COMPILE + FOO_JAR);
-            private final File foo = new File(EXAMPLES_LIB_COMPILE + SPRING_BOOT_JAR);
-            private final BootWarOperation op = new BootWarOperation();
-
-            @Test
-            void infLibsAsFileArray() {
-                op.infLibs().clear();
-                op.infLibs(foo, bar);
-                assertThat(op.infLibs()).as("File...").containsExactly(foo, bar);
-            }
-
-            @Test
-            void infLibsAsFileList() {
-                op.infLibs().clear();
-                op.infLibs(List.of(foo, bar));
-                assertThat(op.infLibs()).as("List(File...)").containsExactly(foo, bar);
-
-            }
-
-            @Test
-            void infLibsAsPathArray() {
-                op.infLibs().clear();
-                op.infLibs(foo.toPath(), bar.toPath());
-                assertThat(op.infLibs()).as("Path...").containsExactly(foo, bar);
-            }
-
-            @Test
-            void infLibsAsPathList() {
-                op.infLibs().clear();
-                op.infLibsPaths(List.of(foo.toPath(), bar.toPath()));
-                assertThat(op.infLibs()).as("List(Path...)").containsExactly(foo, bar);
-            }
-
-            @Test
-            void infLibsAsStringArray() {
-                op.infLibs().clear();
-                op.infLibs(EXAMPLES_LIB_COMPILE + SPRING_BOOT_JAR, EXAMPLES_LIB_COMPILE + FOO_JAR);
-                assertThat(op.infLibs()).as("String...").containsExactly(foo, bar);
-            }
-
-            @Test
-            void infLibsAsStringList() {
-                op.infLibs().clear();
-                op.infLibsStrings(List.of(EXAMPLES_LIB_COMPILE + SPRING_BOOT_JAR, EXAMPLES_LIB_COMPILE + FOO_JAR));
-                assertThat(op.infLibs()).as("List(String...)").containsExactly(foo, bar);
-
-            }
-        }
-
-        @Nested
-        @DisplayName("Launcher Libs Tests")
-        class LauncherLibTests {
-
-            private final File launcher = new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR);
-
-            @Test
-            void launcherLibsAsFileArray() {
-                var op = new BootJarOperation().launcherLibs(launcher);
-                assertThat(op.launcherLibs()).as("File...").containsExactly(launcher);
-            }
-
-            @Test
-            void launcherLibsAsFileList() {
-                var op = new BootJarOperation().launcherLibs(List.of(launcher));
-                assertThat(op.launcherLibs()).as("List(File...)").containsExactly(launcher);
-            }
-
-            @Test
-            void launcherLibsAsPathArray() {
-                var op = new BootJarOperation().launcherLibs(launcher.toPath());
-                assertThat(op.launcherLibs()).as("Path...").containsExactly(launcher);
-            }
-
-            @Test
-            void launcherLibsAsPathList() {
-                var op = new BootJarOperation().launcherLibsPaths(List.of(launcher.toPath()));
-                assertThat(op.launcherLibs()).as("List(Path...)").containsExactly(launcher);
-            }
-
-            @Test
-            void launcherLibsAsStringArray() {
-                var op = new BootJarOperation().launcherLibs(EXAMPLES_LIB_STANDALONE
-                        + SPRING_BOOT_LOADER_JAR);
-                assertThat(op.launcherLibs()).as("String...").containsExactly(launcher);
-            }
-
-            @Test
-            void launcherLibsAsStringList() {
-                var op = new BootJarOperation().launcherLibsStrings(List.of(EXAMPLES_LIB_STANDALONE
-                        + SPRING_BOOT_LOADER_JAR));
-                assertThat(op.launcherLibs()).as("List(String...)").containsExactly(launcher);
-            }
-        }
-
-        @Nested
-        @DisplayName("War Libs Tests")
-        class WarLibTest {
-
-            private final File foo = new File(EXAMPLES_LIB_RUNTIME + "foo.jar");
-            private final BootWarOperation op = new BootWarOperation();
-
-            @Test
-            void warProvidedLibs() {
-                op.providedLibs().clear();
-                op.providedLibs(foo);
-                assertThat(op.providedLibs()).containsExactly(foo);
-            }
-
-            @Test
-            void warProvidedLibsAsPath() {
-                op.providedLibs().clear();
-                var tmp = op.providedLibs(foo.toPath());
-                assertThat(tmp).isEqualTo(op);
-                assertThat(op.providedLibs()).containsExactly(foo);
-            }
-
-            @Test
-            void warProvidedLibsAsPaths() {
-                op.providedLibs().clear();
-                var tmp = op.providedLibsPaths(List.of(foo.toPath()));
-                assertThat(tmp).isEqualTo(op);
-                assertThat(op.providedLibs()).containsExactly(foo);
-            }
-
-            @Test
-            void warProvidedLibsAsString() {
-                op.providedLibs().clear();
-                var tmp = op.providedLibs(EXAMPLES_LIB_RUNTIME + "foo.jar");
-                assertThat(tmp).isEqualTo(op);
-                assertThat(op.providedLibs()).containsExactly(foo);
-            }
-
-            @Test
-            void warProvidedLibsAsStrings() {
-                op.providedLibs().clear();
-                var tmp = op.providedLibsStrings(List.of(EXAMPLES_LIB_RUNTIME + "foo.jar"));
-                assertThat(tmp).isEqualTo(op);
-                assertThat(op.providedLibs()).containsExactly(foo);
-            }
         }
     }
 
@@ -657,59 +442,6 @@ class BootOperationTests {
             warProjectExecute();
             bootWarLogger.setLevel(Level.ALL);
             assertThat(warLogHandler.getLogMessages()).isEmpty();
-        }
-    }
-
-    @Nested
-    @DisplayName("Source Directories Tests")
-    class SourceDirectoriesTests {
-
-        final BootJarOperation op = new BootJarOperation();
-        final File src = new File(SRC_MAIN_JAVA);
-        final File test = new File(SRC_TEST_JAVA);
-
-        @Test
-        void sourceDirectoriesAsFileArray() {
-            op.sourceDirectories().clear();
-            op.sourceDirectories(src, test);
-            assertThat(op.sourceDirectories()).as("File...").containsExactly(src, test);
-        }
-
-        @Test
-        void sourceDirectoriesAsFileList() {
-            op.sourceDirectories().clear();
-            var tmp = op.sourceDirectories(List.of(src, test));
-            assertThat(tmp).isEqualTo(op);
-            assertThat(op.sourceDirectories()).as("List(File...)").containsExactly(src, test);
-        }
-
-        @Test
-        void sourceDirectoriesAsPathArray() {
-            op.sourceDirectories().clear();
-            var tmp = op.sourceDirectories(src.toPath(), test.toPath());
-            assertThat(tmp).isEqualTo(op);
-            assertThat(op.sourceDirectories()).as("Path...").containsExactly(src, test);
-        }
-
-        @Test
-        void sourceDirectoriesAsPathList() {
-            op.sourceDirectories().clear();
-            op.sourceDirectoriesPaths(List.of(src.toPath(), test.toPath()));
-            assertThat(op.sourceDirectories()).as("List(Path...)").containsExactly(src, test);
-        }
-
-        @Test
-        void sourceDirectoriesAsStringArray() {
-            op.sourceDirectories().clear();
-            op.sourceDirectories(SRC_MAIN_JAVA, SRC_TEST_JAVA);
-            assertThat(op.sourceDirectories()).as("String...").containsExactly(src, test);
-        }
-
-        @Test
-        void sourceDirectoriesAsStringList() {
-            op.sourceDirectories().clear();
-            op.sourceDirectoriesStrings(List.of(SRC_MAIN_JAVA, SRC_TEST_JAVA));
-            assertThat(op.sourceDirectories()).as("List(String...").containsExactly(src, test);
         }
     }
 }

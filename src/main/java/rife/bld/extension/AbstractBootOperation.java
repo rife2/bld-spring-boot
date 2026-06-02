@@ -159,8 +159,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars one or more Java archive files
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty
      * @see #infLibs(Collection)
      */
     public T infLibs(@NonNull File... jars) {
@@ -175,8 +175,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars a collection of Java archive files
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty
      * @see #infLibs(File...)
      */
     public final T infLibs(@NonNull Collection<File> jars) {
@@ -191,8 +191,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars one or more Java archive files
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty
      * @see #infLibsPaths(Collection)
      */
     public T infLibs(@NonNull Path... jars) {
@@ -207,8 +207,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars one or more Java archive files
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty, or contains empty elements
      * @see #infLibsStrings(Collection)
      */
     public T infLibs(@NonNull String... jars) {
@@ -233,8 +233,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars one or more Java archive files
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty
      * @see #infLibs(Path...)
      */
     public final T infLibsPaths(@NonNull Collection<Path> jars) {
@@ -249,8 +249,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars one or more Java archive files
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty, or contains empty elements
      * @see #infLibs(String...)
      */
     public final T infLibsStrings(@NonNull Collection<String> jars) {
@@ -286,8 +286,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars one or more Java archives
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty
      * @see #infLibs(Collection)
      */
     public T launcherLibs(@NonNull File... jars) {
@@ -302,8 +302,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars a collection of Java archives
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty
      * @see #infLibs(File...)
      */
     public final T launcherLibs(@NonNull Collection<File> jars) {
@@ -318,8 +318,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars one or more Java archives
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty, or contains empty elements
      * @see #launcherLibsStrings(Collection)
      */
     public T launcherLibs(@NonNull String... jars) {
@@ -334,8 +334,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars one or more Java archives
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty
      * @see #launcherLibsPaths(Collection)
      */
     public T launcherLibs(@NonNull Path... jars) {
@@ -359,8 +359,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars one or more Java archives
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty
      * @see #launcherLibs(Path...)
      */
     public final T launcherLibsPaths(@NonNull Collection<Path> jars) {
@@ -375,8 +375,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param jars one or more Java archives
      * @return this operation instance
-     * @throws NullPointerException     if {@code jars} is null
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code jars} is empty, or contains empty elements
      * @see #launcherLibs(String...)
      */
     public final T launcherLibsStrings(@NonNull Collection<String> jars) {
@@ -427,7 +427,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param attributes the manifest attributes
      * @return this operation instance
-     * @throws NullPointerException     if {@code attributes} is null
+     * @throws NullPointerException     if {@code attributes} is {@code null}
      * @throws IllegalArgumentException if {@code attributes} is empty, or contains {@code null} or empty elements
      * @see #manifestAttribute(String, String)
      */
@@ -443,8 +443,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param directories one or more source directories
      * @return this operation instance
-     * @throws NullPointerException     if {@code directories} is null
-     * @throws IllegalArgumentException if {@code directories} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code directories} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code directories} is empty
      * @see #sourceDirectories(Collection)
      */
     public T sourceDirectories(@NonNull File... directories) {
@@ -459,8 +459,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param directories one or more source directories
      * @return this operation instance
-     * @throws NullPointerException     if {@code directories} is null
-     * @throws IllegalArgumentException if {@code directories} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code directories} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code directories} is empty
      * @see #sourceDirectories(File...)
      */
     public final T sourceDirectories(@NonNull Collection<File> directories) {
@@ -475,8 +475,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param directories one or more source directories
      * @return this operation instance
-     * @throws NullPointerException     if {@code directories} is null
-     * @throws IllegalArgumentException if {@code directories} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code directories} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code directories} is empty, or contains empty elements
      * @see #sourceDirectoriesStrings(Collection)
      */
     public T sourceDirectories(@NonNull String... directories) {
@@ -491,8 +491,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param directories one or more source directories
      * @return this operation instance
-     * @throws NullPointerException     if {@code directories} is null
-     * @throws IllegalArgumentException if {@code directories} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code directories} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code directories} is empty
      * @see #sourceDirectoriesPaths(Collection)
      */
     public T sourceDirectories(@NonNull Path... directories) {
@@ -514,8 +514,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param directories one or more source directories
      * @return this operation instance
-     * @throws NullPointerException     if {@code directories} is null
-     * @throws IllegalArgumentException if {@code directories} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code directories} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code directories} is empty
      * @see #sourceDirectories(Path...)
      */
     public final T sourceDirectoriesPaths(@NonNull Collection<Path> directories) {
@@ -530,8 +530,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      *
      * @param directories one or more source directories
      * @return this operation instance
-     * @throws NullPointerException     if {@code directories} is null
-     * @throws IllegalArgumentException if {@code directories} is empty, or contains {@code null} or empty elements
+     * @throws NullPointerException     if {@code directories} is {@code null} or contains {@code null} elements
+     * @throws IllegalArgumentException if {@code directories} is empty, or contains empty elements
      * @see #sourceDirectories(String...)
      */
     public final T sourceDirectoriesStrings(@NonNull Collection<String> directories) {

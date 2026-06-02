@@ -100,6 +100,8 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
      *
      * @param project the project
      * @return this operation instance
+     * @throws NullPointerException     if {@code project} or {@link Project#version() project version} are {@code null}
+     * @throws IllegalArgumentException if {@link Project#mainClass() project main class} is empty
      */
     @Override
     public BootJarOperation fromProject(@NonNull Project project) {
