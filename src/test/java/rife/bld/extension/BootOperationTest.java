@@ -45,8 +45,8 @@ import static org.assertj.core.api.Assertions.assertThat;
         "PMD.AvoidDuplicateLiterals", "PMD.MoreThanOneLogger"})
 class BootOperationTest {
 
-    static final String BOOT_VERSION = "4.0.6";
-    static final String EXAMPLES_DIR = "examples/4.0.x";
+    static final String BOOT_VERSION = "4.1.0";
+    static final String EXAMPLES_DIR = "examples/4.1.x";
     static final String EXAMPLES_LIB_COMPILE = EXAMPLES_DIR + "/lib/compile/";
     static final String EXAMPLES_LIB_RUNTIME = EXAMPLES_DIR + "/lib/runtime/";
     static final String EXAMPLES_LIB_STANDALONE = EXAMPLES_DIR + "/lib/standalone/";
@@ -168,6 +168,7 @@ class BootOperationTest {
             org/springframework/boot/loader/zip/ZipContent$Entry.class
             org/springframework/boot/loader/zip/ZipContent$Kind.class
             org/springframework/boot/loader/zip/ZipContent$Loader.class
+            org/springframework/boot/loader/zip/ZipContent$SignatureFiles.class
             org/springframework/boot/loader/zip/ZipContent$Source.class
             org/springframework/boot/loader/zip/ZipContent.class
             org/springframework/boot/loader/zip/ZipDataDescriptorRecord.class
@@ -257,6 +258,16 @@ class BootOperationTest {
         void boot3() {
             var project = new AppProjectBlueprint(
                     new File("examples/3.5.x"),
+                    "com.example.demo",
+                    "demo",
+                    "DemoApplication");
+            assertThat(project.execute(new String[]{"clean", "compile", "test"})).isEqualTo(0);
+        }
+
+        @Test
+        void boot4() {
+            var project = new AppProjectBlueprint(
+                    new File("examples/4.0.x"),
                     "com.example.demo",
                     "demo",
                     "DemoApplication");

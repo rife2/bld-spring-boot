@@ -63,6 +63,26 @@ jobs:
         working-directory: examples/4.0.x
         run: ./bld bootwar
 
+      - name: Download dependencies [4.1.x example]
+        working-directory: examples/4.1.x
+        run: ./bld download
+
+      - name: Compile source [4.1.x example]
+        working-directory: examples/4.1.x
+        run: ./bld compile
+
+      - name: Run tests [4.1.x example]
+        working-directory: examples/4.1.x
+        run: ./bld test
+
+      - name: Compile and create the JAR [4.1.x example]
+        working-directory: examples/4.1.x
+        run: ./bld bootjar
+
+      - name: Compile and create the WAR [4.1.x example]
+        working-directory: examples/4.1.x
+        run: ./bld bootwar
+
       - name: Download dependencies
         run: ./bld download
 

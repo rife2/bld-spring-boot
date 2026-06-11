@@ -51,7 +51,7 @@ public class SpringBootBuild extends Project {
                         version(2, 3, 1, "SNAPSHOT")));
         scope(provided)
                 .include(dependency("com.github.spotbugs", "spotbugs-annotations",
-                        version(4, 9, 8)));
+                        version(4, 10, 2)));
         scope(test)
                 .include(dependency("com.uwyn.rife2", "bld-extensions-testing-helpers",
                         version(1, 1, 0, "SNAPSHOT")))

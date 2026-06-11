@@ -79,7 +79,6 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @throws NullPointerException     if {@code directory} is null
      * @throws IllegalArgumentException if {@code directory} is empty
      */
-    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     public T destinationDirectory(@NonNull String directory) {
         ObjectTools.requireNotEmpty(directory, "destinationDirectory");
         destinationDirectory_ = new File(directory);
@@ -617,7 +616,6 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @return the archive
      * @throws IOException if an error occurs
      */
-    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     protected File executeCreateArchive(File stagingDirectory) throws IOException {
         executeCreateManifest(stagingDirectory);
 
@@ -725,7 +723,6 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @throws IOException              if the {@link #destinationDirectory() destination directory} could not be created
      * @throws IllegalArgumentException if a required element is missing or invalid
      */
-    @SuppressFBWarnings("DRE_DECLARED_RUNTIME_EXCEPTION")
     protected void verifyExecute() throws IllegalArgumentException, IOException {
         if (TextTools.isBlank(mainClass_)) {
             throw new IllegalArgumentException("Project mainClass required.");
