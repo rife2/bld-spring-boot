@@ -64,7 +64,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     protected final Logger logger = Logger.getLogger(getClass().getName());
     private final List<File> infLibs_ = new ArrayList<>();
     private final List<File> launcherLibs_ = new ArrayList<>();
-    private final Map<String, String> manifestAttributes_ = new HashMap<>();
+    private final Map<String, String> manifestAttributes_ = new LinkedHashMap<>();
     private final List<File> sourceDirectories_ = new ArrayList<>();
     private File destinationDirectory_;
     private String destinationFileName_;
@@ -82,8 +82,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public T destinationDirectory(@NonNull String directory) {
         ObjectTools.requireNotEmpty(directory, "destinationDirectory");
         destinationDirectory_ = new File(directory);
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -95,8 +94,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      */
     public T destinationDirectory(@NonNull File directory) {
         destinationDirectory_ = ObjectTools.requireNonNull(directory, "destinationDirectory");
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -109,8 +107,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public T destinationDirectory(@NonNull Path directory) {
         ObjectTools.requireNonNull(directory, "destinationDirectory");
         destinationDirectory_ = directory.toFile();
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -132,8 +129,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      */
     public T destinationFileName(@NonNull String name) {
         destinationFileName_ = ObjectTools.requireNotEmpty(name, "destinationFileName");
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -165,8 +161,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public T infLibs(@NonNull File... jars) {
         ObjectTools.requireNotEmpty(jars, INF_LIBS);
         infLibs_.addAll(List.of(jars));
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -181,8 +176,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public final T infLibs(@NonNull Collection<File> jars) {
         ObjectTools.requireNotEmpty(jars, INF_LIBS);
         infLibs_.addAll(jars);
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -197,8 +191,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public T infLibs(@NonNull Path... jars) {
         ObjectTools.requireNotEmpty(jars, INF_LIBS);
         infLibs_.addAll(CollectionTools.combinePathsToFiles(jars));
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -213,8 +206,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public T infLibs(@NonNull String... jars) {
         ObjectTools.requireNotEmpty(jars, INF_LIBS);
         infLibs_.addAll(CollectionTools.combineStringsToFiles(jars));
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -239,8 +231,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public final T infLibsPaths(@NonNull Collection<Path> jars) {
         ObjectTools.requireNotEmpty(jars, "infLibsPaths");
         infLibs_.addAll(CollectionTools.combinePathsToFiles(jars));
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -255,8 +246,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public final T infLibsStrings(@NonNull Collection<String> jars) {
         ObjectTools.requireNotEmpty(jars, "infLibsStrings");
         infLibs_.addAll(CollectionTools.combineStringsToFiles(jars));
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -276,8 +266,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      */
     public T launcherClass(@NonNull String className) {
         launcherClass_ = ObjectTools.requireNotEmpty(className, "launcherClass");
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -292,8 +281,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public T launcherLibs(@NonNull File... jars) {
         ObjectTools.requireNotEmpty(jars, LAUNCHER_LIBS);
         launcherLibs_.addAll(List.of(jars));
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -308,8 +296,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public final T launcherLibs(@NonNull Collection<File> jars) {
         ObjectTools.requireNotEmpty(jars, LAUNCHER_LIBS);
         launcherLibs_.addAll(jars);
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -324,8 +311,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public T launcherLibs(@NonNull String... jars) {
         ObjectTools.requireNotEmpty(jars, LAUNCHER_LIBS);
         launcherLibs_.addAll(CollectionTools.combineStringsToFiles(jars));
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -340,8 +326,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public T launcherLibs(@NonNull Path... jars) {
         ObjectTools.requireNotEmpty(jars, LAUNCHER_LIBS);
         launcherLibs_.addAll(CollectionTools.combinePathsToFiles(jars));
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -365,8 +350,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public final T launcherLibsPaths(@NonNull Collection<Path> jars) {
         ObjectTools.requireNotEmpty(jars, "launcherLibsPaths");
         launcherLibs_.addAll(CollectionTools.combinePathsToFiles(jars));
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -381,8 +365,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public final T launcherLibsStrings(@NonNull Collection<String> jars) {
         ObjectTools.requireNotEmpty(jars, "launcherLibsStrings");
         launcherLibs_.addAll(CollectionTools.combineStringsToFiles(jars));
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -407,8 +390,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
         ObjectTools.requireNotEmpty(name, "manifestAttribute name");
         ObjectTools.requireNotEmpty(value, "manifestAttribute value");
         manifestAttributes_.put(name, value);
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -433,8 +415,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public T manifestAttributes(@NonNull Map<String, String> attributes) {
         ObjectTools.requireNotEmpty(attributes, "manifestAttributes");
         manifestAttributes_.putAll(attributes);
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -449,8 +430,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public T sourceDirectories(@NonNull File... directories) {
         ObjectTools.requireNotEmpty(directories, SOURCE_DIRECTORIES);
         sourceDirectories_.addAll(List.of(directories));
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -465,8 +445,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public final T sourceDirectories(@NonNull Collection<File> directories) {
         ObjectTools.requireNotEmpty(directories, SOURCE_DIRECTORIES);
         sourceDirectories_.addAll(directories);
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -481,8 +460,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public T sourceDirectories(@NonNull String... directories) {
         ObjectTools.requireNotEmpty(directories, SOURCE_DIRECTORIES);
         sourceDirectories_.addAll(CollectionTools.combineStringsToFiles(directories));
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -520,8 +498,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public final T sourceDirectoriesPaths(@NonNull Collection<Path> directories) {
         ObjectTools.requireNotEmpty(directories, "sourceDirectoriesPaths");
         sourceDirectories_.addAll(CollectionTools.combinePathsToFiles(directories));
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -536,8 +513,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
     public final T sourceDirectoriesStrings(@NonNull Collection<String> directories) {
         ObjectTools.requireNotEmpty(directories, "sourceDirectoriesStrings");
         sourceDirectories_.addAll(CollectionTools.combineStringsToFiles(directories));
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
 
     /**
@@ -548,7 +524,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @throws FileUtilsErrorException if an error occurs
      * @throws ExitStatusException     if the launcher libraries are missing
      */
-    protected void executeCopyBootLoader(File stagingDirectory) throws FileUtilsErrorException, ExitStatusException {
+    protected void executeCopyBootLoader(File stagingDirectory)
+            throws FileUtilsErrorException, ExitStatusException {
         if (launcherLibs_.isEmpty()) {
             if (logger.isLoggable(Level.SEVERE) && !silent()) {
                 logger.severe("Spring Boot loader launcher required.");
@@ -558,7 +535,11 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
             var metaInfDir = new File(stagingDirectory, "META-INF");
             for (var jar : launcherLibs()) {
                 if (jar.exists()) {
-                    FileUtils.unzipFile(jar, stagingDirectory);
+                    try {
+                        FileUtils.unzipFile(jar, stagingDirectory);
+                    } catch (FileUtilsErrorException e) {
+                        throw new FileUtilsErrorException("Failed to unzip launcher jar: " + jar.getAbsolutePath(), e);
+                    }
                 } else if (logger.isLoggable(Level.WARNING) && !silent()) {
                     logger.warning("File not found: " + jar.getAbsolutePath());
                 }
@@ -577,7 +558,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @param stagingInfDirectory the staging {@code INF} directory
      * @throws IOException if an error occurs
      */
-    protected void executeCopyInfClassesFiles(File stagingInfDirectory) throws IOException {
+    protected void executeCopyInfClassesFiles(File stagingInfDirectory)
+            throws IOException {
         var infClassesDir = new File(stagingInfDirectory, "classes");
         IOTools.createDirs(infClassesDir);
 
@@ -596,7 +578,8 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @param stagingInfDirectory the staging {@code INF} directory
      * @throws IOException if an error occurs
      */
-    protected void executeCopyInfLibs(File stagingInfDirectory) throws IOException {
+    protected void executeCopyInfLibs(File stagingInfDirectory)
+            throws IOException {
         var infLibDir = stagingInfDirectory.toPath().resolve("lib");
         IOTools.createDirs(infLibDir.toFile());
 
@@ -616,19 +599,26 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @return the archive
      * @throws IOException if an error occurs
      */
-    protected File executeCreateArchive(File stagingDirectory) throws IOException {
+    protected File executeCreateArchive(File stagingDirectory)
+            throws IOException {
         executeCreateManifest(stagingDirectory);
 
         if (logger.isLoggable(Level.FINE) && (!silent())) {
-            logger.fine(MessageFormat.format("""
-                            \tStaging     -> {0} [exists={1}]
-                            \tDestination -> {2} [exists={3}]
-                            \tArchive     -> {4}
-                            \tLauncher    -> {5}""",
-                    stagingDirectory, stagingDirectory.exists(),
-                    destinationDirectory(), destinationDirectory().exists(),
-                    destinationFileName(),
-                    launcherClass()));
+            logger.fine(
+                    MessageFormat.format(
+                            """
+                                    \tStaging     -> {0} [exists={1}]
+                                    \tDestination -> {2} [exists={3}]
+                                    \tArchive     -> {4}
+                                    \tLauncher    -> {5}""",
+                            stagingDirectory,
+                            stagingDirectory.exists(),
+                            destinationDirectory(),
+                            destinationDirectory().exists(),
+                            destinationFileName(),
+                            launcherClass()
+                    )
+            );
         }
 
         var out = new StringWriter();
@@ -645,10 +635,19 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
 
         var archive = new File(destinationDirectory(), destinationFileName());
 
-        try (var stdout = new PrintWriter(out);
-             var stderr = new PrintWriter(err)) {
-            jarTool.run(stdout, stderr, args, archive.getAbsolutePath(),
-                    "-C", stagingDirectory.getAbsolutePath(), ".");
+        try (
+                var stdout = new PrintWriter(out);
+                var stderr = new PrintWriter(err)
+        ) {
+            jarTool.run(
+                    stdout,
+                    stderr,
+                    args,
+                    archive.getAbsolutePath(),
+                    "-C",
+                    stagingDirectory.getAbsolutePath(),
+                    "."
+            );
         }
 
         var errBuff = err.getBuffer();
@@ -711,9 +710,16 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      */
     protected T mainClass(String className) {
         mainClass_ = className;
-        //noinspection unchecked
-        return (T) this;
+        return self();
     }
+
+    /**
+     * Returns this instance typed as {@code T}, enabling fluent method chaining
+     * without unchecked casts.
+     *
+     * @return this operation instance
+     */
+    protected abstract T self();
 
     /**
      * Verifies that all the elements ({@link #mainClass() mainClass}, {@link #launcherClass() launcherClass} and
@@ -721,19 +727,16 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * {@link IllegalArgumentException} otherwise.
      *
      * @throws IOException              if the {@link #destinationDirectory() destination directory} could not be created
+     * @throws NullPointerException     if a required element is {@code null}
      * @throws IllegalArgumentException if a required element is missing or invalid
      */
     protected void verifyExecute() throws IllegalArgumentException, IOException {
-        if (TextTools.isBlank(mainClass_)) {
-            throw new IllegalArgumentException("Project mainClass required.");
-        } else if (TextTools.isBlank(launcherClass_)) {
-            throw new IllegalArgumentException(("Spring Boot loader launcher class required."));
-        } else if (ObjectTools.isEmpty(launcherLibs_)) {
-            throw new IllegalArgumentException(("Spring Boot loader launcher libraries required."));
-        } else if (IOTools.notExists(destinationDirectory_)) {
-            if (destinationDirectory_ == null) {
-                throw new IllegalArgumentException("Destination directory required.");
-            }
+        TextTools.requireNotBlank(mainClass_, "Project main class");
+        TextTools.requireNotBlank(launcherClass_, "Spring Boot loader launcher class");
+        ObjectTools.requireNotEmpty(launcherLibs_, "Spring Boot loader launcher libraries");
+        ObjectTools.requireNonNull(destinationDirectory_, "Destination directory");
+
+        if (IOTools.notExists(destinationDirectory_)) {
             try {
                 IOTools.createDirs(destinationDirectory_);
             } catch (IOException e) {

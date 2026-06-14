@@ -57,6 +57,11 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
     private static final String PROVIDED_LIBS = "providedLibs";
     private final List<File> providedLibs_ = new ArrayList<>();
 
+    @Override
+    protected BootWarOperation self() {
+        return this;
+    }
+
     /**
      * Performs the BootWar operation.
      */
@@ -93,9 +98,8 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * <ul>
      *     <li>The {@link #destinationFileName(String) destination file name} to
      *     {@link Project#archiveBaseName() archiveBaseName} and {@link Project#version() version}</li>
-     *     <li>The {@link #infLibs(Collection) INF libs} to {@link Project#compileClasspathJars() compileClasspathJars},
-     *     {@link Project#runtimeClasspathJars() runtimeClasspathJars} and
-     *     {@link Project#buildDistDirectory() buildDistDirectory}</li>
+     *     <li>The {@link #infLibs(Collection) INF libs} to {@link Project#compileClasspathJars() compileClasspathJars}
+     *     and {@link Project#runtimeClasspathJars() runtimeClasspathJars}</li>
      *     <li>The {@link #launcherClass(String) launcher class} to {@code WarLauncher}</li>
      *     <li>The {@link #launcherLibs(Collection) launcher libs} to
      *     {@link Project#standaloneClasspathJars() standaloneClasspathJars}</li>
@@ -134,7 +138,6 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
         if (!project.runtimeClasspathJars().isEmpty()) {
             infLibs(project.runtimeClasspathJars());
         }
-        infLibs(project.buildDistDirectory());
         launcherClass(launcher);
         if (!project.standaloneClasspathJars().isEmpty()) {
             launcherLibs(project.standaloneClasspathJars());

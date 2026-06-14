@@ -430,7 +430,6 @@ class BootOperationTest {
                     .contains("WEB-INF/lib/")
                     .containsPattern(WEB_INF_LIB_BLD_PATTERN)
                     .containsPattern(WEB_INF_LIB_BLD_EXTENSIONS_TOOLS_PATTERN)
-                    .contains("WEB-INF/lib/dist/")
                     .contains("WEB-INF/lib/" + SPRING_BOOT_JAR)
                     .contains("WEB-INF/lib-provided/")
                     .containsPattern(WEB_INF_LIB_PROVIDED_JSR305_PATTERN)

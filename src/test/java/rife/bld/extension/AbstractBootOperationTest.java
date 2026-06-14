@@ -197,6 +197,11 @@ public class AbstractBootOperationTest {
             }
 
             @Override
+            public ConcreteBootOperation self() {
+                return this;
+            }
+
+            @Override
             public ConcreteBootOperation fromProject(Project project) {
                 return this;
             }

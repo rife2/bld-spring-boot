@@ -76,6 +76,11 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
         }
     }
 
+    @Override
+    protected BootJarOperation self() {
+        return this;
+    }
+
     /**
      * Configures the operation from a {@link Project}.
      * <p>

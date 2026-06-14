@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -93,28 +94,33 @@ public class BootWarOperationTest {
         class ErrorsTests {
 
             @Test
-            void invalidMainClass() {
-                var bootWar = new BootWarOperation().mainClass(MAIN_CLASS);
-                assertThatCode(bootWar::execute)
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining("class required");
-            }
-
-            @Test
-            void misingDestinationDirectory() {
+            void destinationDirectoryMissing() {
                 assertThatCode(() ->
                         new BootWarOperation()
                                 .mainClass(MAIN_CLASS)
                                 .launcherClass("org.springframework.boot.loader.launch.WarLauncher")
-                                .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR)))
+                                .launcherLibs(
+                                        List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR)))
                                 .execute()
                 )
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining("Destination directory required.");
+                        .isInstanceOf(NullPointerException.class)
+                        .hasMessage("Destination directory must not be null");
             }
 
             @Test
-            void misingLauncherLibs() {
+            void launcherClassMissing() {
+                var bootWar =
+                        new BootWarOperation()
+                                .mainClass(MAIN_CLASS)
+                                .launcherLibs(
+                                        List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR)));
+                assertThatCode(bootWar::execute)
+                        .isInstanceOf((NullPointerException.class))
+                        .hasMessage("Spring Boot loader launcher class must not be null");
+            }
+
+            @Test
+            void launcherLibMising() {
                 assertThatCode(() ->
                         new BootWarOperation()
                                 .mainClass(MAIN_CLASS)
@@ -122,23 +128,32 @@ public class BootWarOperationTest {
                                 .execute()
                 )
                         .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining("Spring Boot loader launcher libraries required.");
+                        .hasMessage("Spring Boot loader launcher libraries must not be empty");
             }
 
-            @Test
-            void missingLauncherClass() {
-                var bootWar = new BootWarOperation().mainClass(MAIN_CLASS)
-                        .launcherLibs(List.of(new File(EXAMPLES_LIB_STANDALONE + SPRING_BOOT_LOADER_JAR)));
+            @ParameterizedTest
+            @EmptySource
+            @ValueSource(strings = {" ", "  "})
+            void mainClassBlank(String value) {
+                var bootWar = new BootWarOperation().mainClass(value);
                 assertThatCode(bootWar::execute)
-                        .isInstanceOf((IllegalArgumentException.class))
-                        .hasMessageContaining("class required");
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessage("Project main class must not be blank");
             }
 
             @Test
-            void missingMainClass() {
+            void mainClassMissing() {
                 var bootWar = new BootWarOperation();
-                assertThatCode(bootWar::execute).isInstanceOf(IllegalArgumentException.class)
-                        .hasMessageContaining("mainClass");
+                assertThatCode(bootWar::execute).isInstanceOf(NullPointerException.class)
+                        .hasMessage("Project main class must not be null");
+            }
+
+            @Test
+            void mainClassNull() {
+                var bootWar = new BootWarOperation().mainClass(null);
+                assertThatCode(bootWar::execute)
+                        .isInstanceOf(NullPointerException.class)
+                        .hasMessage("Project main class must not be null");
             }
         }
     }
