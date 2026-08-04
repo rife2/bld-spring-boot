@@ -61,7 +61,7 @@ Don't forget to include the right _Spring Boot Loader_ dependency to your projec
 
 ```java
 scope(standalone)
-    .include(dependency("org.springframework.boot:spring-boot-loader:3.5.15"));
+    .include(dependency("org.springframework.boot:spring-boot-loader:3.5.16"));
 ```
 
 or

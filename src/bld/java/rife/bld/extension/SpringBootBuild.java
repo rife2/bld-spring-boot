@@ -43,7 +43,7 @@ public class SpringBootBuild extends Project {
 
         repositories = List.of(MAVEN_CENTRAL, CENTRAL_SNAPSHOTS, RIFE2_RELEASES, RIFE2_SNAPSHOTS);
 
-        var junit = version(6, 1, 0);
+        var junit = version(6, 1, 2);
         scope(compile)
                 .include(dependency("com.uwyn.rife2", "bld-extensions-tools",
                         version(1, 3, 0, "SNAPSHOT")))
