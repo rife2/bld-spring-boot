@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout source repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -23,13 +23,20 @@ jobs:
           distribution: "zulu"
           java-version: ${{ matrix.java-version }}
 
-      - name: Download dependencies [3.5.x example]
-        working-directory: examples/3.5.x
-        run: ./bld download
+      - name: Cache bld dependencies
+        id: cache-bld
+        uses: actions/cache@v6
+        with:
+          path: |
+            examples/3.5.x/lib
+            examples/4.0.x/lib
+            examples/4.1.x/lib
+            lib
+          key: ${{ runner.os }}-bld-java${{ matrix.java-version }}-lib
 
       - name: Compile source [3.5.x example]
         working-directory: examples/3.5.x
-        run: ./bld compile
+        run: ./bld --auto-download-purge clean compile
 
       - name: Run tests [3.5.x example]
         working-directory: examples/3.5.x
@@ -43,13 +50,9 @@ jobs:
         working-directory: examples/3.5.x
         run: ./bld bootwar
 
-      - name: Download dependencies [4.0.x example]
-        working-directory: examples/4.0.x
-        run: ./bld download
-
       - name: Compile source [4.0.x example]
         working-directory: examples/4.0.x
-        run: ./bld compile
+        run: ./bld --auto-download-purge clean compile
 
       - name: Run tests [4.0.x example]
         working-directory: examples/4.0.x
@@ -63,13 +66,9 @@ jobs:
         working-directory: examples/4.0.x
         run: ./bld bootwar
 
-      - name: Download dependencies [4.1.x example]
-        working-directory: examples/4.1.x
-        run: ./bld download
-
       - name: Compile source [4.1.x example]
         working-directory: examples/4.1.x
-        run: ./bld compile
+        run: ./bld --auto-download-purge clean compile
 
       - name: Run tests [4.1.x example]
         working-directory: examples/4.1.x
@@ -83,11 +82,8 @@ jobs:
         working-directory: examples/4.1.x
         run: ./bld bootwar
 
-      - name: Download dependencies
-        run: ./bld download
-
       - name: Compile source code
-        run: ./bld compile
+        run: ./bld clean compile
 
       - name: Run tests
         id: tests
@@ -95,4 +91,4 @@ jobs:
 
       - name: Run reporter
         if: always() && steps.tests.outcome == 'failure'
-        run: ./bld reporter --all
+        run: ./bld --offline reporter --all

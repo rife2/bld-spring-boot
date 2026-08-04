@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Checkout source repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -40,8 +40,15 @@ jobs:
           distribution: "zulu"
           java-version: 17
 
+      - name: Cache bld dependencies
+        id: cache-bld
+        uses: actions/cache@v6
+        with:
+          path: lib
+          key: ${{ runner.os }}-bld-pages-lib
+
       - name: Build Javadocs
-        run: ./bld download clean javadoc
+        run: ./bld clean compile javadoc
 
       - name: Setup Pages
         uses: actions/configure-pages@v6
