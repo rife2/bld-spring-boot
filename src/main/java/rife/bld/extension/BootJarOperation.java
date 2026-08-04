@@ -16,7 +16,7 @@
 
 package rife.bld.extension;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import rife.bld.Project;
 import rife.bld.extension.tools.IOTools;
 import rife.bld.extension.tools.ObjectTools;
@@ -45,6 +45,7 @@ import java.util.logging.Level;
  * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a>
  * @since 1.0
  */
+@NullMarked
 public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
 
     /**
@@ -109,7 +110,7 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
      * @throws IllegalArgumentException if {@link Project#mainClass() project main class} is empty
      */
     @Override
-    public BootJarOperation fromProject(@NonNull Project project) {
+    public BootJarOperation fromProject(Project project) {
         ObjectTools.requireNonNull(project, "fromProject");
         ObjectTools.requireNotEmpty(project.mainClass(), "project main class");
         ObjectTools.requireNonNull(project.version(), "project version");

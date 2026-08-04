@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import rife.bld.testing.BlankSource;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -132,8 +132,7 @@ public class BootWarOperationTest {
             }
 
             @ParameterizedTest
-            @EmptySource
-            @ValueSource(strings = {" ", "  "})
+            @BlankSource
             void mainClassBlank(String value) {
                 var bootWar = new BootWarOperation().mainClass(value);
                 assertThatCode(bootWar::execute)
@@ -149,6 +148,7 @@ public class BootWarOperationTest {
             }
 
             @Test
+            @SuppressWarnings("DataFlowIssue")
             void mainClassNull() {
                 var bootWar = new BootWarOperation().mainClass(null);
                 assertThatCode(bootWar::execute)

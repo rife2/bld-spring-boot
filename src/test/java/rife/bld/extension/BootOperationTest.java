@@ -23,8 +23,8 @@ import org.junit.jupiter.api.io.TempDir;
 import rife.bld.Project;
 import rife.bld.blueprints.AppProjectBlueprint;
 import rife.bld.dependencies.VersionNumber;
-import rife.bld.extension.testing.LoggingExtension;
-import rife.bld.extension.testing.TestLogHandler;
+import rife.bld.testing.LoggingExtension;
+import rife.bld.testing.TestLogHandler;
 import rife.tools.FileUtils;
 
 import java.io.File;

@@ -16,6 +16,7 @@
 
 package rife.bld.extension;
 
+import org.jspecify.annotations.NullMarked;
 import rife.bld.Project;
 
 import java.io.File;
@@ -28,6 +29,7 @@ import java.util.regex.Pattern;
  * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a>
  * @since 1.0
  */
+@NullMarked
 public final class BootUtils {
 
     // DecimalFormat is not thread-safe, so use ThreadLocal.

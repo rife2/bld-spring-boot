@@ -16,12 +16,13 @@
 
 package rife.bld.extension;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.jspecify.annotations.NullMarked;
 import rife.bld.Project;
 import rife.bld.extension.tools.CollectionTools;
 import rife.bld.extension.tools.IOTools;
 import rife.bld.extension.tools.ObjectTools;
+import rife.bld.extension.tools.TextTools;
 import rife.tools.FileUtils;
 
 import java.io.File;
@@ -52,15 +53,11 @@ import java.util.logging.Level;
  * @author <a href="https://erik.thauvin.net/">Erik C. Thauvin</a>
  * @since 1.0
  */
+@NullMarked
 public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
 
     private static final String PROVIDED_LIBS = "providedLibs";
     private final List<File> providedLibs_ = new ArrayList<>();
-
-    @Override
-    protected BootWarOperation self() {
-        return this;
-    }
 
     /**
      * Performs the BootWar operation.
@@ -120,7 +117,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * @throws IllegalArgumentException if the {@link Project#mainClass() main class} is blank or empty.
      */
     @Override
-    public BootWarOperation fromProject(@NonNull Project project) {
+    public BootWarOperation fromProject(Project project) {
         ObjectTools.requireNonNull(project, "fromProject");
         ObjectTools.requireNotEmpty(project.mainClass(), "project main class");
         ObjectTools.requireNonNull(project.version(), "project version");
@@ -156,6 +153,11 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
         return this;
     }
 
+    @Override
+    protected BootWarOperation self() {
+        return this;
+    }
+
     /**
      * Provides the libraries that will be used for the WAR creation in {@code /WEB-INF/lib-provided}.
      *
@@ -165,7 +167,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * @throws IllegalArgumentException if {@code jars} is empty
      * @see #providedLibs(File...)
      */
-    public final BootWarOperation providedLibs(@NonNull Collection<File> jars) {
+    public final BootWarOperation providedLibs(Collection<File> jars) {
         ObjectTools.requireNotEmpty(jars, PROVIDED_LIBS);
         providedLibs_.addAll(jars);
         return this;
@@ -177,11 +179,11 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * @param jars one or more Java archive files
      * @return this operation instance
      * @throws NullPointerException     if {@code jars} is {@code null} or contains {@code null} elements
-     * @throws IllegalArgumentException if {@code jars} is empty, or contains empty elements
+     * @throws IllegalArgumentException if {@code jars} is empty, or contains blank elements
      * @see #providedLibsStrings(Collection)
      */
-    public BootWarOperation providedLibs(@NonNull String... jars) {
-        ObjectTools.requireNotEmpty(jars, PROVIDED_LIBS);
+    public BootWarOperation providedLibs(String... jars) {
+        TextTools.requireNotBlank(PROVIDED_LIBS, jars);
         providedLibs_.addAll(CollectionTools.combineStringsToFiles(jars));
         return this;
     }
@@ -195,7 +197,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * @throws IllegalArgumentException if {@code jars} is empty
      * @see #providedLibs(Collection)
      */
-    public BootWarOperation providedLibs(@NonNull File... jars) {
+    public BootWarOperation providedLibs(File... jars) {
         ObjectTools.requireNotEmpty(jars, PROVIDED_LIBS);
         providedLibs_.addAll(List.of(jars));
         return this;
@@ -210,7 +212,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * @throws IllegalArgumentException if {@code jars} is empty
      * @see #providedLibsPaths(Collection)
      */
-    public BootWarOperation providedLibs(@NonNull Path... jars) {
+    public BootWarOperation providedLibs(Path... jars) {
         ObjectTools.requireNotEmpty(jars, PROVIDED_LIBS);
         providedLibs_.addAll(CollectionTools.combinePathsToFiles(jars));
         return this;
@@ -235,7 +237,7 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * @throws IllegalArgumentException if {@code jars} is empty
      * @see #providedLibs(Path...)
      */
-    public final BootWarOperation providedLibsPaths(@NonNull Collection<Path> jars) {
+    public final BootWarOperation providedLibsPaths(Collection<Path> jars) {
         ObjectTools.requireNotEmpty(jars, "providedLibsPaths");
         providedLibs_.addAll(CollectionTools.combinePathsToFiles(jars));
         return this;
@@ -250,8 +252,8 @@ public class BootWarOperation extends AbstractBootOperation<BootWarOperation> {
      * @throws IllegalArgumentException if {@code jars} is empty, or contains empty elements
      * @see #providedLibs(String...)
      */
-    public final BootWarOperation providedLibsStrings(@NonNull Collection<String> jars) {
-        ObjectTools.requireNotEmpty(jars, "providedLibsStrings");
+    public final BootWarOperation providedLibsStrings(Collection<String> jars) {
+        TextTools.requireNotBlank(jars, "providedLibsStrings");
         providedLibs_.addAll(CollectionTools.combineStringsToFiles(jars));
         return this;
     }
