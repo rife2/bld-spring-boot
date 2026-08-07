@@ -43,12 +43,12 @@ public class SpringBootBuild extends Project {
 
         repositories = List.of(MAVEN_CENTRAL, CENTRAL_SNAPSHOTS, RIFE2_RELEASES, RIFE2_SNAPSHOTS);
 
-        var junit = version(6, 1, 2);
+        var junit = version(6, 1, 3);
         scope(compile)
                 .include(dependency("com.uwyn.rife2", "bld-extensions-tools",
                         version(1, 3, 0, "SNAPSHOT")))
                 .include(dependency("com.uwyn.rife2", "bld",
-                        version(2, 3, 1, "SNAPSHOT")));
+                        version(2, 4, 0, "SNAPSHOT")));
         scope(provided)
                 .include(dependency("org.jspecify", "jspecify", "1.0.1"))
                 .include(dependency("com.github.spotbugs", "spotbugs-annotations",
@@ -69,7 +69,9 @@ public class SpringBootBuild extends Project {
                 .link("https://jspecify.dev/docs/api/");
 
         publishOperation()
-                .repository(version.isSnapshot() ? repository("rife2-snapshot") : repository("rife2"))
+                .repository(version.isSnapshot()
+                        ? repository("rife2-snapshot")
+                        : repository("rife2"))
                 .repository(repository("github"))
                 .info()
                 .groupId("com.uwyn.rife2")

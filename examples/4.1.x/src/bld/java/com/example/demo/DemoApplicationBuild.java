@@ -23,11 +23,14 @@ public class DemoApplicationBuild extends WebProject {
         repositories = List.of(MAVEN_CENTRAL, RIFE2_RELEASES, RIFE2_SNAPSHOTS);
 
         var boot = bom("org.springframework.boot", "spring-boot-dependencies", version(4, 1, 0));
-        var junit = bom("org.junit", "junit-bom", version(6, 1, 2));
+        var junit = bom("org.junit", "junit-bom", version(6, 1, 3));
         scope(compile)
                 .include(boot)
                 .include(dependency("org.springframework.boot", "spring-boot-starter"))
                 .include(dependency("org.springframework.boot", "spring-boot-starter-web"));
+        scope(standalone)
+                .include(boot)
+                .include(dependency("org.springframework.boot", "spring-boot-loader"));
         scope(test)
                 .include(junit)
                 .include(dependency("org.springframework.boot", "spring-boot-starter-test"))
@@ -35,9 +38,6 @@ public class DemoApplicationBuild extends WebProject {
                 .include(dependency("org.junit.jupiter", "junit-jupiter"))
                 .include(dependency("org.junit.platform", "junit-platform-console-standalone", junit.version()))
                 .include(dependency("org.mockito:mockito-core:5.23.0"));
-        scope(standalone)
-                .include(boot)
-                .include(dependency("org.springframework.boot", "spring-boot-loader"));
 
         testOperation().javaOptions(List.of("-XX:+EnableDynamicAgentLoading"))
                 .javaOptions().enableNativeAccess("ALL-UNNAMED");
