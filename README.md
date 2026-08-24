@@ -75,7 +75,7 @@ or
 
 ```java
 scope(standalone)
-    .include(dependency("org.springframework.boot:spring-boot-loader:4.1.0"));
+    .include(dependency("org.springframework.boot:spring-boot-loader:4.1.1"));
 ```
 
 Please check the [BootJarOperation documentation](https://rife2.github.io/bld-spring-boot/rife/bld/extension/BootJarOperation.html#method-summary)

@@ -45,7 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         "PMD.AvoidDuplicateLiterals", "PMD.MoreThanOneLogger"})
 class BootOperationTest {
 
-    static final String BOOT_VERSION = "4.1.0";
+    static final String BOOT_VERSION = "4.1.1";
     static final String EXAMPLES_DIR = "examples/4.1.x";
     static final String EXAMPLES_LIB_COMPILE = EXAMPLES_DIR + "/lib/compile/";
     static final String EXAMPLES_LIB_RUNTIME = EXAMPLES_DIR + "/lib/runtime/";

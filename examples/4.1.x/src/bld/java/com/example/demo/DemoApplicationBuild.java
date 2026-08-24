@@ -22,7 +22,7 @@ public class DemoApplicationBuild extends WebProject {
 
         repositories = List.of(MAVEN_CENTRAL, RIFE2_RELEASES, RIFE2_SNAPSHOTS);
 
-        var boot = bom("org.springframework.boot", "spring-boot-dependencies", version(4, 1, 0));
+        var boot = bom("org.springframework.boot", "spring-boot-dependencies", version(4, 1, 1));
         var junit = bom("org.junit", "junit-bom", version(6, 1, 3));
         scope(compile)
                 .include(boot)
