@@ -34,7 +34,7 @@ import java.util.Map;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public class AbstractBootOperationTest {
+class AbstractBootOperationTest {
 
     @Nested
     @DisplayName("Validation Tests")
@@ -198,12 +198,12 @@ public class AbstractBootOperationTest {
             }
 
             @Override
-            public ConcreteBootOperation self() {
+            public ConcreteBootOperation fromProject(@NonNull Project project) {
                 return this;
             }
 
             @Override
-            public ConcreteBootOperation fromProject(@NonNull Project project) {
+            public ConcreteBootOperation self() {
                 return this;
             }
         }

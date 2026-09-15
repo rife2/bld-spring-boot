@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static rife.bld.extension.BootOperationTest.*;
 
-public class BootWarOperationTest {
+class BootWarOperationTest {
 
     @Nested
     @DisplayName("Inf Lib Tests")

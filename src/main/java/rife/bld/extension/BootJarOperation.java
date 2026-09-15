@@ -77,11 +77,6 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
         }
     }
 
-    @Override
-    protected BootJarOperation self() {
-        return this;
-    }
-
     /**
      * Configures the operation from a {@link Project}.
      * <p>
@@ -139,6 +134,11 @@ public class BootJarOperation extends AbstractBootOperation<BootJarOperation> {
                 "Start-Class", main));
         sourceDirectories(project.buildMainDirectory(), project.srcMainResourcesDirectory());
 
+        return this;
+    }
+
+    @Override
+    protected BootJarOperation self() {
         return this;
     }
 }

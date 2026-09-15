@@ -608,7 +608,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
             throws IOException {
         var destinationDir = ObjectTools.requireNonNull(destinationDirectory_, "destination directory");
         var fileName = TextTools.requireNotBlank(destinationFileName_, "destination file name");
-        
+
         executeCreateManifest(stagingDirectory);
 
         if (logger.isLoggable(Level.FINE) && (!silent())) {
@@ -739,7 +739,7 @@ public abstract class AbstractBootOperation<T extends AbstractBootOperation<T>>
      * @throws NullPointerException     if a required element is {@code null}
      * @throws IllegalArgumentException if a required element is missing or invalid
      */
-    protected void verifyExecute() throws IllegalArgumentException, IOException {
+    protected void verifyExecute() throws IOException {
         TextTools.requireNotBlank(mainClass_, "Project main class");
         TextTools.requireNotBlank(launcherClass_, "Spring Boot loader launcher class");
         ObjectTools.requireNotEmpty(launcherLibs_, "Spring Boot loader launcher libraries");

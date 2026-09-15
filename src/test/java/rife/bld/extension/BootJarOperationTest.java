@@ -35,7 +35,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static rife.bld.extension.BootOperationTest.*;
 
 @SuppressWarnings({"DataFlowIssue", "PMD.AvoidDuplicateLiterals"})
-public class BootJarOperationTest {
+class BootJarOperationTest {
 
     @Nested
     @DisplayName("Errors Tests")
