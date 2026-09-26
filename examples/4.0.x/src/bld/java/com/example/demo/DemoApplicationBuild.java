@@ -37,7 +37,7 @@ public class DemoApplicationBuild extends WebProject {
                 .include(dependency("org.springframework.boot", "spring-boot-webmvc-test"))
                 .include(dependency("org.junit.jupiter", "junit-jupiter"))
                 .include(dependency("org.junit.platform", "junit-platform-console-standalone", junit.version()))
-                .include(dependency("org.mockito:mockito-core:5.23.0"));
+                .include(dependency("org.mockito:mockito-core:5.24.0"));
 
         testOperation().javaOptions(List.of("-XX:+EnableDynamicAgentLoading"))
                 .javaOptions().enableNativeAccess("ALL-UNNAMED");
