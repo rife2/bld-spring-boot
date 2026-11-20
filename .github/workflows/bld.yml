@@ -54,8 +54,12 @@ jobs:
         working-directory: examples/4.0.x
         run: ./bld --auto-download-purge clean compile
 
-      - name: Run tests [4.0.x example]
-        working-directory: examples/4.0.x
+      - name: Run tests [4.1.x example]
+        working-directory: examples/4.1.x
+        run: ./bld test
+
+      - name: Run tests [4.2.x example]
+        working-directory: examples/4.2.x
         run: ./bld test
 
       - name: Compile and create the JAR [4.0.x example]

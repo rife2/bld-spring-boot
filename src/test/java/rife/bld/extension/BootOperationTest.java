@@ -45,8 +45,8 @@ import static org.assertj.core.api.Assertions.assertThat;
         "PMD.AvoidDuplicateLiterals", "PMD.MoreThanOneLogger"})
 class BootOperationTest {
 
-    static final String BOOT_VERSION = "4.1.1";
-    static final String EXAMPLES_DIR = "examples/4.1.x";
+    static final String BOOT_VERSION = "4.2.0";
+    static final String EXAMPLES_DIR = "examples/4.2.x";
     static final String EXAMPLES_LIB_COMPILE = EXAMPLES_DIR + "/lib/compile/";
     static final String EXAMPLES_LIB_RUNTIME = EXAMPLES_DIR + "/lib/runtime/";
     static final String EXAMPLES_LIB_STANDALONE = EXAMPLES_DIR + "/lib/standalone/";
@@ -114,12 +114,15 @@ class BootOperationTest {
             org/springframework/boot/loader/net/protocol/jar/Handler.class
             org/springframework/boot/loader/net/protocol/jar/JarFileUrlKey.class
             org/springframework/boot/loader/net/protocol/jar/JarUrl.class
+            org/springframework/boot/loader/net/protocol/jar/JarUrlClassLoader$Connection.class
+            org/springframework/boot/loader/net/protocol/jar/JarUrlClassLoader$NestedOnlyOptimizedLoader.class
             org/springframework/boot/loader/net/protocol/jar/JarUrlClassLoader$OptimizedEnumeration.class
             org/springframework/boot/loader/net/protocol/jar/JarUrlClassLoader.class
             org/springframework/boot/loader/net/protocol/jar/JarUrlConnection$ConnectionInputStream.class
             org/springframework/boot/loader/net/protocol/jar/JarUrlConnection$EmptyUrlStreamHandler.class
             org/springframework/boot/loader/net/protocol/jar/JarUrlConnection.class
             org/springframework/boot/loader/net/protocol/jar/LazyDelegatingInputStream.class
+            org/springframework/boot/loader/net/protocol/jar/LoadableNames.class
             org/springframework/boot/loader/net/protocol/jar/Optimizations.class
             org/springframework/boot/loader/net/protocol/jar/UrlJarEntry.class
             org/springframework/boot/loader/net/protocol/jar/UrlJarFile.class
@@ -137,6 +140,7 @@ class BootOperationTest {
             org/springframework/boot/loader/net/protocol/nested/NestedUrlConnectionResources.class
             org/springframework/boot/loader/net/util/
             org/springframework/boot/loader/net/util/UrlDecoder.class
+            org/springframework/boot/loader/net/util/UrlEncoder.class
             org/springframework/boot/loader/nio/
             org/springframework/boot/loader/nio/file/
             org/springframework/boot/loader/nio/file/NestedByteChannel$Resources.class
@@ -268,6 +272,16 @@ class BootOperationTest {
         void boot4() {
             var project = new AppProjectBlueprint(
                     new File("examples/4.0.x"),
+                    "com.example.demo",
+                    "demo",
+                    "DemoApplication");
+            assertThat(project.execute(new String[]{"clean", "compile", "test"})).isEqualTo(0);
+        }
+
+        @Test
+        void boot4_1() {
+            var project = new AppProjectBlueprint(
+                    new File("examples/4.1.x"),
                     "com.example.demo",
                     "demo",
                     "DemoApplication");
