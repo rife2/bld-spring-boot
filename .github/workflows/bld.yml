@@ -31,6 +31,7 @@ jobs:
             examples/3.5.x/lib
             examples/4.0.x/lib
             examples/4.1.x/lib
+            examples/4.2.x/lib
             lib
           key: ${{ runner.os }}-bld-java${{ matrix.java-version }}-lib
 
