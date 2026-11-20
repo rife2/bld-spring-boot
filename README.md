@@ -60,22 +60,17 @@ public void bootwar() throws Exception {
 Don't forget to include the right _Spring Boot Loader_ dependency to your project, such as:
 
 ```java
+var boot = bom("org.springframework.boot", "spring-boot-dependencies", version(4, 2, 0));
+scope(compile)
+        .include(boot)
+        .include(dependency("org.springframework.boot", "spring-boot-starter"))
+        .include(dependency("org.springframework.boot", "spring-boot-starter-web"));
 scope(standalone)
-    .include(dependency("org.springframework.boot:spring-boot-loader:3.5.16"));
-```
-
-or
-
-```java
-scope(standalone)
-    .include(dependency("org.springframework.boot:spring-boot-loader:4.0.7"));
-```
-
-or
-
-```java
-scope(standalone)
-    .include(dependency("org.springframework.boot:spring-boot-loader:4.1.1"));
+        .include(boot)
+        .include(dependency("org.springframework.boot", "spring-boot-loader"));
+scope(test)
+        .include(dependency("org.springframework.boot", "spring-boot-starter-test"))
+        .include(dependency("org.springframework.boot", "spring-boot-webmvc-test"))
 ```
 
 Please check the [BootJarOperation documentation](https://rife2.github.io/bld-spring-boot/rife/bld/extension/BootJarOperation.html#method-summary)
